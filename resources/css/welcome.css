@@ -18,225 +18,315 @@
         Arial,
         sans-serif;
     
-    background-color: #ffffff;
+    background-color: #f5f5f7;
     color: #1d1d1f;
     line-height: 1.5;
 }
 
-
-/* * 2. Container (ตัวจำกัดความกว้าง)
- * สำคัญ: ต้องใช้ค่าเดียวกับ Navbar (980px)
- */
-.container {
-    max-width: 980px;
-    margin: 0 auto; /* จัดกึ่งกลาง */
-    padding: 0 22px;
+/* --- Store Section --- */
+.store-section {
+    max-width: 1300px; /* จำกัดความกว้างสูงสุด */
+    margin: 2rem auto; /* จัดกึ่งกลาง */
+    padding: 2rem;
 }
 
-/* * 3. Hero Section (แบนเนอร์บนสุด)
- */
-.hero-section {
-    padding: 60px 0;
-    text-align: center;
-    border-bottom: 1px solid #d2d2d7; /* เส้นคั่นบางๆ */
+/* --- Header --- */
+.store-header {
+    display: flex; /* ใช้ Flexbox เพื่อจัดวาง */
+    justify-content: space-between; /* แยกซ้าย-ขวา */
+    align-items: flex-start; /* จัดให้ชิดด้านบน */
+    margin-bottom: 2rem;
+    flex-wrap: wrap; /* ถ้าจอเล็กให้ขึ้นบรรทัดใหม่ */
+    gap: 1rem;
 }
 
-.hero-title {
-    /* ขนาดฟอนต์ใหญ่สไตล์ Apple */
-    font-size: 56px;
-    font-weight: 600; /* 600 คือ Semibold */
-    letter-spacing: 0.003em;
-    margin-bottom: 10px;
+.store-title {
+    font-size: 40px; /* ~40px */
+    font-weight: 600;
+    margin: 0;
 }
 
-.hero-subtitle {
-    font-size: 24px;
-    font-weight: 400; /* 400 คือ Regular */
-    color: #6e6e73; /* สีเทาเข้ม */
-    margin-bottom: 20px;
+.store-header-right {
+    text-align: right;
+    padding-top: 0.5rem; /* ขยับลงมาเล็กน้อยให้สมดุล */
 }
 
-.hero-link {
-    font-size: 17px;
-    color: #007aff; /* สีฟ้ามาตรฐาน Apple */
+.store-tagline {
+    font-size: 20px; /* ~18px */
+    font-weight: 500;
+    margin: 0 0 0.5rem 0;
+}
+
+.store-finder-link {
+    font-size: 0.9rem; /* ~14px */
+    color: #0071e3; /* สีฟ้าของ Apple */
     text-decoration: none;
-    transition: text-decoration 0.2s;
 }
 
-.hero-link:hover {
+.store-finder-link:hover {
     text-decoration: underline;
 }
 
-/* * 4. Feature Section (ส่วนกล่องๆ)
- */
-.feature-section {
-    padding: 60px 0;
+
+/* ===================================================================
+   Section 1: Store Section (ส่วน "ร้านของเรา")
+   =================================================================== */
+
+
+/* ===================================================================
+   Section 2: Benefits Section (ส่วน "ทำไมซื้อ iPhone...")
+   =================================================================== */
+
+.benefits-section {
+    margin: 4rem 0 2rem 0;
+    box-sizing: border-box;
 }
 
-.feature-grid {
+.benefits-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0 2rem; /* (ย้าย padding มาไว้ตรงนี้) */
+    box-sizing: border-box;
+    /* [!!! เพิ่ม 3 บรรทัดนี้ !!!] */
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+
+.benefits-title {
+    font-size: 2.5rem; /* ~40px */
+    font-weight: 600;
+    margin: 0;
+}
+
+.benefits-link {
+    font-size: 0.9rem; /* ~14px */
+    color: #0071e3;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.benefits-link:hover {
+    text-decoration: underline;
+}
+
+/* --- Benefits Grid --- */
+.benefits-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 คอลัมน์เท่ากัน */
-    gap: 30px; /* ระยะห่างระหว่างกล่อง */
+    gap: 20px;
+    grid-auto-flow: column; 
+    grid-auto-columns: 300px; 
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px;
+    scrollbar-width: none;
+    box-sizing: border-box;
+
+    /* [!!! START EDIT !!!] */
+
+    /* 1. ลบ padding-right ที่เป็นปัญหาทิ้ง */
+    padding-right: 0;
+
+    /* 2. คำนวณ padding-left ให้อยู่แนวเดียวกับหัวข้อ (1300px) */
+    /* (ความกว้างจอ - 1300px) / 2 + 2rem (padding ของหัวข้อ) */
+    padding-left: calc((100vw - 1300px) / 2 + 2rem); /* [!!! แก้เป็นสูตรนี้ !!!] */
+
+    /* [!!! END EDIT !!!] */
+}
+.benefits-grid > .benefit-card:last-child {
+    margin-right: 2rem;
 }
 
-.feature-card {
-    border-radius: 18px; /* ขอบโค้งมน */
-    padding: 30px;
-    background-color: #f5f5f7; /* สีเทาอ่อน */
+/* [!!! ADD THIS RULE !!!] */
+.benefits-grid::-webkit-scrollbar {
+    display: none; /* ซ่อนแถบเลื่อนบน Chrome, Safari */
+}
+
+/* --- Benefit Card --- */
+.benefit-card {
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+
+    /* *** Animation เด้งๆ *** */
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px); /* เลื่อนขึ้น 5px */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1); /* เงาเข้มขึ้น */
 }
 
 .card-title {
-    font-size: 24px;
+    font-size: 1.3rem;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin: 0 0 0.5rem 0;
+}
+
+.card-subtitle {
+    font-size: 1.7rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0 0 1rem 0;
 }
 
 .card-description {
-    font-size: 17px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #424245;
+    margin-bottom: 20px;
+}
+
+.card-description sup {
+    font-size: 0.7em;
+    vertical-align: super;
+}
+
+/* .card-image-placeholder {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background-color: #f5f5f7;
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    border-radius: 0 0 12px 12px;
+    transition: transform 0.2s ease-out;
+} */
+
+.benefit-card:hover .card-image-placeholder {
+    transform: translateY(-5px); /* รูปเด้งตามการ์ด */
+}
+
+/* Placeholder Images (ใช้แทนรูปจริง) */
+.card-image-placeholder.trade-in {
+    background-image: url('https://via.placeholder.com/280x200/e0e0e5/000000?text=Trade+In');
+    background-size: contain;
+}
+.card-image-placeholder.finance {
+    background-image: url('https://via.placeholder.com/280x200/e0e0e5/000000?text=Credit+Card');
+    background-size: contain;
+}
+.card-image-placeholder.setup {
+    background-image: url('https://via.placeholder.com/280x200/e0e0e5/000000?text=Personal+Setup');
+    background-size: contain;
+}
+.card-image-placeholder.delivery {
+    background-image: url('https://via.placeholder.com/280x200/e0e0e5/000000?text=Apple+Bag');
+    background-size: contain;
+}
+/* --- */
+
+.card-action-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    background-color: #d2d2d7;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: 300;
     color: #1d1d1f;
-    line-height: 1.4;
-}
-
-/* * 5. Responsive (สำหรับมือถือ)
- */
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 40px;
-    }
-
-    .hero-subtitle {
-        font-size: 21px;
-    }
-
-    .feature-grid {
-        /* เปลี่ยนเป็น 1 คอลัมน์ */
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Spotlight Section */
-.spotlight-section {
-    padding: 80px 0;
-    border-bottom: 1px solid #d2d2d7;
-}
-.spotlight-content {
     display: flex;
     align-items: center;
-    gap: 40px;
-}
-.spotlight-image img {
-    width: 100%;
-    max-width: 560px;
-    border-radius: 12px;
-}
-.spotlight-text {
-    flex: 1;
-}
-.spotlight-title {
-    font-size: 48px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    letter-spacing: 0.003em;
-}
-.spotlight-subtitle {
-    font-size: 20px;
-    color: #6e6e73;
-    margin-bottom: 20px;
-}
-.spotlight-link {
-    font-size: 17px;
-    color: #007aff;
-    text-decoration: none;
-}
-.spotlight-link:hover {
-    text-decoration: underline;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: background-color 0.2s ease;
 }
 
-/* Highlights Section */
-.highlights-section {
-    padding: 80px 0;
-}
-.section-heading {
-    font-size: 32px;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 40px;
-}
-.highlights-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-}
-.highlight-card {
-    background-color: #f5f5f7;
-    padding: 30px;
-    border-radius: 18px;
-    text-align: left;
-}
-.card-heading {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-.card-text {
-    font-size: 17px;
-    color: #1d1d1f;
-    line-height: 1.4;
-    margin-bottom: 20px;
-}
-.card-link {
-    font-size: 17px;
-    color: #007aff;
-    text-decoration: none;
-}
-.card-link:hover {
-    text-decoration: underline;
+.card-action-button:hover {
+    background-color: #b0b0b5;
 }
 
-/* CTA Section */
-.cta-section {
-    padding: 100px 0;
-    background-color: #000000;
-    color: #ffffff;
-}
-.cta-title {
-    font-size: 40px;
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-.cta-subtitle {
-    font-size: 20px;
-    color: #d1d1d6;
-    margin-bottom: 30px;
-}
-.cta-button {
-    display: inline-block;
-    padding: 14px 28px;
-    font-size: 17px;
-    font-weight: 600;
-    color: #ffffff;
-    background-color: #007aff;
-    border-radius: 10px;
-    text-decoration: none;
-    transition: background-color 0.2s;
-}
-.cta-button:hover {
-    background-color: #005bb5;
+
+/* ===================================================================
+   Responsive Design (สำหรับจอเล็ก)
+   =================================================================== */
+
+   /* [!!! ADD THIS NEW MEDIA QUERY !!!] */
+@media (max-width: 1300px) {
+    /* เมื่อจอเล็กกว่า 1300px, ให้ใช้ padding-left ธรรมดา */
+    .benefits-grid {
+        padding-left: 2rem;
+    }
 }
 
-/* Responsive */
+@media (max-width: 1024px) {
+    /* Tablet: 2 คอลัมน์ */
+    /* Tablet: 2 คอลัมน์ */
+    .benefits-grid {
+        /* [!!! START EDIT !!!] */
+        /* 1. รีเซ็ตค่าการเลื่อนแนวนอน */
+        grid-auto-flow: unset;
+        grid-auto-columns: unset;
+        overflow-x: hidden;
+
+        /* [!!! EDIT PADDING !!!] */
+        padding-left: 2rem;  /* กลับไปใช้ padding ปกติ */
+        padding-right: 2rem; /* เพิ่ม padding ขวากลับมา (เพราะเป็น Grid) */
+
+        /* 2. ตั้งค่าการตัด 2 คอลัมน์ (เหมือนเดิม) */
+        grid-template-columns: repeat(2, 1fr);
+        .benefits-grid > .benefit-card:last-child {
+        margin-right: 0;
+    }
+        /* [!!! END EDIT !!!] */
+    }
+    .carousel-navigation .nav-arrow.prev { left: 0; }
+    .carousel-navigation .nav-arrow.next { right: 0; }
+}
+
 @media (max-width: 768px) {
-    .spotlight-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    .highlights-grid {
+    /* Mobile: 1 คอลัมน์ */
+    .benefits-grid {
         grid-template-columns: 1fr;
+        
+        /* [!!! EDIT PADDING !!!] */
+        padding-left: 1rem;  /* ลด padding ให้เหมาะกับมือถือ */
+        padding-right: 1rem; /* ลด padding ให้เหมาะกับมือถือ */
+
     }
-    .cta-title {
-        font-size: 32px;
+
+    /* ปรับ padding ของ section ทั้งสอง */
+    /* [!!! แก้ไขเป็นแบบนี้ !!!] */
+.store-section {
+    padding: 0 1rem;
+}
+
+/* ปรับ header และ grid ของ benefits */
+    .benefits-header,
+    .benefits-grid {
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
-    .cta-subtitle {
-        font-size: 18px;
+
+    /* ปรับ header ของ section ทั้งสอง */
+    .benefits-header, .store-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .store-header-right {
+        text-align: left;
+    }
+
+    .store-title, .benefits-title {
+        font-size: 2rem; /* ลดขนาด font บนมือถือ */
     }
 }

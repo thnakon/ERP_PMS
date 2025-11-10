@@ -12,6 +12,7 @@
     {{-- <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet"> --}}
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&display=swap"rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -39,7 +40,7 @@
     --}}
 
 <body class="welcome-body antialiased">
-
+    @include('layouts.page-loader')
     {{-- 1. ส่วนของ Navbar (เหมือนเดิม) --}}
     @include('layouts.navigation-welcome')
 
@@ -48,151 +49,84 @@
     @endif
 
     {{-- 2. ส่วนเนื้อหาใหม่ (สไตล์ Apple) --}}
-    <main id="main-content">
+    <section class="store-section">
+        
+        <div class="store-header">
+            <h2 class="store-title">Oboun ERP</h2>
+            <div class="store-header-right">
+                <p class="store-tagline">โปรแกรมร้านยาระบบบริหารร้านขายยา</p>
+                <p class="store-tagline">เลือกที่โปรแกรมที่ดีสำหรับคุณ</p>
+                <a href="#" class="store-finder-link">About Oboun ERP > </a>
+            </div>
+        </div>
 
-        {{-- ส่วน Hero Section (แบนเนอร์ใหญ่) --}}
-        <section class="hero-section">
-            <div class="container">
-                <h1 class="hero-title">Developer</h1>
-                <p class="hero-subtitle">
-                    Build the next generation of apps for Apple platforms.
+    </section>
+
+    <section class="benefits-section">
+        <div class="benefits-header">
+            <h2 class="benefits-title">ทำไมถึงเลือก Obun ERP ของเรา</h2>
+            <a href="#" class="benefits-link">ทำไมถึงต้องเรา ></a>
+        </div>
+
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <h3 class="card-title">Apple Trade In</h3>
+                <p class="card-subtitle">ประหยัดกับ iPhone เครื่องใหม่ด้วยการนำอุปกรณ์มาแลก</p>
+                <p class="card-description">
+                    รับเครดิตมูลค่า ฿5,000 – ฿20,500 สำหรับซื้อ iPhone 17, iPhone Air หรือ iPhone 17 Pro เมื่อคุณนำ iPhone 13 หรือใหม่กว่ามาแลก<sup>2</sup>
                 </p>
-                <div class="hero-links">
-                    <a href="#" class="hero-link">Learn about development</a>
-                </div>
-            </div>
-        </section>
-
-        {{-- ส่วน Feature Grid (กล่อง 2 คอลัมน์) --}}
-        <section class="feature-section">
-            <div class="container">
-                <div class="feature-grid">
-
-                    {{-- กล่องที่ 1 --}}
-                    <div class="feature-card" style="background-color: #f5f5f7;">
-                        <h2 class="card-title">Design</h2>
-                        <p class="card-description">
-                            Get design guidance and UI resources for building intuitive, beautiful, and inclusive apps.
-                        </p>
-                        <p class="card-description">
-                            Get design guidance and UI resources for building intuitive, beautiful, and inclusive apps.
-                        </p>
+                <div class="card-image-placeholder trade-in">
                     </div>
-
-                    {{-- กล่องที่ 2 --}}
-                    <div class="feature-card" style="background-color: #f5f5f7;">
-                        <h2 class="card-title">Develop</h2>
-                        <p class="card-description">
-                            Learn how to build, test, and deploy your apps using the latest Apple technologies and SDKs.
-                        </p>
-                    </div>
-
-                </div>
+                <button class="card-action-button" aria-label="Learn more about Apple Trade In">+</button>
             </div>
-        </section>
 
-        {{-- ส่วน Hero Section (แบนเนอร์ใหญ่) --}}
-        <section class="hero-section">
-            <div class="container">
-                <h1 class="hero-title">นักพัฒนา</h1>
-                <p class="hero-subtitle">
-                    สร้างแอปรุ่นถัดไปสำหรับแพลตฟอร์ม Apple
+            <div class="benefit-card">
+                <h3 class="card-title">บริการด้านการเงิน</h3>
+                <p class="card-subtitle">แบ่งจ่ายรายเดือนได้ง่ายๆ</p>
+                <p class="card-description">
+                    จ่ายดอกเบี้ย 0% นานสูงสุด 10 เดือน หากคุณมีบัตรเครดิตที่เข้าเกณฑ์ กรุณาเลือกบริการด้านการเงินที่เหมาะกับคุณ<sup>1</sup>
                 </p>
-                <div class="hero-links">
-                    <a href="#" class="hero-link">เรียนรู้เกี่ยวกับการพัฒนา</a>
-                </div>
+                <div class="card-image-placeholder finance">
+                    </div>
+                <button class="card-action-button" aria-label="Learn more about finance options">+</button>
             </div>
-        </section>
 
-        {{-- ส่วน Feature Grid (กล่อง 2 คอลัมน์) --}}
-        <section class="feature-section">
-            <div class="container">
-                <div class="feature-grid">
-
-                    {{-- กล่องที่ 1 --}}
-                    <div class="feature-card" style="background-color: #f5f5f7;">
-                        <h2 class="card-title">ออกแบบ</h2>
-                        <p class="card-description">
-                            รับคำแนะนำด้านการออกแบบและทรัพยากร UI เพื่อสร้างแอปที่ใช้งานง่าย สวยงาม และครอบคลุม
-                        </p>
-                    </div>
-
-                    {{-- กล่องที่ 2 --}}
-                    <div class="feature-card" style="background-color: #f5f5f7;">
-                        <h2 class="card-title">นักพัฒนา</h2>
-                        <p class="card-description">
-                            เรียนรู้วิธีสร้าง ทดสอบ และปรับใช้แอปของคุณโดยใช้เทคโนโลยีและ SDK ของ Apple ล่าสุด
-                        </p>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        {{-- หลังจากสิ้นสุด feature-grid แล้ว เพิ่มส่วน Spotlight / Gallery --}}
-        <section class="spotlight-section">
-            <div class="container">
-                <div class="spotlight-content">
-                    <div class="spotlight-image">
-                        <img src="/images/mac-spotlight-1.jpg" alt="Mac Spotlight 1" />
-                    </div>
-                    <div class="spotlight-text">
-                        <h2 class="spotlight-title">Mac ที่ออกแบบมาเพื่อคุณ</h2>
-                        <p class="spotlight-subtitle">
-                            พบกับ Mac รุ่นล่าสุดที่รวมประสิทธิภาพระดับสูง ดีไซน์สวย และระบบนิเวศที่แข็งแกร่ง
-                        </p>
-                        <a href="#" class="spotlight-link">ดู Mac ทั้งหมด</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {{-- Section Grid แบบ 3 คอลัมน์ (Feature Highlights) --}}
-        <section class="highlights-section">
-            <div class="container">
-                <h2 class="section-heading">สิ่งที่ทำให้ Mac แตกต่าง</h2>
-                <div class="highlights-grid">
-                    <div class="highlight-card">
-                        <h3 class="card-heading">ชิป Apple M-ซีรีส์</h3>
-                        <p class="card-text">
-                            ประสิทธิภาพ และความเร็วที่ก้าวกระโดด พร้อมพลังการประมวลผลกราฟิกที่ทรงพลัง
-                        </p>
-                        <a href="#" class="card-link">เรียนรู้เพิ่มเติม</a>
-                    </div>
-                    <div class="highlight-card">
-                        <h3 class="card-heading">ดีไซน์บางและเบา</h3>
-                        <p class="card-text">
-                            จากวัสดุหรู น้ำหนักเบา พร้อมหน้าจอ Retina และระบบเสียงคุณภาพสูง
-                        </p>
-                        <a href="#" class="card-link">ดูรุ่น</a>
-                    </div>
-                    <div class="highlight-card">
-                        <h3 class="card-heading">ระบบนิเวศ Apple</h3>
-                        <p class="card-text">
-                            เชื่อมต่อกับ iPhone, iPad, Apple Watch ได้อย่างราบรื่น พร้อม iCloud และ Handoff
-                        </p>
-                        <a href="#" class="card-link">ดูเพิ่มเติม</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {{-- Section Call to Action (CTA) ใหญ่ท้ายสุด --}}
-        <section class="cta-section">
-            <div class="container text-center">
-                <h2 class="cta-title">เริ่มต้นกับ Mac ใหม่ของคุณวันนี้</h2>
-                <p class="cta-subtitle">
-                    เลือกรุ่นที่ใช่ พร้อมข้อเสนอพิเศษ และบริการสนับสนุนจาก Apple
+            <div class="benefit-card">
+                <h3 class="card-title">การตั้งค่าส่วนบุคคล</h3>
+                <p class="card-subtitle">ทำความรู้จักกับ iPhone เครื่องใหม่ของคุณด้วยการตั้งค่าส่วนบุคคล</p>
+                <p class="card-description">
+                    เข้าร่วมเซสชั่นออนไลน์กับ Specialist เพื่อตั้งค่า iPhone ของคุณและค้นพบคุณสมบัติใหม่ๆ
                 </p>
-                <a href="#" class="cta-button">ดูรุ่น Mac ทั้งหมด</a>
+                <div class="card-image-placeholder setup">
+                    </div>
+                <button class="card-action-button" aria-label="Learn more about personal setup">+</button>
             </div>
-        </section>
 
+            <div class="benefit-card">
+                <h3 class="card-title">บริการจัดส่งและรับสินค้า</h3>
+                <p class="card-subtitle">บริการจัดส่งฟรี และรับสินค้าที่ร้าน</p>
+                <p class="card-description">
+                    รับบริการจัดส่งฟรี หรือรับสินค้าที่ Apple Store
+                </p>
+                <div class="card-image-placeholder delivery">
+                    </div>
+                <button class="card-action-button" aria-label="Learn more about delivery and pickup">+</button>
+            </div>
 
+            <div class="benefit-card">
+                <h3 class="card-title">บริการจัดส่งและรับสินค้า</h3>
+                <p class="card-subtitle">บริการจัดส่งฟรี และรับสินค้าที่ร้าน</p>
+                <p class="card-description">
+                    รับบริการจัดส่งฟรี หรือรับสินค้าที่ Apple Store
+                </p>
+                <div class="card-image-placeholder delivery">
+                    </div>
+                <button class="card-action-button" aria-label="Learn more about delivery and pickup">+</button>
+            </div>
+        </div>
+    </section>
 
-    </main>
-
-    {{-- ⭐️ เพิ่ม Footer ตรงนี้ ⭐️ --}}
+    
     @include('layouts.footer-welcome')
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

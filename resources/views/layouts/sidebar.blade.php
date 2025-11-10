@@ -28,16 +28,16 @@
         <div class="sidebar-content">
             <a href="#" class="menu-item">
                 <div class="menu-item-content">
-                <i class="fa-solid fa-table-cells-large"></i></i>
-                <span>Dashboard</span>
+                    <i class="fa-solid fa-table-cells-large"></i></i>
+                    <span>Dashboard</span>
                 </div>
                 <span class="sidebar-badge">1</span>
             </a>
 
             <a href="#" class="menu-item">
                 <div class="menu-item-content">
-                <i class="fa-solid fa-cash-register"></i>
-                <span>Point of Sale</span>
+                    <i class="fa-solid fa-cash-register"></i>
+                    <span>Point of Sale</span>
                 </div>
             </a>
 
@@ -46,27 +46,23 @@
                     <i class="fa-solid fa-receipt"></i>
                     <span>Orders / Sales</span>
                 </div>
-                    <span class="sidebar-badge">1</span>
+                <span class="sidebar-badge">1</span>
             </a>
 
             <div class="has-submenu">
                 <div class="submenu-toggle">
                     <i class="fa-solid fa-boxes-stacked"></i>
                     <span>Inventory</span>
-                    
-                    <span class="sidebar-badge">2</span>
+
+                    <span class="sidebar-badge">3</span>
 
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </div>
                 <div class="submenu">
-                    <a href="#" class="submenu-item">Manage Products</a>
-                    <a href="#" class="submenu-item">Categories</a>
-                    <a href="#" class="submenu-item"><span>Expiry Management</span>
-                    <span class="sidebar-badge">1</span></a>
-                    <a href="#" class="submenu-item">
-                    <span>Stock Adjustments</span>
-                    <span class="sidebar-badge">1</span>
-                </a>
+                    <a href="#" class="submenu-item"><i class="fa-solid fa-tablets"></i>Manage Products</a>
+                    <a href="#" class="submenu-item"><i class="fa-solid fa-layer-group"></i>Categories</a>
+                    <a href="#" class="submenu-item"><i class="fa-solid fa-exclamation"></i><span>Expiry Management</span> <span class="sidebar-badge">2</span></a>
+                    <a href="#" class="submenu-item"><i class="fa-brands fa-stack-overflow"></i><span>Stock Adjustments</span>  <span class="sidebar-badge">1</span></a>
                 </div>
             </div>
 
@@ -77,9 +73,9 @@
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </div>
                 <div class="submenu">
-                    <a href="#" class="submenu-item">Suppliers</a>
-                    <a href="#" class="submenu-item">Purchase Orders</a>
-                    <a href="#" class="submenu-item">Goods Received</a>
+                    <a href="#" class="submenu-item"><i class="fa-solid fa-truck-field"></i>Suppliers</a>
+                    <a href="#" class="submenu-item"><i class="fa-solid fa-cart-shopping"></i>Purchase Orders</a>
+                    <a href="#" class="submenu-item"><i class="fa-brands fa-get-pocket"></i>Goods Received</a>
                 </div>
             </div>
 
@@ -90,9 +86,9 @@
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </div>
                 <div class="submenu">
-                    <a href="#" class="submenu-item">Patients | Customers</a>
-                    <a href="#" class="submenu-item">Staff | Users</a>
-                    <a href="#" class="submenu-item">Recent</a>
+                    <a href="#" class="submenu-item"><i class="fa-solid fa-user"></i>Patients | Customers</a>
+                    <a href="#" class="submenu-item"><i class="fa-solid fa-user-nurse"></i>Staff | Users</a>
+                    <a href="#" class="submenu-item"><i class="fa-solid fa-signal"></i>Recent</a>
                 </div>
             </div>
 
@@ -103,25 +99,25 @@
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </div>
                 <div class="submenu">
-                    <a href="#" class="submenu-item">Sales Report</a>
-                    <a href="#" class="submenu-item">Inventory Report</a>
-                    <a href="#" class="submenu-item">Financial Report</a>
+                    <a href="#" class="submenu-item"><i class="fa-solid fa-capsules"></i>Sales Report</a>
+                    <a href="#" class="submenu-item"><i class="fa-solid fa-warehouse"></i>Inventory Report</a>
+                    <a href="#" class="submenu-item"><i class="fa-solid fa-coins"></i>Financial Report</a>
                 </div>
             </div>
 
             <a href="#" class="menu-item">
                 <div class="menu-item-content">
 
-                <i class="fa-solid fa-gear"></i>
-                <span>Settings</span>
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
                 </div>
             </a>
 
             <a href="#" class="menu-item">
                 <div class="menu-item-content">
 
-                <i class="fa-solid fa-headset"></i>
-                <span>Support</span>
+                    <i class="fa-solid fa-headset"></i>
+                    <span>Support</span>
                 </div>
             </a>
         </div>
@@ -133,11 +129,11 @@
                 <a href="{{ route('logout') }}" class="menu-item logout-item"
                     onclick="event.preventDefault();
                     this.closest('form').submit();">
-                <div class="menu-item-content">
+                    <div class="menu-item-content">
 
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>{{ __('Log out') }}</span>
-                </div>
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>{{ __('Log out') }}</span>
+                    </div>
                 </a>
             </form>
         </div>

@@ -41,7 +41,7 @@
             
             <div class="sitemap-column">
                 <div class="sitemap-group">
-                    <h4 class="sitemap-heading">Platforms</h4>
+                    <h4 class="sitemap-heading">Features</h4>
                     <ul class="sitemap-list">
                         <li><a href="#">iOS</a></li>
                         <li><a href="#">iPadOS</a></li>
@@ -52,7 +52,7 @@
                     </ul>
                 </div>
                 <div class="sitemap-group">
-                    <h4 class="sitemap-heading">Tools</h4>
+                    <h4 class="sitemap-heading">About</h4>
                     <ul class="sitemap-list">
                         <li><a href="#">Swift</a></li>
                         <li><a href="#">SwiftUI</a></li>
@@ -68,7 +68,7 @@
 
             <div class="sitemap-column">
                 <div class="sitemap-group">
-                    <h4 class="sitemap-heading">Topics & Technologies</h4>
+                    <h4 class="sitemap-heading">Why us</h4>
                     <ul class="sitemap-list">
                         <li><a href="#">Accessibility</a></li>
                         <li><a href="#">Accessories</a></li>
@@ -106,7 +106,7 @@
                     </ul>
                 </div>
                 <div class="sitemap-group">
-                    <h4 class="sitemap-heading">Support</h4>
+                    <h4 class="sitemap-heading">Standard</h4>
                     <ul class="sitemap-list">
                         <li><a href="#">Support Articles</a></li>
                         <li><a href="#">Contact Us</a></li>
@@ -115,7 +115,7 @@
                     </ul>
                 </div>
                 <div class="sitemap-group">
-                    <h4 class="sitemap-heading">Account</h4>
+                    <h4 class="sitemap-heading">Help</h4>
                     <ul class="sitemap-list">
                         <li><a href="#">Apple Developer</a></li>
                         <li><a href="#">App Store Connect</a></li>
@@ -155,7 +155,7 @@
         </section>
 
         <section class="footer-callout">
-            <a href="#" class="app-link">Get the Apple Developer app.</a>
+            <a href="#" class="app-link">Get the Oboun Developer.</a>
             
             {{-- นี่คือตัวสลับ Theme ครับ --}}
             <div class="theme-switcher">
@@ -167,7 +167,7 @@
 
         <section class="footer-legal-bottom">
             <div class="copyright-and-links">
-                <span class="copyright-text">Copyright © {{ date('Y') }} Apple Inc. All rights reserved.</span>
+                <span class="copyright-text">Copyright © {{ date('Y') }} Oboun Inc. All rights reserved.</span>
                 <ul class="legal-links-list">
                     <li><a href="#">Terms of Use</a></li>
                     <li><a href="#">Privacy Policy</a></li>
@@ -175,7 +175,7 @@
                 </ul>
             </div>
             <div class="footer-region-select">
-                <a href="#">English</a>
+                <a href="#">English | Thailand</a>
                 {{-- (ในเว็บจริงตรงนี้จะเป็นเมนูเลือกประเทศ) --}}
             </div>
         </section>

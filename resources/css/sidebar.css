@@ -424,8 +424,13 @@
 /* สำหรับเมนูลูก (Expiry Management) */
 .submenu-item {
     display: flex; /* ทำให้เป็น flex */
-    justify-content: space-between; /* ดัน Badge ไปทางขวา */
+    /* justify-content: space-between; */
     align-items: center;
+}
+.submenu-item i {
+    min-width: 16px; /* จองพื้นที่ให้ไอคอน (จัดแนวให้ตรงกัน) */
+    margin-right: 10px; /* เว้นวรรค 10px จากข้อความ */
+    text-align: center; /* (เผื่อไอคอนกว้างไม่เท่ากัน) */
 }
 
 /* 3. Logic การซ่อน/แสดง (สำคัญ!) */
@@ -435,6 +440,7 @@
     opacity: 0;
     transform: scale(0);
     display: none; /* ซ่อนไปเลย */
+    margin-left: auto; /* [!!! เพิ่มบรรทัดนี้ !!!] */
 }
 
 /* เมื่อเมนู 'แม่' ถูกเปิด (.open) ... */
@@ -444,6 +450,7 @@
     opacity: 1;
     transform: scale(1);
     display: flex; /* แสดงผล */
+    margin-left: auto; /* [!!! เพิ่มบรรทัดนี้ !!!] */
 }
 
 /* ... และให้ซ่อน Badge ของ 'แม่' (เพื่อไม่ให้ซ้ำซ้อน) */

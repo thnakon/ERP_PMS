@@ -25,6 +25,8 @@
                 'resources/js/navigation.js',            {{-- JS ของ Navbar (ตัวเดิม) --}}
                 'resources/css/guest.css',
                 'resources/js/guest.js',
+                'resources/css/main.css',
+                'resources/js/main.js',
             ])
     @else
         {{-- (โค้ด fallback) --}}
@@ -35,8 +37,9 @@
 
 </head>
 
-<body class="welcome-body antialiased">
+<body class="welcome-body antialiased" style="background-color: white">
     {{-- 1. ส่วนของ Navbar (เหมือนเดิม) --}}
+    @include('layouts.page-loader')
     @include('layouts.navigation-welcome')
     {{-- 1. Apple Navigation Bar (ส่วนหัว) --}}
     <nav class="apple-nav">
