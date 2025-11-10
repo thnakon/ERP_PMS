@@ -1,0 +1,493 @@
+/* === Apple-style Header === */
+#header.apple-header {
+    position: fixed;
+    top: 0;
+    left: 270px; /* ชิดกับ sidebar */
+    right: 0;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    z-index: 998;
+    transition: all 0.4s ease;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+        "IBM Plex Sans Thai", "Noto Sans Thai", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1d1d1f;
+}
+
+/* เมื่อ Sidebar ถูกย่อ (collapsed) ให้ Header เลื่อนตาม */
+#sidebar.collapsed + #header.apple-header {
+    left: 85px;
+}
+
+/* === กล่องค้นหา === */
+.header-search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 22px;
+    padding: 2px 14px;
+    width: 370px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.header-search-container:focus-within {
+    background-color: #ffffff;
+    box-shadow: 0 0 0 2px #007aff33;
+}
+
+.header-search-container .search-icon {
+    color: #8a8a8e;
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+#globalSearch {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: #1d1d1f;
+    font-family: inherit;
+}
+
+#globalSearch::placeholder {
+    color: #8a8a8e;
+}
+
+/* === Responsive / เมื่อหน้าจอแคบ === */
+@media (max-width: 768px) {
+    #header.apple-header {
+        left: 85px; /* ใช้ขนาดของ sidebar ตอนย่อ */
+        padding: 0 15px;
+    }
+    .header-search-container {
+        width: 180px;
+    }
+}
+
+
+/* === [CODE_NEW] User Actions (Right Side) === */
+.header-user-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px; /* ระยะห่างระหว่างไอคอนและโปรไฟล์ */
+}
+
+/* สไตล์ปุ่มไอคอน (ตั้งค่า, แจ้งเตือน) */
+.header-action-btn {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 22px; /* ทำให้เป็นสี่เหลี่ยมมนตามรูป */
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px; /* ขนาดไอคอน */
+    color: #1d1d1f; /* สีข้อความหลัก */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease;
+}
+
+.header-action-btn:hover {
+    background-color: #f5f5f7; /* สีเทาอ่อนตอน hover */
+}
+
+/* สไตล์กล่องโปรไฟล์ (Evan Yates) */
+.user-profile-container {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 22px; /* ทรงแคปซูล */
+    padding: 6px 12px 6px 6px; /* Padding ด้านซ้ายน้อยกว่าสำหรับรูป */
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease;
+    margin-left: 5px; /* เว้นระยะจากปุ่มไอคอนเล็กน้อย */
+}
+
+.user-profile-container:hover {
+    background-color: #f5f5f7;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%; /* รูปวงกลม */
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.user-name {
+    font-weight: 600; /* ตัวหนาเล็กน้อย */
+    font-size: 14px;
+    color: #1d1d1f;
+    margin-right: 10px;
+}
+
+.dropdown-arrow {
+    font-size: 12px;
+    color: #555;
+}
+
+
+/* === Responsive (ปรับปรุงส่วน User Actions) === */
+@media (max-width: 768px) {
+    /* ซ่อนชื่อและลูกศรในจอมือถือ */
+    .user-profile-container .user-name,
+    .user-profile-container .dropdown-arrow {
+        display: none;
+    }
+
+    /* ปรับ padding เมื่อไม่มีชื่อ */
+    .user-profile-container {
+        padding: 4px;
+        margin-left: 0;
+    }
+
+    .user-avatar {
+        margin-right: 0;
+    }
+    
+    .header-user-actions {
+        gap: 10px;
+    }
+
+    .header-action-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+}
+
+/* === [CODE_NEW] Dropdown Menu Styling (Apple Minimal) === */
+
+/* 1. Wrapper (สำหรับยึดตำแหน่ง) */
+.user-profile-dropdown-wrapper {
+    position: relative;
+    /* เราย้าย margin จาก .user-profile-container มาไว้ที่นี่แทน */
+    margin-left: 5px; 
+}
+
+/* 2. ตัวเมนู Dropdown (สไตล์ Apple Glassmorphism) */
+.profile-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px); /* อยู่ใต้ปุ่ม 10px */
+    right: 0;
+    width: 260px; /* กว้างขึ้นเล็กน้อยสำหรับสไตล์ Apple */
+    z-index: 1000;
+    
+    /* สไตล์ Apple Glassmorphism */
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
+    border-radius: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* สำหรับคุมขอบมนของ item */
+
+    /* 3. ส่วนอนิเมชัน (สำคัญมาก) */
+    opacity: 0;
+    transform: translateY(-10px); /* เริ่มต้นที่เลื่อนขึ้นเล็กน้อย */
+    visibility: hidden; /* ซ่อนจาก DOM */
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+
+/* 4. State เมื่อเมนู "ถูกเปิด" (คลาส .show ที่ JS จะเพิ่มให้) */
+.profile-dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+/* 5. สไตล์ของ Item ในเมนู */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #1d1d1f;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    line-height: 1.4;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-item.danger {
+    color: #d93025; /* สีแดงสำหรับ Log out */
+}
+
+/* สไตล์ส่วนหัวของเมนู (ที่แสดงรูปและชื่อ) */
+.dropdown-item.profile-header {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+.dropdown-item.profile-header strong {
+    font-size: 16px;
+    font-weight: 600;
+}
+.dropdown-item.profile-header small {
+    display: block;
+    font-size: 13px;
+    color: #6e6e73;
+}
+.user-avatar-in-menu {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* เส้นคั่น */
+.dropdown-divider {
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin: 6px 0;
+}
+
+
+/* === [CODE_MODIFIED] ปรับปรุงของเดิม === */
+
+/* ย้าย margin ออก เพราะ wrapper จัดการแล้ว */
+.user-profile-container {
+    margin-left: 0; 
+}
+
+/* เพิ่ม transition ให้ลูกศร (เพื่อให้หมุนอย่างนุ่มนวล) */
+.dropdown-arrow {
+    font-size: 12px;
+    color: #555;
+    transition: transform 0.3s ease; /* เพิ่มบรรทัดนี้ */
+}
+
+/* [CODE_NEW] คลาส .active ที่ JS จะเพิ่มให้ (เพื่อให้ลูกศรหมุน) */
+.user-profile-container.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+/* [CODE_MODIFIED] ปรับ Responsive ส่วน User Actions เล็กน้อย */
+@media (max-width: 768px) {
+    .user-profile-dropdown-wrapper {
+        margin-left: 0; /* ในจอมือถือ ไม่ต้องมี margin */
+    }
+}
+
+/* === [CODE_NEW] Gradient Icon Style === */
+.gradient-icon {
+    /* กำหนดสี Gradient ที่คุณต้องการ */
+    background: linear-gradient(
+        to right,
+        #4f6cf6, /* สีฟ้าแรก (ใกล้เคียง Apple Blue) */
+        #a65efc, /* สีม่วง */
+        #ec449c, /* สีชมพู */
+        #f87b40, /* สีส้ม */
+        #f9bd3e  /* สีเหลือง (ปลายสุด) */
+    );
+    
+    /* สิ่งสำคัญ: ทำให้พื้นหลัง (gradient) ตัดตามรูปร่างของข้อความ/ไอคอน */
+    -webkit-background-clip: text; /* สำหรับ Chrome, Safari */
+    background-clip: text; /* มาตรฐาน */
+    
+    /* ทำให้สีของตัวอักษร/ไอคอนโปร่งใส เพื่อให้เห็นพื้นหลัง gradient */
+    -webkit-text-fill-color: transparent; /* สำหรับ Chrome, Safari */
+    color: transparent; /* สำหรับเบราว์เซอร์อื่นๆ (fallback) */
+
+    /* อาจจะต้องเพิ่ม !important ถ้าสีเดิมถูกบังคับมาจากที่อื่น */
+    /* background: linear-gradient(...) !important; */
+    /* -webkit-text-fill-color: transparent !important; */
+    /* color: transparent !important; */
+}
+
+/* === [CODE_NEW] AI Search Icon (ในช่องค้นหา) === */
+
+.ai-search-icon {
+    /* เว้นระยะห่างจากช่อง input ด้านซ้าย */
+    margin-left: 8px; 
+    
+    /* ทำให้ขนาดใกล้เคียงกับไอคอนค้นหาเดิม */
+    font-size: 16px; 
+    
+    /* ทำให้ดูเหมือนคลิกได้ */
+    cursor: pointer; 
+    
+    /* เพิ่มอนิเมชันตอน hover */
+    transition: transform 0.2s ease; 
+}
+
+.ai-search-icon:hover {
+    transform: scale(1.1); /* ขยายเล็กน้อยเมื่อเอาเมาส์ชี้ */
+}
+
+/* === [CODE_NEW] Live Search Results Dropdown === */
+
+/* 1. Wrapper (สำหรับยึดตำแหน่ง) */
+.global-search-wrapper {
+    position: relative;
+    width: 300px; /* ควรตั้งค่าความกว้างให้เท่ากับ .header-search-container */
+    transition: width 0.3s ease;
+}
+
+/* 2. สไตล์กล่องผลลัพธ์ (สไตล์ Apple Minimal) */
+.live-search-results {
+    position: absolute;
+    top: calc(100% + 10px); /* อยู่ใต้ช่องค้นหา 10px */
+    left: 0;
+    width: 100%; /* กว้างเท่า wrapper */
+    z-index: 997; /* ต่ำกว่า Header แต่สูงกว่าเนื้อหา */
+    
+    /* สไตล์ Apple Glassmorphism (เหมือนเมนูโปรไฟล์) */
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
+    border-radius: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    
+    /* 3. อนิเมชันสไลด์ลง (สำคัญ) */
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    
+    /* จำกัดความสูงและเพิ่ม scroll */
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* 4. State เมื่อ "แสดง" (JS จะเพิ่ม .show) */
+.live-search-results.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+/* 5. สไตล์ของแต่ละ Item ที่ค้นหาเจอ */
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: #1d1d1f;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.search-result-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* (Optional) สไตล์สำหรับหัวข้อกลุ่ม (เช่น "Products", "Customers") */
+.search-result-header {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6e6e73; /* สีเทา Apple */
+    background-color: rgba(0, 0, 0, 0.03);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.search-result-item strong {
+    font-weight: 600;
+}
+.search-result-item small {
+    color: #6e6e73;
+    margin-left: auto; /* ดันไปทางขวา */
+}
+
+/* === [CODE_MODIFIED] Responsive === */
+@media (max-width: 768px) {
+    /* ปรับ Wrapper ให้ responsive ตามกล่องค้นหา */
+    .global-search-wrapper {
+        width: 180px;
+    }
+}
+
+/* resources/css/header.css (หรือ main.css) */
+
+/* ... (โค้ด CSS เดิมของคุณ) ... */
+
+/* --- Notification Badge --- */
+
+/* 1. ทำให้ปุ่มหลักเป็น "จุดอ้างอิง" */
+.header-action-btn {
+    position: relative; 
+}
+
+/* 2. สไตล์ของวงกลมสีแดง */
+.notification-badge {
+    /* การจัดตำแหน่ง (ลอยทับมุมขวาบน) */
+    position: absolute;
+    top: -5px;   /* ปรับตำแหน่งแนวตั้ง (ลอง -8px หรือ -5px) */
+    right: -5px; /* ปรับตำแหน่งแนวนอน (ลอง -8px หรือ -5px) */
+    
+    /* รูปทรงและสี (สไตล์ Apple) */
+    background-color: #ff3b30; /* สีแดงของ Apple */
+    color: white;
+    border-radius: 50%; /* ทำให้เป็นวงกลม */
+    
+    /* ขนาด (สำคัญมาก) */
+    min-width: 18px; /* ความกว้างขั้นต่ำ */
+    height: 18px;
+    padding: 0 4px; /* ทำให้รองรับเลข 2 หลักได้ (เช่น 10+) */
+    
+    /* การจัดข้อความให้อยู่กลาง */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* สไตล์ฟอนต์ */
+    font-size: 11px;
+    font-weight: bold;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1; /* ป้องกันปัญหาเรื่องความสูง */
+}
+
+/* resources/css/header.css (หรือ main.css) */
+
+/* 1. (สำคัญ) ตรวจสอบว่าปุ่มแม่มี 'relative' */
+.header-action-btn {
+    position: relative; /* (คุณน่าจะมีอยู่แล้วจาก Badge สีแดง) */
+}
+
+/* 2. [!!! ADD THIS !!!] สไตล์สำหรับ Badge สีเทา */
+.help-badge {
+    /* การจัดตำแหน่ง (ลอยทับมุมขวาบน) */
+    position: absolute;
+    top: -6px;   /* ปรับแนวตั้ง */
+    right: -6px;  /* ปรับแนวนอน */
+    
+    /* รูปทรงและสี (สไตล์ Apple Info) */
+    background-color: #f0f0f7; /* สีเทาอ่อน */
+    color: #555;
+    border-radius: 50%; /* วงกลม */
+    border: 1px solid rgba(0, 0, 0, 0.05); /* ขอบบางๆ */
+    
+    /* ขนาด */
+    width: 18px;
+    height: 18px;
+    
+    /* จัดตัวอักษรให้อยู่กลาง */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* สไตล์ฟอนต์ */
+    font-size: 12px;
+    font-weight: bold;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1;
+}

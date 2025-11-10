@@ -1,0 +1,371 @@
+/* === 1. Layout & Body (โครงสร้างหลัก) === */
+body.apple-guest-layout {
+    font-family: 'Noto Sans Thai', 'Figtree', sans-serif;
+    background-color: #fbfbfd; /* สีพื้นหลังของ Apple */
+    color: #1d1d1f;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+}
+
+/* === 2. Apple Navigation (เมนูด้านบน) === */
+.apple-nav {
+    background-color: #f5f5f7;
+    border-bottom: 1px solid #d2d2d7;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* --- ⭐️ เปลี่ยนตรงนี้ --- */
+    position: sticky;  /* 1. เปลี่ยนเป็น sticky */
+    top: 48px;         /* 2. ให้มาอยู่ต่อจาก nav ตัวแรก (ซึ่งสูง 48px) */
+    width: 100%;       
+    z-index: 9998;     /* 3. ลด z-index ลง (ให้ต่ำกว่า global-nav ที่เป็น 9999) */
+}
+
+.nav-content {
+    width: 100%;
+    max-width: 980px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 39px;
+}
+
+.nav-brand {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #1d1d1f;
+    text-decoration: none;
+}
+
+.nav-links a {
+    font-size: 0.75rem;
+    color: #515154;
+    text-decoration: none;
+    margin-left: 1.5rem;
+}
+
+.nav-links a:hover {
+    color: #0071e3;
+}
+
+/* === 3. Login Box (กล่องล็อกอิน) === */
+.login-container {
+    background-color: #ffffff;
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+
+
+.login-logo {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 1.5rem;
+}
+
+/* ตัวรูปโลโก้ */
+.login-logo img {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 3;
+}
+
+/* วงแสงเรืองด้านหลัง */
+.login-logo::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 140px;
+    height: 140px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(228, 228, 228, 0.1) 50%,
+        transparent 100%
+    );
+    animation: glowPulse 4s ease-in-out infinite;
+    z-index: 1;
+}
+
+/* จุดแสงหลายวง */
+.login-logo .orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: center;
+    animation: orbit linear infinite;
+}
+
+.login-logo .dot {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    transform: translateX(-50%);
+}
+
+/* สีจุดหลายเฉด */
+.dot.blue   { background-color: rgba(0, 113, 227, 0.8); }
+.dot.purple { background-color: rgba(155, 89, 182, 0.8); }
+.dot.pink   { background-color: rgba(255, 99, 163, 0.8); }
+.dot.cyan   { background-color: rgba(0, 200, 255, 0.8); }
+
+/* วงโคจรแต่ละวง */
+.orbit.orbit-1 { width: 160px; height: 160px; animation-duration: 6s; }
+.orbit.orbit-2 { width: 200px; height: 200px; animation-duration: 8s; }
+.orbit.orbit-3 { width: 240px; height: 240px; animation-duration: 10s; }
+
+/* แอนิเมชันหมุน */
+@keyframes orbit {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* แอนิเมชันแสงพัลส์ */
+@keyframes glowPulse {
+    0%, 100% {
+        opacity: 0.4;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 0.9;
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+}
+
+
+.login-title {
+    font-size: 2.25rem; /* 36px */
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.login-subtitle {
+    font-size: 1.125rem; /* 18px */
+    color: #515154;
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+/* === 4. Form Fields (ช่องกรอกข้อมูล) === */
+.form-field {
+    position: relative;
+    margin-top: 1.25rem;
+}
+
+.form-input {
+    width: 100%;
+    border: 1px solid #d2d2d7;
+    border-radius: 8px;
+    padding: 16px 12px 8px 12px; /* padding ด้านบนเยอะกว่าเพื่อที่ให้ label ลอย */
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    border-color: #0071e3;
+    box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.2);
+    outline: none;
+}
+
+.form-label {
+    position: absolute;
+    left: 13px;
+    top: 20px; /* ตำแหน่งเริ่มต้น (ตรงกลาง input) */
+    color: #86868b;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.2s ease;
+}
+
+/* สถานะ "Active" ที่ JS จะเพิ่มให้ */
+.form-field.active .form-label {
+    top: 15px; /* ขยับขึ้นไปด้านบน */
+    font-size: 0.75rem; /* ตัวเล็กลง */
+    color: #0071e3;
+}
+/* กรณีที่ focus แต่ยังไม่ active (สำหรับ label สีเทา) */
+.form-input:focus + .form-label {
+    color: #0071e3;
+}
+/* กรณีที่ input มีค่าค้างอยู่ (old('email')) */
+.form-input:not(:placeholder-shown) + .form-label {
+     top: 6px;
+     font-size: 0.75rem;
+}
+
+
+/* === 5. Buttons & Links (ปุ่มและลิงก์) === */
+.remember-me {
+    text-align: left;
+}
+
+.forgot-password {
+    font-size: 0.875rem;
+    color: #0071e3;
+    text-decoration: none;
+}
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.apple-button {
+    background-color: #0071e3;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.apple-button:hover {
+    background-color: #0077ed;
+}
+
+/* === 6. Privacy & Footer (ข้อความและส่วนท้าย) === */
+.privacy-info {
+    margin-top: 2.5rem;
+    font-size: 0.8rem;
+    color: #86868b;
+    line-height: 1.4;
+    text-align: center;
+}
+.privacy-info a {
+    color: #0071e3;
+    text-decoration: none;
+}
+.privacy-info a:hover {
+    text-decoration: underline;
+}
+
+
+.apple-footer {
+    background-color: #f5f5f7;
+    border-top: 1px solid #d2d2d7;
+    padding: 2rem 1rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #86868b;
+}
+
+.footer-content {
+    width: 100%;
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.footer-links {
+    margin-bottom: 0.75rem;
+}
+.footer-links a {
+    color: #515154;
+    text-decoration: none;
+    margin: 0 0.5rem;
+}
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.footer-copyright {
+    color: #86868b;
+}
+
+/* =============================
+   ✨ Feature Cards Styling
+============================= */
+
+/* 1. Container หลัก (Grid) */
+.feature-cards-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 คอลัมน์บนจอใหญ่ */
+    gap: 20px;
+    
+    /* ใช้ max-width และ padding เดียวกับ nav-content เพื่อให้ตรงกัน */
+    max-width: 980px;
+    margin: 40px auto; /* ระยะห่างบน-ล่าง ใต้กล่องล็อกอิน */
+    padding: 0 22px;
+}
+
+/* 2. การ์ดแต่ละใบ */
+.feature-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 30px;
+    /* ใช้เงาเดียวกับ login-container (ถ้ามี) หรือเงาจางๆ */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: left;
+    transition: transform 0.2s ease-in-out;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px); /* เอฟเฟกต์ลอยเล็กน้อย */
+}
+
+/* 3. ไอคอน */
+.feature-icon {
+    color: #0071e3; /* สีฟ้า Apple */
+    width: 32px;
+    height: 32px;
+    margin-bottom: 15px;
+}
+
+/* 4. หัวข้อ (h3) */
+.feature-title {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 600;
+    color: #1d1d1f; /* สีดำ Apple */
+    margin-bottom: 10px;
+}
+
+/* 5. รายละเอียด (p) */
+.feature-description {
+    font-size: 0.9rem; /* 14px */
+    color: #515154; /* สีเทา Apple */
+    line-height: 1.6;
+}
+
+/* =============================
+   📱 Responsive (สำหรับจอมือถือ)
+============================= */
+@media (max-width: 768px) {
+    .feature-cards-section {
+        grid-template-columns: 1fr; /* เปลี่ยนเป็น 1 คอลัมน์ */
+        margin-top: 20px;
+        padding: 0 15px; /* ลด padding ข้างๆ บนมือถือ */
+    }
+
+    .feature-card {
+        padding: 25px;
+    }
+
+    .feature-title {
+        font-size: 1.1rem; /* 18px */
+    }
+
+    .feature-description {
+        font-size: 0.85rem; /* 13px */
+    }
+}

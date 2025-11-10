@@ -1,0 +1,252 @@
+body {
+    background-color: #f5f5f7;
+}
+
+/* --- Page Loader --- */
+
+.page-loader-overlay {
+    /* ซ่อนไว้เป็นค่าเริ่มต้น */
+    display: flex;
+
+    /* ทำให้เต็มจอ */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    /* สีพื้นหลัง (สีขาวโปร่งใส) */
+    background: rgba(255, 255, 255, 0.8); /* โปร่งแสงแบบ Apple */
+
+    /* ให้อยู่บนสุด */
+    z-index: 9999;
+
+    /* จัด Spinner ให้อยู่ตรงกลาง */
+    /* display: flex; */
+    justify-content: center;
+    align-items: center;
+}
+
+/* [!!! เพิ่มคลาสนี้] 
+   เราจะใช้ JavaScript สั่ง 'add' คลาสนี้เมื่อโหลดเสร็จ */
+.page-loader-overlay.hidden {
+    opacity: 0;
+    /* เราจะใช้ JavaScript ซ่อนจริงๆ หลัง transition จบ */
+    /* หรือจะใช้ display: none; ไปเลยก็ได้ถ้าไม่สน transition */
+    display: none;
+}
+
+.loader-spinner {
+    /* สไตล์ Apple */
+    width: 32px; /* เล็กลงหน่อย ให้ดูไม่ใหญ่เกินไป */
+    height: 32px;
+    border-radius: 50%;
+
+    /* เปลี่ยนเป็นเส้นวงกลมบางๆ สีเทาอ่อน */
+    border: 3px solid rgba(0, 0, 0, 0.1); /* สีเทาอ่อน โปร่งแสง */
+
+    /* ส่วนที่หมุนเป็นสีเทาเข้มขึ้น */
+    border-top-color: rgba(0, 0, 0, 0.4); /* สีเทาเข้มขึ้น */
+
+    /* Animation การหมุน (เหมือนเดิม) */
+    animation: spin 0.8s linear infinite; /* อาจจะทำให้หมุนเร็วขึ้นนิดหน่อย */
+
+    /* เพิ่มเงาเล็กน้อย เพื่อให้ดูมีมิติแบบ Apple */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* resources/css/main.css */
+
+/* --- Toastify Apple Style --- */
+.toastify {
+    /* ใช้ฟอนต์เดียวกับระบบ (เหมือน Apple) */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+        "IBM Plex Sans Thai", "Noto Sans Thai", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    border-radius: 10px !important; /* ทำให้ขอบมนสวย */
+    padding: 12px 20px !important;
+    font-size: 15px !important;
+
+    /* เงาแบบ Apple */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+
+    /* สีพื้นหลัง (ดำโปร่งแสง) */
+    background: rgba(40, 40, 40, 0.9) !important;
+
+    /* ปรับตำแหน่ง (ถ้าอยากให้อยู่ด้านบน) */
+    /* top: 15px !important; */
+}
+
+/* --- Animated Toast Icon (SVG) --- */
+
+/* 1. Wrapper สำหรับจัดไอคอนกับข้อความ */
+.toastify-content-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 2. ขนาดของ SVG */
+.toast-checkmark {
+    width: 30px; /* ขนาดไอคอน */
+    height: 30px;
+    margin-right: 12px; /* ระยะห่างจากข้อความ */
+}
+
+/* 3. สไตล์ของวงกลม (สีเขียว) */
+.checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 3;
+    stroke: #ffffff; /* สีเขียว Success */
+    fill: none;
+    /* อนิเมชั่นวาดวงกลม */
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+/* 4. สไตล์ของเครื่องหมายติ๊กถูก (สีขาว) */
+.checkmark-check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    stroke-width: 4;
+    stroke: #f7f7f7; /* สีเขียว Success */
+    fill: none;
+    /* อนิเมชั่นวาดติ๊กถูก (เริ่มหลังวงกลม) */
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+/* 5. Keyframes สำหรับ "วาด" เส้น */
+@keyframes stroke {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* resources/css/main.css */
+
+/* --- Help Modal (Apple Style) --- */
+
+
+/* 1. พื้นหลัง (Overlay) */
+.help-modal-overlay {
+    /* ซ่อนไว้เป็นค่าเริ่มต้น */
+    display: none;
+    opacity: 0;
+    
+    position: fixed;
+    inset: 0; /* (top: 0; left: 0; right: 0; bottom: 0;) */
+    background: rgba(0, 0, 0, 0.2); /* สีดำโปร่งแสง */
+    
+    /* ทำให้เบลอ (สไตล์ Apple) */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    z-index: 1000;
+    
+    /* จัด Modal ให้อยู่กลางจอ */
+
+    justify-content: center;
+    align-items: center;
+    
+    transition: opacity 0.5s ease;
+}
+
+/* 2. คลาสสำหรับแสดง Modal */
+.help-modal-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+/* 3. ตัวหน้าต่าง Modal */
+.help-modal {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    
+    /* [!!! แก้ไข] อนิเมชั่น (เด้งขึ้นมา) */
+    transform: scale(0.9); /* เริ่มจากเล็กกว่าเดิมนิดหน่อย */
+    opacity: 0;
+    
+    /* [!!! แก้ไข] เปลี่ยนเป็น transition ที่มีสปริง (pop) */
+    /* มันจะ "เด้ง" เกิน 1.0 เล็กน้อย แล้วกลับมาที่ 1.0 */
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease-out;
+    
+    /* กันเนื้อหาล้น */
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+}
+
+/* เมื่อ .show ทำงาน ให้ Modal เด้งขึ้นมา */
+.help-modal-overlay.show .help-modal {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* 4. ส่วนหัว Modal */
+.help-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.help-modal-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+        "IBM Plex Sans Thai", "Noto Sans Thai", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.help-modal-close-btn {
+    font-size: 28px;
+    font-weight: 300;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 5px;
+}
+
+/* 5. ส่วนเนื้อหา (ที่ Scroll ได้) */
+.help-modal-content {
+    padding: 24px;
+    overflow-y: auto; /* <--- ทำให้ Scroll ได้ถ้าเนื้อหายาว */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+        "IBM Plex Sans Thai", "Noto Sans Thai", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.help-modal-content h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.help-modal-content p {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+.help-modal-content p i {
+    margin-right: 8px;
+    color: #000000; /* สีน้ำเงิน Apple */
+}

@@ -1,0 +1,475 @@
+/* === Apple-style Sidebar === */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 270px;
+    height: 97.5vh;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+        "IBM Plex Sans Thai", "Noto Sans Thai", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1d1d1f;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    
+    padding: 20px; /* <--- (ปรับ) ลด padding-top จาก 60px เหลือ 20px */
+    
+    transition: all 0.4s ease;
+    z-index: 999;
+    border-radius: 20px;
+    margin: 10px;
+}
+
+/* === 2. (เพิ่ม) เพิ่ม Class นี้สำหรับจัดกลุ่ม Header และปุ่ม === */
+.sidebar-top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px; /* ระยะห่างระหว่างหัวกับเมนู */
+}
+
+/* === (เพิ่ม) สไตล์ช่องค้นหา === */
+.sidebar-search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #f3f2f8; /* สีเทาอ่อนๆ สไตล์ iOS */
+    border-radius: 20px; /* ความโค้งมนแบบในรูป */
+    padding: 3px 10px;
+    margin-bottom: 20px; /* ระยะห่างจากส่วนโลโก้ */
+    transition: all 0.3s ease;
+}
+
+.sidebar-search-container .search-icon {
+    color: #8a8a8e; /* สีไอคอนเทา */
+    margin-right: 6px;
+}
+
+.sidebar-search-container .mic-icon {
+    color: #8a8a8e;
+    margin-left: 6px;
+    cursor: pointer;
+}
+
+#sidebarSearch {
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 13px;
+    font-family: inherit; /* ใช้ font เดียวกับ sidebar */
+    color: #1d1d1f; /* สีตัวอักษร */
+}
+
+#sidebarSearch::placeholder {
+    color: #8a8a8e; /* สี placeholder */
+    font-weight: 400;
+}
+
+/* === (เพิ่ม) ซ่อนช่องค้นหา เมื่อ Sidebar หด === */
+#sidebar.collapsed .sidebar-search-container {
+    opacity: 0;
+    pointer-events: none;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* === COLLAPSED MODE === */
+#sidebar.collapsed {
+    width: 85px;
+    transition: all 0.4s ease;
+}
+
+#sidebar.collapsed .sidebar-title,
+#sidebar.collapsed .menu-item span,
+#sidebar.collapsed .submenu-toggle span { /* [!!! เพิ่มบรรทัดนี้ !!!] */
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#sidebar.collapsed .subtitle ,
+#sidebar.collapsed .sidebar-logo {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+#sidebar.collapsed .submenu-toggle .arrow {
+    display: none;
+}
+#sidebar.collapsed .sidebar-logo {
+    width: 40px;
+    height: 40px;
+    margin: auto;
+}
+
+#sidebar.collapsed .menu-item span {
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#sidebar.collapsed .menu-item,
+#sidebar.collapsed .submenu-toggle { /* <--- เพิ่มตัวนี้ */
+    justify-content: center;
+    gap: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#sidebar.collapsed .menu-item i,
+#sidebar.collapsed .submenu-toggle i { /* <--- เพิ่มตัวนี้ */
+    margin: 0;
+    font-size: 14px;
+}
+
+/* === Logo Section === */
+.logo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.sidebar-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.sidebar-title {
+    margin-top: 4px;
+    line-height: 1.3;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-title strong {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.sidebar-title .subtitle {
+    font-size: 13px;
+    color: #666;
+}
+
+/* === Toggle Button (Top Right) === */
+.toggle-btn {
+    position: static; /* <--- (ปรับ) เปลี่ยนจาก absolute */
+    /* top: 15px; (ลบ) */
+    /* right: 15px; (ลบ) */
+    border: none;
+    border-radius: 20px;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+   
+}
+
+.toggle-btn:hover {
+    background: #f3f2f8;
+    transform: scale(1.05);
+}
+
+/* === Menu Items === */
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 0; /* <--- (ปรับ) เปลี่ยนจาก 20px เป็น 0 (เพราะ .sidebar-top-section มี margin-bottom แล้ว) */
+    
+    /* โค้ดสำหรับ scrollbar (จากครั้งก่อน) */
+    flex: 1; 
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* === (Optional) แต่ง Scrollbar ให้สวยขึ้น === */
+.sidebar-content::-webkit-scrollbar {
+    width: 3px;
+}
+.sidebar-content::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+.sidebar-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+/* --- ⬆️ จบส่วนที่เพิ่ม ⬆️ --- */
+
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #1d1d1f;
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 22px;
+    transition: background 0.2s ease;
+}
+
+.menu-item:hover {
+    background: #f3f2f8;
+}
+
+/* === Overlay === */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(4px);
+    opacity: 1;
+    z-index: 998;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* --- โครงสร้าง body ของ sidebar ให้มีพื้นที่บน-ล่าง --- */
+.sidebar-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; <- ลบตัวนี้ออก */
+    min-height: 0; /* <-- เพิ่มตัวนี้ เพื่อให้ flexbox คำนวณ overflow ถูกต้อง */
+}
+
+/* --- footer ด้านล่าง --- */
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* --- ปุ่ม logout --- */
+.logout-item {
+    color: #1d1d1f;
+    font-weight: 500;
+}
+
+.logout-item:hover {
+    background: rgba(255, 0, 0, 0.08);
+    color: #c62828;
+}
+
+/* === Submenu (ภายใต้ Collections) === */
+.has-submenu {
+    display: flex;
+    flex-direction: column;
+}
+
+.submenu-toggle {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 22px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    position: relative; /* [!!! เพิ่มบรรทัดนี้ !!!] */
+}
+
+.submenu-toggle .arrow {
+    margin-left: auto;
+    transition: transform 0.25s ease;
+}
+
+.submenu-toggle:hover {
+    background: #f3f2f8;
+}
+
+.submenu {
+    display: none;
+    flex-direction: column;
+    margin-left: 20px;
+    margin-top: 5px;
+}
+
+.submenu-item {
+    display: block;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #555;
+    border-radius: 22px;
+    transition: background 0.2s;
+}
+
+.submenu-item:hover {
+    background: #f3f2f8;
+}
+
+.has-submenu.open .submenu {
+    display: flex;
+    animation: fadeIn 0.25s ease;
+}
+
+.has-submenu.open .arrow {
+    transform: rotate(90deg);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#sidebar.collapsed .sidebar-footer {
+    border-top-color: transparent;
+}
+
+/* 1. ซ่อน Header ทิ้งไปเลย (ไม่ใช่แค่โปร่งใส) */
+#sidebar.collapsed .sidebar-header {
+    display: none;
+}
+
+/* 2. สั่งให้กล่องครอบ (top-section) จัดปุ่มที่เหลือให้อยู่กลาง */
+#sidebar.collapsed .sidebar-top-section {
+    justify-content: center;
+}
+
+/* --- (เพิ่ม) ซ่อน Scrollbar ตอนหด --- */
+#sidebar.collapsed .sidebar-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* (Optional) สำหรับ Firefox */
+#sidebar.collapsed .sidebar-content {
+    scrollbar-width: none; 
+}
+
+/* resources/css/sidebar.css */
+
+/* --- Notification Badges --- */
+#sidebar.collapsed .sidebar-badge {
+    display: none;
+}
+
+/* 1. สไตล์ของ Badge (วงกลมสีแดง) */
+.sidebar-badge {
+    background-color: #ff3b30; /* สีแดง Apple */
+    color: white;
+    border-radius: 50px; /* ทรงแคปซูล/วงกลม */
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px; /* รองรับเลข 2 หลัก */
+    
+    /* จัดตัวเลขให้อยู่กลาง */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    font-size: 11px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    line-height: 1;
+    
+    /* อนิเมชั่น ซ่อน/แสดง */
+    transition: all 0.2s ease;
+    opacity: 1;
+    transform: scale(1);
+    
+    /* ระยะห่างจากข้อความ */
+    margin-left: 8px; 
+}
+
+.submenu-toggle .sidebar-badge {
+    position: absolute;
+    top: 11px;     /* ปรับแนวตั้ง (ยิ่งน้อย ยิ่งสูง) */
+    right: 11px;   /* ปรับแนวนอน (ยิ่งน้อย ยิ่งชิดขวา) */
+    z-index: 2;   /* ทำให้อยู่ "ทับ" ลูกศร */
+    margin-left: 0; /* ลบระยะห่างเดิมทิ้ง */
+}
+
+/* 2. ปรับ Layout ของเมนูให้รองรับ Badge */
+/* ... (โค้ด .menu-item และ .submenu-item เดิม) ... */
+
+/* 3. Logic การซ่อน/แสดง (สำคัญ!) */
+/* ... (โค้ด .submenu-item .sidebar-badge เดิม) ... */
+/* ... (โค้ด .has-submenu.open .submenu-item .sidebar-badge เดิม) ... */
+
+/* * โค้ด .has-submenu.open .submenu-toggle .sidebar-badge เดิมของคุณ
+ * จะยังทำงานได้สมบูรณ์แบบ (มันจะซ่อน Badge ที่ลอยอยู่เมื่อเมนูเปิด)
+ */
+.has-submenu.open .submenu-toggle .sidebar-badge {
+    /* ... (โค้ดเดิมของคุณ: opacity: 0, transform: scale(0), etc.) ... */
+    opacity: 0;
+    transform: scale(0);
+    width: 0; 
+    min-width: 0;
+    padding: 0;
+    margin-left: 0;
+    overflow: hidden;
+}
+
+/* 2. ปรับ Layout ของเมนูให้รองรับ Badge */
+
+/* สำหรับเมนูเดี่ยว (Orders / Sales) */
+.menu-item {
+    justify-content: space-between; /* ดัน Badge (ลูกคนสุดท้าย) ไปทางขวา */
+    align-items: center;
+}
+
+/* สำหรับเมนูลูก (Expiry Management) */
+.submenu-item {
+    display: flex; /* ทำให้เป็น flex */
+    justify-content: space-between; /* ดัน Badge ไปทางขวา */
+    align-items: center;
+}
+
+/* 3. Logic การซ่อน/แสดง (สำคัญ!) */
+
+/* ซ่อน Badge ของ 'ลูก' ไว้เป็นค่าเริ่มต้น */
+.submenu-item .sidebar-badge {
+    opacity: 0;
+    transform: scale(0);
+    display: none; /* ซ่อนไปเลย */
+}
+
+/* เมื่อเมนู 'แม่' ถูกเปิด (.open) ... */
+
+/* ... ให้แสดง Badge ของ 'ลูก' */
+.has-submenu.open .submenu-item .sidebar-badge {
+    opacity: 1;
+    transform: scale(1);
+    display: flex; /* แสดงผล */
+}
+
+/* ... และให้ซ่อน Badge ของ 'แม่' (เพื่อไม่ให้ซ้ำซ้อน) */
+.has-submenu.open .submenu-toggle .sidebar-badge {
+    opacity: 0;
+    transform: scale(0);
+    
+    /* ทำให้อนิเมชั่นการหดตัวเนียน */
+    width: 0; 
+    min-width: 0;
+    padding: 0;
+    margin-left: 0;
+    overflow: hidden;
+}
+
+/* [!!! เพิ่มกฎใหม่นี้ !!!] */
+/* สไตล์ปกติสำหรับ div ที่ห่อไอคอน+ข้อความ */
+.menu-item-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: gap 0.4s ease; /* (เพิ่ม transition) */
+}
+
+/* [!!! เพิ่มกฎใหม่นี้ !!!] */
+/* สั่งให้ลบ gap เมื่อ Sidebar หด */
+#sidebar.collapsed .menu-item-content {
+    gap: 0;
+}

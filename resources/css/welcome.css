@@ -1,0 +1,242 @@
+/*
+ * Apple Welcome Body Styling
+ */
+
+/* * 1. กำหนดฟอนต์หลักและสีพื้นหลัง
+ */
+.welcome-body {
+    font-family: 
+        -apple-system, 
+        BlinkMacSystemFont, 
+        "SF Pro Display", 
+        "SF Pro Text", 
+        "IBM Plex Sans Thai",  /* 👈 เพิ่มฟอนต์ไทยไม่มีหัว */
+        "Noto Sans Thai",      /* 👈 หรือใช้ตัวนี้ก็ได้ */
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+    
+    background-color: #ffffff;
+    color: #1d1d1f;
+    line-height: 1.5;
+}
+
+
+/* * 2. Container (ตัวจำกัดความกว้าง)
+ * สำคัญ: ต้องใช้ค่าเดียวกับ Navbar (980px)
+ */
+.container {
+    max-width: 980px;
+    margin: 0 auto; /* จัดกึ่งกลาง */
+    padding: 0 22px;
+}
+
+/* * 3. Hero Section (แบนเนอร์บนสุด)
+ */
+.hero-section {
+    padding: 60px 0;
+    text-align: center;
+    border-bottom: 1px solid #d2d2d7; /* เส้นคั่นบางๆ */
+}
+
+.hero-title {
+    /* ขนาดฟอนต์ใหญ่สไตล์ Apple */
+    font-size: 56px;
+    font-weight: 600; /* 600 คือ Semibold */
+    letter-spacing: 0.003em;
+    margin-bottom: 10px;
+}
+
+.hero-subtitle {
+    font-size: 24px;
+    font-weight: 400; /* 400 คือ Regular */
+    color: #6e6e73; /* สีเทาเข้ม */
+    margin-bottom: 20px;
+}
+
+.hero-link {
+    font-size: 17px;
+    color: #007aff; /* สีฟ้ามาตรฐาน Apple */
+    text-decoration: none;
+    transition: text-decoration 0.2s;
+}
+
+.hero-link:hover {
+    text-decoration: underline;
+}
+
+/* * 4. Feature Section (ส่วนกล่องๆ)
+ */
+.feature-section {
+    padding: 60px 0;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 คอลัมน์เท่ากัน */
+    gap: 30px; /* ระยะห่างระหว่างกล่อง */
+}
+
+.feature-card {
+    border-radius: 18px; /* ขอบโค้งมน */
+    padding: 30px;
+    background-color: #f5f5f7; /* สีเทาอ่อน */
+}
+
+.card-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.card-description {
+    font-size: 17px;
+    color: #1d1d1f;
+    line-height: 1.4;
+}
+
+/* * 5. Responsive (สำหรับมือถือ)
+ */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 40px;
+    }
+
+    .hero-subtitle {
+        font-size: 21px;
+    }
+
+    .feature-grid {
+        /* เปลี่ยนเป็น 1 คอลัมน์ */
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Spotlight Section */
+.spotlight-section {
+    padding: 80px 0;
+    border-bottom: 1px solid #d2d2d7;
+}
+.spotlight-content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+.spotlight-image img {
+    width: 100%;
+    max-width: 560px;
+    border-radius: 12px;
+}
+.spotlight-text {
+    flex: 1;
+}
+.spotlight-title {
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: 0.003em;
+}
+.spotlight-subtitle {
+    font-size: 20px;
+    color: #6e6e73;
+    margin-bottom: 20px;
+}
+.spotlight-link {
+    font-size: 17px;
+    color: #007aff;
+    text-decoration: none;
+}
+.spotlight-link:hover {
+    text-decoration: underline;
+}
+
+/* Highlights Section */
+.highlights-section {
+    padding: 80px 0;
+}
+.section-heading {
+    font-size: 32px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 40px;
+}
+.highlights-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+.highlight-card {
+    background-color: #f5f5f7;
+    padding: 30px;
+    border-radius: 18px;
+    text-align: left;
+}
+.card-heading {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+.card-text {
+    font-size: 17px;
+    color: #1d1d1f;
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+.card-link {
+    font-size: 17px;
+    color: #007aff;
+    text-decoration: none;
+}
+.card-link:hover {
+    text-decoration: underline;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 100px 0;
+    background-color: #000000;
+    color: #ffffff;
+}
+.cta-title {
+    font-size: 40px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+.cta-subtitle {
+    font-size: 20px;
+    color: #d1d1d6;
+    margin-bottom: 30px;
+}
+.cta-button {
+    display: inline-block;
+    padding: 14px 28px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #007aff;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+.cta-button:hover {
+    background-color: #005bb5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .spotlight-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    .highlights-grid {
+        grid-template-columns: 1fr;
+    }
+    .cta-title {
+        font-size: 32px;
+    }
+    .cta-subtitle {
+        font-size: 18px;
+    }
+}
