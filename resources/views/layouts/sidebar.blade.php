@@ -44,7 +44,7 @@
             <a href="#" class="menu-item">
                 <div class="menu-item-content">
                     <i class="fa-solid fa-receipt"></i>
-                    <span>Orders / Sales</span>
+                    <span>Orders | Sales</span>
                 </div>
                 <span class="sidebar-badge">1</span>
             </a>

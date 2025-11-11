@@ -10,7 +10,8 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
     {{-- <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet"> --}}
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&display=swap"rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&display=swap"rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -50,7 +51,7 @@
 
     {{-- 2. ส่วนเนื้อหาใหม่ (สไตล์ Apple) --}}
     <section class="store-section">
-        
+
         <div class="store-header">
             <h2 class="store-title">Oboun ERP</h2>
             <div class="store-header-right">
@@ -60,11 +61,71 @@
             </div>
         </div>
 
+        <div class="store-image-container">
+            <img src="{{ asset('images/laptop-phone.png') }}" alt="laptop-phone">
+        </div>
+
     </section>
+    
+    <section class="device-section">
+    <div class="benefits-header">
+        <h2 class="benefits-title">อุปกรณ์ที่รองรับ Oboun ERP</h2>
+        <a href="#" class="benefits-link">ดูอุปกรณ์ที่รองรับทั้งหมด ></a>
+    </div>
+
+    <div class="device-scroll-container">
+        
+        <a href="#" class="device-card">
+            <img src="https://placehold.co/100x70/ffffff/000?text=Mac" alt="Mac">
+            <span>Mac</span>
+        </a>
+
+        <a href="#" class="device-card">
+            <img src="https://placehold.co/100x70/ffffff/000?text=iPhone" alt="iPhone">
+            <span>iPhone</span>
+        </a>
+
+        <a href="#" class="device-card">
+            <img src="https://placehold.co/100x70/ffffff/000?text=iPad" alt="iPad">
+            <span>iPad</span>
+        </a>
+
+        <a href="#" class="device-card">
+            <img src="https://placehold.co/100x70/ffffff/000?text=Watch" alt="Apple Watch">
+            <span>Apple Watch</span>
+        </a>
+
+        <a href="#" class="device-card">
+            <img src="https://placehold.co/100x70/ffffff/000?text=AirPods" alt="AirPods">
+            <span>AirPods</span>
+        </a>
+
+        <a href="#" class="device-card">
+            <img src="https://placehold.co/100x70/ffffff/000?text=AirTag" alt="AirTag">
+            <span>AirTag</span>
+        </a>
+
+        <a href="#" class="device-card">
+            <img src="https://placehold.co/100x70/ffffff/000?text=TV" alt="Apple TV">
+            <span>Apple TV 4K</span>
+        </a>
+
+        <a href="#" class="device-card">
+            <img src="https://placehold.co/100x70/ffffff/000?text=HomePod" alt="HomePod">
+            <span>HomePod</span>
+        </a>
+
+        <a href="#" class="device-card">
+            <img src="https://placehold.co/100x70/ffffff/000?text=Acc" alt="Accessories">
+            <span>อุปกรณ์เสริม</span>
+        </a>
+        
+    </div>
+</section>
 
     <section class="benefits-section">
         <div class="benefits-header">
-            <h2 class="benefits-title">ทำไมถึงเลือก Obun ERP ของเรา</h2>
+            <h2 class="benefits-title">อุปกรณ์ที่รองรับ Obun ERP ของเรา</h2>
             <a href="#" class="benefits-link">ทำไมถึงต้องเรา ></a>
         </div>
 
@@ -73,10 +134,11 @@
                 <h3 class="card-title">Apple Trade In</h3>
                 <p class="card-subtitle">ประหยัดกับ iPhone เครื่องใหม่ด้วยการนำอุปกรณ์มาแลก</p>
                 <p class="card-description">
-                    รับเครดิตมูลค่า ฿5,000 – ฿20,500 สำหรับซื้อ iPhone 17, iPhone Air หรือ iPhone 17 Pro เมื่อคุณนำ iPhone 13 หรือใหม่กว่ามาแลก<sup>2</sup>
+                    รับเครดิตมูลค่า ฿5,000 – ฿20,500 สำหรับซื้อ iPhone 17, iPhone Air หรือ iPhone 17 Pro เมื่อคุณนำ
+                    iPhone 13 หรือใหม่กว่ามาแลก<sup>2</sup>
                 </p>
                 <div class="card-image-placeholder trade-in">
-                    </div>
+                </div>
                 <button class="card-action-button" aria-label="Learn more about Apple Trade In">+</button>
             </div>
 
@@ -84,10 +146,11 @@
                 <h3 class="card-title">บริการด้านการเงิน</h3>
                 <p class="card-subtitle">แบ่งจ่ายรายเดือนได้ง่ายๆ</p>
                 <p class="card-description">
-                    จ่ายดอกเบี้ย 0% นานสูงสุด 10 เดือน หากคุณมีบัตรเครดิตที่เข้าเกณฑ์ กรุณาเลือกบริการด้านการเงินที่เหมาะกับคุณ<sup>1</sup>
+                    จ่ายดอกเบี้ย 0% นานสูงสุด 10 เดือน หากคุณมีบัตรเครดิตที่เข้าเกณฑ์
+                    กรุณาเลือกบริการด้านการเงินที่เหมาะกับคุณ<sup>1</sup>
                 </p>
                 <div class="card-image-placeholder finance">
-                    </div>
+                </div>
                 <button class="card-action-button" aria-label="Learn more about finance options">+</button>
             </div>
 
@@ -98,7 +161,7 @@
                     เข้าร่วมเซสชั่นออนไลน์กับ Specialist เพื่อตั้งค่า iPhone ของคุณและค้นพบคุณสมบัติใหม่ๆ
                 </p>
                 <div class="card-image-placeholder setup">
-                    </div>
+                </div>
                 <button class="card-action-button" aria-label="Learn more about personal setup">+</button>
             </div>
 
@@ -109,7 +172,7 @@
                     รับบริการจัดส่งฟรี หรือรับสินค้าที่ Apple Store
                 </p>
                 <div class="card-image-placeholder delivery">
-                    </div>
+                </div>
                 <button class="card-action-button" aria-label="Learn more about delivery and pickup">+</button>
             </div>
 
@@ -120,13 +183,13 @@
                     รับบริการจัดส่งฟรี หรือรับสินค้าที่ Apple Store
                 </p>
                 <div class="card-image-placeholder delivery">
-                    </div>
+                </div>
                 <button class="card-action-button" aria-label="Learn more about delivery and pickup">+</button>
             </div>
         </div>
     </section>
 
-    
+
     @include('layouts.footer-welcome')
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

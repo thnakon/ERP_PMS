@@ -67,6 +67,20 @@
     text-decoration: underline;
 }
 
+.store-image-container {
+    display: flex;
+    justify-content: center; /* <--- จัดให้อยู่ตรงกลางแนวนอน */
+    align-items: center;
+    margin-top: 2rem; /* (แนะนำ) เพิ่มระยะห่างจากส่วนหัวข้อ */
+}
+
+.store-image-container img {
+    max-width: 100%; /* ทำให้รูปภาพ responsive */
+    height: auto;
+    border-radius: 12px; /* (แนะนำ) เพิ่มความมนเล็กน้อยให้รูป */
+    align-items: center;
+}
+
 
 /* ===================================================================
    Section 1: Store Section (ส่วน "ร้านของเรา")
@@ -329,4 +343,126 @@
     .store-title, .benefits-title {
         font-size: 2rem; /* ลดขนาด font บนมือถือ */
     }
+}
+
+/* ... (โค้ด .card-action-button:hover ของคุณ) ... */
+
+
+/* ===================================================================
+   Section 3: Device Section (ส่วน "อุปกรณ์ที่รองรับ")
+   =================================================================== */
+
+.device-section {
+    margin: 4rem 0 2rem 0;
+    box-sizing: border-box;
+    width: 100%;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+}
+
+/* เราจะอิงสไตล์การเลื่อนมาจาก .benefits-grid */
+.device-scroll-container {
+    display: grid;
+    grid-auto-flow: column; /* <--- ทำให้เลื่อนแนวนอน */
+    grid-auto-columns: 120px; /* <--- กำหนดความกว้างแต่ละช่อง */
+    gap: 30px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px;
+    scrollbar-width: none;
+    box-sizing: border-box;
+    padding-right: 0;
+
+    /* จัดแนวซ้ายให้ตรงกับ .benefits-header (สูตรเดิม) */
+    padding-left: calc((100vw - 1300px) / 2 + 2rem);
+}
+
+.device-scroll-container::-webkit-scrollbar {
+    display: none; /* ซ่อน scrollbar (Chrome) */
+}
+
+/* เพิ่มช่องว่างให้การ์ดสุดท้าย (เหมือน .benefits-grid) */
+.device-scroll-container > .device-card:last-child {
+    margin-right: 2rem;
+}
+
+
+/* สไตล์ของการ์ดอุปกรณ์ (แบบในรูป) */
+.device-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #1d1d1f;
+    transition: transform 0.2s ease;
+}
+.device-card:hover {
+    transform: scale(1.05); /* (เพิ่ม) เอฟเฟกต์ตอน hover */
+}
+
+.device-card img {
+    height: 70px; /* ความสูงของรูป */
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.device-card span {
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+}
+
+
+/* ===================================================================
+   Responsive Design (สำหรับจอเล็ก)
+   =================================================================== */
+
+/* [!!! เพิ่ม .device-scroll-container ในกฎ responsive ที่มีอยู่ !!!] */
+
+@media (max-width: 1300px) {
+    /* เมื่อจอเล็กกว่า 1300px, ให้ใช้ padding-left ธรรมดา */
+    .benefits-grid,
+    .device-scroll-container { /* <--- เพิ่มที่นี่ */
+        padding-left: 2rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    /* Tablet: 2 คอลัมน์ */
+    .benefits-grid {
+        /* ... (โค้ด .benefits-grid เดิม) ... */
+    }
+
+    /* (สำหรับแถบอุปกรณ์ ให้ยังเลื่อนได้ แต่ปรับ padding) */
+    .device-scroll-container { /* <--- เพิ่มที่นี่ */
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    .benefits-grid > .benefit-card:last-child {
+        margin-right: 0;
+    }
+    /* ... (โค้ด .carousel-navigation เดิม) ... */
+}
+
+@media (max-width: 768px) {
+    /* Mobile: 1 คอลัมน์ */
+    .benefits-grid {
+        /* ... (โค้ด .benefits-grid เดิม) ... */
+    }
+
+    /* ปรับ header และ grid ของ benefits */
+    .benefits-header,
+    .benefits-grid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* [!!! เพิ่มกฎนี้สำหรับแถบอุปกรณ์บนมือถือ !!!] */
+    .device-scroll-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* ... (โค้ด responsive ที่เหลือ) ... */
 }
