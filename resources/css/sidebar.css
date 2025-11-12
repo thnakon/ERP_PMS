@@ -480,3 +480,15 @@
 #sidebar.collapsed .menu-item-content {
     gap: 0;
 }
+
+
+/* active */
+/* [!!! ADD THIS !!!] สไตล์สำหรับเมนูที่ถูกเลือก */
+.menu-item.active {
+    background-color: #f3f2f8; /* สีพื้นหลังทึบ (สไตล์ Apple) */
+}
+
+.menu-item.active:hover {
+    background-color: #f3f2f8; /* สีเดิม ไม่ต้องเปลี่ยนตอน hover */
+}
+

@@ -61,8 +61,10 @@
                 <div class="submenu">
                     <a href="#" class="submenu-item"><i class="fa-solid fa-tablets"></i>Manage Products</a>
                     <a href="#" class="submenu-item"><i class="fa-solid fa-layer-group"></i>Categories</a>
-                    <a href="#" class="submenu-item"><i class="fa-solid fa-exclamation"></i><span>Expiry Management</span> <span class="sidebar-badge">2</span></a>
-                    <a href="#" class="submenu-item"><i class="fa-brands fa-stack-overflow"></i><span>Stock Adjustments</span>  <span class="sidebar-badge">1</span></a>
+                    <a href="#" class="submenu-item"><i class="fa-solid fa-exclamation"></i><span>Expiry
+                            Management</span> <span class="sidebar-badge">2</span></a>
+                    <a href="#" class="submenu-item"><i class="fa-brands fa-stack-overflow"></i><span>Stock
+                            Adjustments</span> <span class="sidebar-badge">1</span></a>
                 </div>
             </div>
 
@@ -105,17 +107,18 @@
                 </div>
             </div>
 
-            <a href="#" class="menu-item">
+            <!-- ค้นหาลิงก์ Settings ของคุณ -->
+            <a href="{{ route('settings.index') }}"
+                class="menu-item {{ Route::is('settings.index') ? 'active' : '' }}">
                 <div class="menu-item-content">
-
                     <i class="fa-solid fa-gear"></i>
                     <span>Settings</span>
                 </div>
             </a>
-
-            <a href="#" class="menu-item">
+            
+            <!-- [!!! ADJUSTED !!!] เพิ่ม id="openSupportModalBtn" -->
+            <a href="#" class="menu-item" id="openSupportModalBtn">
                 <div class="menu-item-content">
-
                     <i class="fa-solid fa-headset"></i>
                     <span>Support</span>
                 </div>

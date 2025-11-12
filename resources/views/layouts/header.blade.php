@@ -54,7 +54,7 @@
                     </div>
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="#" class="menu-item">
+                <a href="{{ route('settings.index') }}" class="menu-item">
                     <div style="display: flex; align-items: center; gap: 12px;">
 
                         <i class="fa-solid fa-gear"></i>

@@ -21,7 +21,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/main.css', 'resources/js/main.js', 'resources/css/app.css', 'resources/js/app.js', 'resources/css/sidebar.css', 'resources/js/sidebar.js', 'resources/css/header.css', 'resources/js/header.js'])
+        @vite(['resources/css/main.css', 'resources/js/main.js', 'resources/css/app.css', 'resources/js/app.js', 'resources/css/sidebar.css', 'resources/js/sidebar.js', 'resources/css/header.css', 'resources/js/header.js','resources/css/settings.css', 'resources/js/setting.js','resources/css/modal.css', 'resources/js/modal.js'])
     @else
         {{-- (โค้ด fallback) --}}
         <style>
@@ -35,14 +35,18 @@
     @include('layouts.page-loader')
     @include('layouts.sidebar')
     @include('layouts.header')
+    @include('layouts.madal-support')
+
+   <!-- Page Content -->
+        <main class="main-content-wrapper">
+            {{ $slot }}
+        </main>
 
 
-    <!-- Page Content -->
-    <main>
-        {{ $slot }}
-    </main>
 
 
+
+    {{-- Modal แนะนำการใช้งานระบบ --}}
     <div id="helpModalOverlay" class="help-modal-overlay">
         <div id="helpModal" class="help-modal">
             

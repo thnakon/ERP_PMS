@@ -17,6 +17,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
 });
 
 // Route สำหรับ Live Search (ที่ JavaScript เรียก)
@@ -27,5 +29,9 @@ Route::get('/search', [SearchController::class, 'fullSearch'])->name('search.ful
 
 // Route สำหรับ AI Search (กด Atom)
 Route::get('/ai-search', [SearchController::class, 'aiSearch'])->name('search.ai');
+
+// (วางต่อจาก Route อื่นๆ ในกลุ่ม auth)
+
+
 
 require __DIR__.'/auth.php';

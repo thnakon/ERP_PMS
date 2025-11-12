@@ -1,0 +1,252 @@
+/* =================================================== */
+/* Support Modal (สไตล์ Apple)             */
+/* =================================================== */
+
+/* 1. Overlay (ฉากหลัง) */
+.support-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+        "IBM Plex Sans Thai", "Noto Sans Thai", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* [!!! REMOVED !!!] ลบ animation: fadeIn ออกจากคลาสพื้นฐาน */
+}
+
+/* 2. Content (กล่องเนื้อหา) */
+.support-modal-content {
+    position: relative;
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    max-width: 440px;
+    padding: 24px;
+    
+    /* [!!! REMOVED !!!] ลบ animation: slideInUp ออกจากคลาสพื้นฐาน */
+}
+
+/* 3. ปุ่มปิด (มุมขวาบน) */
+/* ... (ส่วนนี้เหมือนเดิม) ... */
+.support-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    
+    background: #e9e9eb; /* สีเทาอ่อน */
+    color: #8a8a8e; /* สีไอคอนเทา */
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.support-modal-close:hover {
+    background: #dcdce0; /* เข้มขึ้นเล็กน้อย */
+    transform: scale(1.05);
+}
+.support-modal-close i {
+    font-size: 14px;
+}
+
+
+/* 4. ส่วนหัว */
+/* ... (ส่วนนี้เหมือนเดิม) ... */
+.support-modal-title {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 700;
+    color: #1d1d1f;
+    margin: 0 0 16px 0;
+    text-align: left;
+}
+
+
+/* 5. รูปประกอบ */
+/* ... (ส่วนนี้เหมือนเดิม) ... */
+.support-modal-illustration {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    background: #f3f4f6;
+}
+.support-modal-illustration svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+
+/* 6. เนื้อหาและฟอร์ม */
+/* ... (ส่วนนี้เหมือนเดิม) ... */
+.support-modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.support-modal-description {
+    font-size: 14px;
+    color: #6e6e73;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.form-group-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label-modal {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1d1d1f;
+}
+
+
+/* 7. สไตล์ฟอร์มแบบ Minimal */
+/* ... (ส่วนนี้เหมือนเดิม) ... */
+.form-select-wrapper {
+    position: relative;
+}
+.form-select-modal {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #f9f9fb; /* สีเทาอ่อนมาก (เหมือนฟอร์ม Settings) */
+    border: 1px solid #f9f9fb;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: #1d1d1f;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.form-select-wrapper::after {
+    content: '\f078'; /* Font Awesome "chevron-down" */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 12px;
+    color: #8a8a8e;
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+.form-textarea-modal {
+    width: 100%;
+    background-color: #f9f9fb;
+    border: 1px solid #f9f9fb;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: #1d1d1f;
+    resize: vertical;
+    min-height: 80px;
+    box-sizing: border-box; /* สำคัญสำหรับ Textarea */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.form-select-modal:focus,
+.form-textarea-modal:focus {
+    outline: none;
+    background-color: #fff;
+    border-color: #0071e3;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+}
+
+
+/* 8. ปุ่มส่ง (สีฟ้า) */
+/* ... (ส่วนนี้เหมือนเดิม) ... */
+.support-modal-button {
+    background-color: #0071e3; /* สีฟ้า Apple */
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 8px; /* เว้นระยะจากฟอร์ม */
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.support-modal-button:hover {
+    background-color: #0077ed;
+    transform: scale(1.01);
+}
+
+
+/* 9. คลาสสำหรับซ่อนและอนิเมชั่น [!!! ADJUSTED !!!] */
+
+/* [!!! NEW !!!]
+   อนิเมชั่น "ตอนแสดงผล" (Fade In)
+   จะทำงานเฉพาะเมื่อ "ไม่มี" คลาส .hidden
+*/
+.support-modal-overlay:not(.hidden) {
+    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.support-modal-overlay:not(.hidden) .support-modal-content {
+    animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* [!!! NEW !!!]
+   อนิเมชั่น "ตอนกำลังซ่อน" (Fade Out)
+   จะทำงานเมื่อ JS เพิ่มคลาส .is-hiding
+*/
+.support-modal-overlay.is-hiding {
+    animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.support-modal-overlay.is-hiding .support-modal-content {
+    animation: slideOutDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* [!!! ADJUSTED !!!]
+   สถานะซ่อน (เริ่มต้น)
+   นี่คือสถานะ "ซ่อน" จริงๆ บนหน้าเว็บตอนโหลด
+   - แค่ซ่อนตัว (opacity: 0)
+   - ไม่ต้องมีอนิเมชั่น
+*/
+.support-modal-overlay.hidden {
+    opacity: 0; 
+    pointer-events: none;
+    /* (ลบ animation: fadeOut... ออกจากที่นี่) */
+}
+.support-modal-overlay.hidden .support-modal-content {
+     /* (ลบ animation: slideOutDown... ออกจากที่นี่) */
+     /* (เราเพิ่ม opacity: 0 ให้ข้างบนแล้ว มันจะซ่อนลูกๆ อัตโนมัติ) */
+}
+
+
+/* Keyframes (อนิเมชั่น) */
+/* (ส่วนนี้เหมือนเดิม) */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes slideOutDown {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(30px) scale(0.98); }
+}
