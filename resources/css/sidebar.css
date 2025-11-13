@@ -233,7 +233,6 @@
 
 .sidebar-overlay.hidden {
     opacity: 0;
-    pointer-events: none;
 }
 
 /* --- โครงสร้าง body ของ sidebar ให้มีพื้นที่บน-ล่าง --- */

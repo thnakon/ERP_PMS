@@ -61,21 +61,23 @@
                         <span>Settings</span>
                     </div>
                 </a>
-                <a href="#" class="menu-item">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-
+                <!-- [!!! ADJUSTED !!!] เพิ่ม id="openSupportModalBtn" -->
+                <a href="#" class="menu-item open-support-modal-btn">
+                    <div class="menu-item-content">
                         <i class="fa-solid fa-headset"></i>
                         <span>Support</span>
                     </div>
                 </a>
+
                 <div class="dropdown-divider"></div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <a :href="route('logout')"
-                        onclick="event.preventDefault(); 
-                    this.closest('form').submit();"
-                        class="dropdown-item danger">Log Out</a>
-                </form>
+<form method="POST" action="{{ route('logout') }}" style="margin: 0;" id="logout-form-header">
+    @csrf
+    <a href="#" 
+       class="dropdown-item danger" 
+       id="open-logout-modal-header"> Log Out
+    </a>
+</form>
+
             </div>
 
         </div>

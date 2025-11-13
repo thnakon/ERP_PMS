@@ -1,0 +1,524 @@
+/*
+ * resources/css/dashboard.css
+ * Apple-style minimal dashboard CSS
+ */
+
+/* 1. Root & Font Import */
+:root {
+    --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+        "IBM Plex Sans Thai", "Noto Sans Thai", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif , var(--apple-font);
+    --system-font: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif;
+
+    --bg-color: #f6f6f7;
+    --card-bg: #ffffff;
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-tertiary: #86868b;
+    --border-color: #e8e8ea;
+    --shadow-color: rgba(0, 0, 0, 0.05);
+
+    --apple-blue: #007aff;
+    --apple-green: #34c759;
+    --apple-red: #ff3b30;
+    --apple-orange: #ff9500;
+    --apple-yellow: #ffcc00;
+    --apple-purple: #af52de;
+    --apple-cyan: #00c7e6;
+}
+
+body {
+    font-family: var(--apple-font);
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+}
+
+/* 2. Main Content Wrapper */
+.dashboard-main-content {
+    margin: 12px 10px;
+    margin-left: 15px;
+    max-width: 1600px;
+   
+}
+
+/* 3. Page Header */
+.dashboard-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.dashboard-page-header .header-left .breadcrumb {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.dashboard-page-header .header-left .dashboard-page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 4px 0 0 0;
+}
+
+.dashboard-page-header .header-right .date-picker-box {
+    display: flex;
+    align-items: center;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.dashboard-page-header .header-right .date-picker-box i {
+    margin-right: 8px;
+}
+
+/* 4. Dashboard Card Base Style */
+.dashboard-card {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    transition: all 0.2s ease-in-out;
+}
+
+.dashboard-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+}
+
+/* 5. Grid Layouts */
+.dashboard-grid {
+    display: grid;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.main-grid {
+    grid-template-columns: 2fr 1fr;
+    min-height: 400px;
+}
+
+.list-grid {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+/* 6. KPI Stat Cards */
+.kpi-card {
+    display: flex;
+    align-items: center;
+}
+
+.kpi-card .card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 20px;
+    flex-shrink: 0;
+}
+
+.kpi-card .card-icon.icon-sales {
+    background-color: #e6f2ff;
+    color: var(--apple-blue);
+}
+
+.kpi-card .card-icon.icon-profit {
+    background-color: #e5f9eb;
+    color: var(--apple-green);
+}
+
+.kpi-card .card-icon.icon-customer {
+    background-color: #f8f0fe;
+    color: var(--apple-purple);
+}
+
+.kpi-card .card-icon.icon-stock {
+    background-color: #fff0e0;
+    color: var(--apple-orange);
+}
+
+
+.kpi-card .card-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-card .kpi-title {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.kpi-card .kpi-value {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.kpi-card .kpi-comparison {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+}
+
+.kpi-card .kpi-comparison.good {
+    color: var(--apple-green);
+}
+
+.kpi-card .kpi-comparison.bad {
+    color: var(--apple-red);
+}
+
+/* 7. Card Header */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.card-header .view-all {
+    font-size: 0.85rem;
+    color: var(--apple-blue);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* 8. Chart Card */
+.chart-card .chart-container {
+    position: relative;
+    height: 320px;
+}
+
+.chart-legend {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.chart-legend .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    background-color: var(--apple-blue);
+}
+
+/* 9. Notification Card */
+.notification-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 320px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item .notif-icon {
+    font-size: 1.1rem;
+    margin-right: 16px;
+    color: var(--text-tertiary);
+}
+
+.notification-item.critical .notif-icon {
+    color: var(--apple-red);
+}
+
+.notification-item.warning .notif-icon {
+    color: var(--apple-orange);
+}
+
+.notification-item .notif-content {
+    flex-grow: 1;
+}
+
+.notification-item .notif-content strong {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.notification-item .notif-content span {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.notification-item .notif-time {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+    margin-left: 12px;
+}
+
+/* * [!!! วางทับโค้ดเดิมทั้งหมดในส่วนที่ 10 !!!] 
+ * 10. List Cards (Expiring, Recent Sales) 
+ */
+
+/* 10. List Cards (Expiring, Recent Sales) */
+
+/* [!!! 1. ปรับปรุง Header (ใช้ Grid) !!!] */
+.list-card .list-table-header {
+    /* display: flex; (ลบออก) */
+    /* justify-content: space-between; (ลบออก) */
+    
+    display: grid; /* [!!! เปลี่ยนเป็น Grid !!!] */
+    /* กำหนด 3 คอลัมน์: 
+       คอลัมน์ 1 และ 2 จะแบ่งพื้นที่ที่เหลือ
+       คอลัมน์ 3 (Status) จะใช้ขนาดพอดีตัว
+    */
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px; /* [!!! เพิ่ม !!!] ระยะห่างระหว่างคอลัมน์ */
+
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 0 12px 12px 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.list-table-header span:first-child {
+    flex-grow: 0; /* [!!! ปิด !!!] ปิด flex-grow */
+    text-align: left;
+}
+
+.list-table-header span:not(:first-child) {
+    width: auto; /* [!!! ปรับ !!!] ให้ Grid จัดการความกว้าง */
+    text-align: left; /* [!!! ปรับ !!!] จัดชิดซ้าย (ดูดีกว่า) */
+}
+
+/* [!!! เพิ่ม !!!] จัดให้ "Status" (หัวข้อ) ชิดขวา */
+.list-table-header span:last-child {
+    text-align: right;
+}
+
+/* --------------------------------- */
+
+.list-card .data-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 280px; 
+    overflow-y: auto;
+}
+
+/* [!!! 2. ปรับปรุง Data Row (ใช้ Grid) !!!] */
+.list-card .data-list-item {
+    /* display: flex; (ลบออก) */
+    /* justify-content: space-between; (ลบออก) */
+
+    display: grid; /* [!!! เปลี่ยนเป็น Grid !!!] */
+    /* [!!! สำคัญ !!!] ต้องใช้ Grid เดียวกันกับ Header */
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px; /* [!!! เพิ่ม !!!] ระยะห่างระหว่างคอลัมน์ */
+    
+    align-items: center;
+    padding: 14px 12px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.list-card .data-list-item:last-child {
+    border-bottom: none;
+}
+
+.list-card .data-list-item .product-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    flex-grow: 0; /* [!!! ปิด !!!] ปิด flex-grow */
+    text-align: left;
+}
+
+/* [!!! 3. ปรับปรุงคอลัมน์ที่เหลือ !!!] */
+
+/* สำหรับการ์ด PO/Prescription */
+.list-card .data-list-item .supplier-name {
+    width: auto; /* [!!! ปรับ !!!] ให้ Grid จัดการความกว้าง */
+    text-align: left; /* [!!! ปรับ !!!] จัดชิดซ้าย (ดูดีกว่า) */
+    color: var(--text-secondary);
+}
+
+/* สำหรับการ์ด PO/Prescription */
+.list-card .data-list-item .status {
+    width: auto; /* [!!! ปรับ !!!] ให้ Grid จัดการความกว้าง */
+    /* ... (โค้ดสีและ padding อื่นๆ คงเดิม) ... */
+    
+    /* สไตล์เดิมของคุณ (คงไว้) */
+    text-align: right;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    background-color: var(--bg-color);
+}
+/* ... (โค้ด .status.pending, .status.intransit ฯลฯ คงเดิม) ... */
+.list-card .data-list-item .status.pending {
+    color: var(--apple-orange);
+    background-color: #fff0e0;
+}
+.list-card .data-list-item .status.intransit {
+    color: var(--apple-cyan);
+    background-color: #e0f9ff;
+}
+
+.list-card .data-list-item .expiry-date,
+.list-card .data-list-item .qty,
+.list-card .data-list-item .total-price {
+    width: 100px;
+    text-align: right;
+    color: var(--text-secondary);
+}
+
+.list-card .data-list-item .expiry-date.warning {
+    color: var(--apple-orange);
+    font-weight: 600;
+}
+
+.list-card .data-list-item .total-price {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* [!!! NEW !!!] 11. Quick Actions */
+.quick-actions-grid {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.action-card {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.action-card:hover {
+    background-color: #f5f5f7; /* สีพื้นหลังเมื่อ hover */
+    transform: translateY(-4px);
+}
+
+.action-card i {
+    font-size: 2rem;
+    color: var(--apple-blue);
+    margin-bottom: 16px;
+}
+
+.action-card span {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+
+/* 12. Responsive */
+@media (max-width: 1200px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .list-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-actions-grid {
+        /* [!!! ADJUSTED !!!] */
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .chart-card .chart-container {
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-main-content {
+        padding: 16px;
+    }
+    
+    .dashboard-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dashboard-page-header .header-right {
+        margin-top: 16px;
+        width: 100%;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-actions-grid {
+        /* [!!! ADJUSTED !!!] */
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.apple-sidebar {
+    width: 250px;
+    transition: width 0.3s ease, transform 0.3s ease;
+}
+
+.apple-sidebar.collapsed {
+    width: 70px;
+}
+
+.apple-sidebar .sidebar-text {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.apple-sidebar.collapsed .sidebar-text {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sidebar-overlay {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+
+

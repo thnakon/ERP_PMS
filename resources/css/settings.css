@@ -1,26 +1,6 @@
 /* ======================================= */
 /* 1. Main Content Wrapper (จาก app.blade.php) */
 /* ======================================= */
-.main-content-wrapper {
-    /* * เว้นที่สำหรับ Sidebar (270px) + padding 10px 
-     * และ Header (70px) + padding 10px 
-     */
-    padding-top: 80px; /* 70px (Header) + 10px (Gap) */
-    padding-left: 290px; /* 270px (Sidebar) + 20px (Gap) */
-    padding-right: 20px;
-    padding-bottom: 40px;
-    transition: padding-left 0.4s ease;
-    width: 100%;
-    box-sizing: border-box; /* สำคัญมาก */
-    min-height: 100vh;
-    background-color: #f5f5f7; /* สีพื้นหลังเทาอ่อนๆ */
-}
-
-/* [!!! สำคัญ !!!] เมื่อ Sidebar หด (collapsed) */
-#sidebar.collapsed ~ .main-content-wrapper {
-    /* 85px (Sidebar) + 20px (Gap) */
-    padding-left: 105px;
-}
 
 /* [!!! NEW !!!] ส่วนหัวของหน้า (ดีไซน์ใหม่) */
 .settings-page-header {
@@ -66,7 +46,8 @@
 /* ======================================= */
 .settings-layout {
     /* [!!! ADJUSTED !!!] เปลี่ยนเป็น block ธรรมดา */
-    margin: 10px 10px 10px;
+    margin: 12px 10px;
+    margin-left: 15px;
     display: block;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
         "IBM Plex Sans Thai", "Noto Sans Thai", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -533,16 +514,6 @@
 }
 
 @media (max-width: 768px) {
-    .main-content-wrapper {
-        /* (Sidebar 85px) + (Gap 10px) */
-        padding-left: 95px;
-        padding-right: 10px;
-        padding-top: 80px; /* 70px (Header) + 10px (Gap) */
-    }
-    #sidebar.collapsed ~ .main-content-wrapper {
-        padding-left: 95px; /* เท่าเดิม */
-    }
-
     /* [!!! NEW !!!] ปรับ Header บนมือถือ */
     .settings-page-header {
         flex-direction: column;

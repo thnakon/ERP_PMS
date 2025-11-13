@@ -26,9 +26,10 @@
 
     <div class="sidebar-body">
         <div class="sidebar-content">
-            <a href="#" class="menu-item">
+
+            <a href="{{ route('dashboard') }}" class="menu-item {{ Route::is('dashboard') ? 'active' : '' }}">
                 <div class="menu-item-content">
-                    <i class="fa-solid fa-table-cells-large"></i></i>
+                    <i class="fa-solid fa-table-cells-large"></i>
                     <span>Dashboard</span>
                 </div>
                 <span class="sidebar-badge">1</span>
@@ -114,26 +115,25 @@
                     <i class="fa-solid fa-gear"></i>
                     <span>Settings</span>
                 </div>
+                <span class="sidebar-badge">1 </span>
             </a>
-            
+
             <!-- [!!! ADJUSTED !!!] เพิ่ม id="openSupportModalBtn" -->
-            <a href="#" class="menu-item" id="openSupportModalBtn">
+            <a href="#" class="menu-item open-support-modal-btn">
                 <div class="menu-item-content">
                     <i class="fa-solid fa-headset"></i>
                     <span>Support</span>
                 </div>
             </a>
+
         </div>
 
         <div class="sidebar-footer">
-            <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+            <form method="POST" action="{{ route('logout') }}" style="margin: 0;" id="logout-form">
                 @csrf
 
-                <a href="{{ route('logout') }}" class="menu-item logout-item"
-                    onclick="event.preventDefault();
-                    this.closest('form').submit();">
+                <a href="#" class="menu-item logout-item" id="open-logout-modal">
                     <div class="menu-item-content">
-
                         <i class="fa-solid fa-right-from-bracket"></i>
                         <span>{{ __('Log out') }}</span>
                     </div>

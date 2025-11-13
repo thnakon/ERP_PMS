@@ -100,3 +100,69 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 }); // <-- ปิด DOMContentLoaded
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    // --- 1. องค์ประกอบ Modal และปุ่มควบคุม Modal (IDs เดิม) ---
+    const logoutModal = document.getElementById('logoutModal');
+    const cancelButton = document.getElementById('cancelLogout');
+    const confirmButton = document.getElementById('confirmLogout');
+    
+    // --- 2. องค์ประกอบปุ่มเปิด Modal (IDs ที่อาจแตกต่างกัน) ---
+    // ดักฟังปุ่ม Sidebar (เดิม)
+    const openSidebarButton = document.getElementById('open-logout-modal'); 
+    // ดักฟังปุ่ม Header (ใหม่)
+    const openHeaderButton = document.getElementById('open-logout-modal-header');
+    
+    // สร้าง Array ของปุ่มทั้งหมด
+    const allOpenButtons = [];
+    if (openSidebarButton) allOpenButtons.push(openSidebarButton);
+    if (openHeaderButton) allOpenButtons.push(openHeaderButton);
+
+    // ตรวจสอบว่ามี Modal และปุ่มเปิดอย่างน้อย 1 ปุ่ม
+    if (!logoutModal || allOpenButtons.length === 0) {
+        return; 
+    }
+
+    // ฟังก์ชัน Show/Hide Modal (เหมือนเดิม)
+    function showModal() {
+        logoutModal.classList.add('show');
+    }
+
+    function hideModal() {
+        logoutModal.classList.remove('show');
+    }
+
+    // --- 3. ผูก Event Listener ให้ปุ่มเปิดทั้งหมด ---
+    allOpenButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            // A. หา Form ที่อยู่ใกล้ปุ่มที่ถูกคลิก (ไม่ว่าจะเป็น sidebar-form หรือ header-form)
+            const formToSubmit = button.closest('form');
+            if (!formToSubmit) return;
+
+            // B. ผูก Event Listener กับปุ่มยืนยันใน Modal ชั่วคราว 
+            //    เพื่อให้แน่ใจว่ามันจะ Submit Form ที่ถูกต้อง
+            confirmButton.onclick = function() {
+                formToSubmit.submit(); // Submit Form ที่ถูกต้อง
+            };
+            
+            showModal(); // แสดง Modal
+        });
+    });
+
+    // --- 4. ผูก Event Listener ให้ปุ่มควบคุม Modal ---
+    
+    // ปุ่มยกเลิก
+    cancelButton.addEventListener('click', function() {
+        hideModal();
+    });
+
+    // ปิด Modal เมื่อคลิกที่พื้นหลัง
+    logoutModal.addEventListener('click', function(event) {
+        if (event.target === logoutModal) {
+            hideModal();
+        }
+    });
+});

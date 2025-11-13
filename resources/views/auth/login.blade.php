@@ -54,7 +54,7 @@
                     </a>
                 @endif
 
-                <button type="submit" class="apple-button">
+                <button type="submit" class="apple-button-guest">
                     {{ __('Log in') }}
                 </button>
             </div>

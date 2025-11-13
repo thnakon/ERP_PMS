@@ -10,7 +10,7 @@
         <!-- [!!! NEW HEADER !!!] ส่วนหัวของหน้าดีไซน์ใหม่ -->
         <div class="settings-page-header">
             <div class="header-left">
-                <p class="breadcrumb">Dashboard > Settings</p>
+                <p class="breadcrumb">Dashboard ▶ Settings</p>
                 <h2 class="settings-page-title">Settings</h2>
             </div>
             <div class="header-right">
@@ -30,7 +30,7 @@
                     <span class="active-pill-background"></span>
                     <a href="#" class="settings-tab-item active" data-tab="tab-general">
                         <i class="fa-solid fa-building"></i>
-                        <span>ทั่วไป / องค์กร</span>
+                        <span>ทั่วไป | องค์กร</span>
                     </a>
                     <a href="#" class="settings-tab-item" data-tab="tab-users">
                         <i class="fa-solid fa-users-gear"></i>
@@ -138,7 +138,7 @@
                                         <b>TMT Integration:</b> เปิดใช้การอ้างอิงรหัสยา TMT
                                     </span>
                                     <label class="form-toggle-switch">
-                                        <input type="checkbox">
+                                        <input type="checkbox" checked>
                                         <span class="slider"></span>
                                     </label>
                                 </div>
@@ -156,7 +156,7 @@
                                 <!-- การ์ด GPP -->
                                 <div class="compliance-card">
                                     <div class="compliance-icon-wrapper" style="background-color: #e6f6e9;">
-                                        <i class="fa-solid fa-check-shield" style="color: #34c759;"></i>
+                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShMbCDzNr7Me_KYOXQh-vb1mIpsiVGPAyrr1qORTKzWh6tB60O4LLbgbJ9LJnJm7k9cG4&usqp=CAU" style="border-radius: 60%; object-fit: cover;">
                                     </div>
                                     <h5 class="compliance-title">GPP (Good Pharmacy Practice)</h5>
                                     <p class="compliance-description">
@@ -625,7 +625,7 @@
                             <div class="form-toggle-item">
                                 <span><i class="fa-solid fa-heart-pulse"></i> บังคับกรอกโรคประจำตัว (Chronic Conditions)</span>
                                 <label class="form-toggle-switch">
-                                    <input type="checkbox">
+                                    <input type="checkbox" checked >
                                     <span class="slider"></span>
                                 </label>
                             </div>

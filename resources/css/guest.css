@@ -229,7 +229,7 @@ main.main-content {
     text-decoration: underline;
 }
 
-.apple-button {
+.apple-button-guest {
     background-color: #0071e3;
     color: #ffffff;
     font-size: 1rem;
@@ -241,7 +241,7 @@ main.main-content {
     transition: background-color 0.2s ease;
 }
 
-.apple-button:hover {
+.apple-button-guest:hover {
     background-color: #0077ed;
 }
 
