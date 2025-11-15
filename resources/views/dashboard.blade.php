@@ -13,10 +13,9 @@
 
     <div class="dashboard-main-content">
 
-        <!-- 1. Page Header -->
         <div class="dashboard-page-header">
             <div class="header-left">
-                <p class="breadcrumb">Dashboard ▶ Welcome back, {{ Auth::user()->name ?? 'Pharmacist' }}</p>
+                <p class="breadcrumb">Dashboard / Welcome back, {{ Auth::user()->name ?? 'Pharmacist' }} !</p>
                 <h2 class="dashboard-page-title">Overview</h2>
             </div>
             <div class="header-right">
@@ -27,9 +26,7 @@
             </div>
         </div>
 
-        <!-- 2. KPI Stat Cards Grid -->
         <div class="dashboard-grid kpi-grid">
-            <!-- (การ์ด KPI ทั้ง 4... เหมือนเดิม) -->
             <div class="dashboard-card kpi-card">
                 <div class="card-icon icon-sales">
                     <i class="fa-solid fa-baht-sign"></i>
@@ -83,14 +80,17 @@
             </div>
         </div>
 
-        <!-- 3. Sales Trend & Notifications Grid -->
         <div class="dashboard-grid main-grid">
-            <!-- (กราฟ และ Notifications... เหมือนเดิม) -->
             <div class="dashboard-card chart-card">
                 <div class="card-header">
-                    <h3>Sales Trend (Last 7 Days)</h3>
-                    <div class="chart-legend">
-                        <span class="legend-dot sales"></span> Sales
+                    <!-- [!!! CHANGED !!!] เปลี่ยน Title ให้อยู่กลางๆ -->
+                    <h3>Performance Trend</h3>
+                    
+                    <!-- [!!! CHANGED !!!] แทนที่ Legend เดิมด้วยปุ่ม Toggle -->
+                    <div class="chart-toggle-buttons">
+                        <button class="toggle-btn active" data-metric="sales">Sales</button>
+                        <button class="toggle-btn" data-metric="profit">Profit</button>
+                        <button class="toggle-btn" data-metric="outOfStock">Out of Stock</button>
                     </div>
                 </div>
                 <div class="chart-container">
@@ -101,219 +101,339 @@
             <div class="dashboard-card notification-card">
                 <div class="card-header">
                     <h3>Stock Notifications</h3>
-                    <a href="#" class="view-all">View all</a>
                 </div>
-                <ul class="notification-list">
-                    <li class="notification-item critical">
-                        <div class="notif-icon">
-                            <i class="fa-solid fa-circle-exclamation"></i>
+                
+                <ul class="an-notification-list">
+                    
+                    {{-- Item 1: Critical (สีแดง) --}}
+                    <li class="an-notification-item an-critical">
+                        <div class="an-content">
+                            <span class="an-title">Dead Stock over !</span>
+                            <span class="an-subtitle">5%</span>
+                            <span class="an-timestamp">Today | 5:00 PM</span>
                         </div>
-                        <div class="notif-content">
-                            <strong>Low Stock Alert</strong>
-                            <span>Paracetamol 500mg (เหลือ 8)</span>
+                        <div class="an-meta">
+                            <span class="an-time-badge">4h</span>
+                            <i class="fa-solid fa-arrow-up an-arrow an-positive"></i>
                         </div>
-                        <span class="notif-time">Just now</span>
                     </li>
-                    <li class="notification-item warning">
-                        <div class="notif-icon">
-                            <i class="fa-solid fa-hourglass-half"></i>
-                        </div>
-                        <div class="notif-content">
-                            <strong>Expiring Soon</strong>
-                            <span>Amoxicillin Batch A (หมดอายุใน 7 วัน)</span>
-                        </div>
-                        <span class="notif-time">1h ago</span>
-                    </li>
-                    <li class="notification-item critical">
-                        <div class="notif-icon">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                        </div>
-                        <div class="notif-content">
-                            <strong>Low Stock Alert</strong>
-                            <span>Betadine (เหลือ 3)</span>
-                        </div>
-                        <span class="notif-time">3h ago</span>
-                    </li>
-                    <li class="notification-item">
-                        <div class="notif-icon">
-                            <i class="fa-solid fa-check"></i>
-                        </div>
-                        <div class="notif-content">
-                            <strong>Stock Received</strong>
-                            <span>Purchase Order #PO-00125</span>
-                        </div>
-                        <span class="notif-time">Yesterday</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
 
-        <!-- 4. Expiring & Top Selling Grid -->
+                    {{-- Item 2: Warning (สีเหลือง) --}}
+                    <li class="an-notification-item an-warning">
+                        <div class="an-content">
+                            <span class="an-title">Expiring Soon</span>
+                            <span class="an-subtitle">Vitamin C injection</span>
+                            <span class="an-timestamp">Today | 6:00 PM</span>
+                        </div>
+                        <div class="an-meta">
+                            <span class="an-time-badge">4h</span>
+                            <i class="fa-solid fa-arrow-down an-arrow an-negative"></i>
+                        </div>
+                    </li>
+
+                    {{-- Item 3: Info (สีน้ำเงิน) --}}
+                    <li class="an-notification-item an-info">
+                        <div class="an-content">
+                            <span class="an-title">Expiry Risk</span>
+                            <span class="an-subtitle">Antibiotics down</span>
+                            <span class="an-timestamp">Tomorrow | 2:00 PM</span>
+                        </div>
+                        <div class="an-meta">
+                            <span class="an-time-badge">4h</span>
+                            <i class="fa-solid fa-arrow-down an-arrow an-negative"></i>
+                        </div>
+                    </li>
+                    
+                </ul>
+                
+                {{-- ลิงก์ View more ด้านล่าง --}}
+                <a href="#" class="an-view-more">
+                    View more
+                    <i class="fa-solid fa-chevron-down"></i>
+                </a>
+            </div>
+            </div>
+
         <div class="dashboard-grid list-grid">
-            <!-- (รายการยาหมดอายุ และ ยอดขาย... เหมือนเดิม) -->
-            <div class="dashboard-card list-card">
-                <div class="card-header">
-                    <h3>Top 10 Expiring Drugs (Next 30 Days)</h3>
-                    <a href="#" class="view-all">View all</a>
-                </div>
-                <div class="list-table-header">
-                    <span>Product Name</span>
-                    <span>Expiry Date</span>
-                    <span>Qty</span>
-                </div>
-                <ul class="data-list">
-                    <li class="data-list-item">
-                        <span class="product-name">Amoxicillin Batch A</span>
-                        <span class="expiry-date warning">Nov 20, 2025</span>
-                        <span class="qty">15</span>
-                    </li>
-                    <li class="data-list-item">
-                        <span class="product-name">Vitamin C injection</span>
-                        <span class="expiry-date warning">Nov 22, 2025</span>
-                        <span class="qty">30</span>
-                    </li>
-                    <li class="data-list-item">
-                        <span class="product-name">Ibuprofen Batch C</span>
-                        <span class="expiry-date">Dec 05, 2025</span>
-                        <span class="qty">50</span>
-                    </li>
-                    <li class="data-list-item">
-                        <span class="product-name">Saline Solution</span>
-                        <span class="expiry-date">Dec 10, 2025</span>
-                        <span class="qty">22</span>
-                    </li>
-                </ul>
-            </div>
 
-            <div class="dashboard-card list-card">
-                <div class="card-header">
-                    <h3>Recent Sales</h3>
-                    <a href="#" class="view-all">View all</a>
+            <!-- Card 1: Top 10 Expiring Drugs (New Design) -->
+    <div class="dashboard-card ed-card"> <!-- ed = Expiring Drugs -->
+        <div class="card-header">
+            <h3>Top 5 Expiring Drugs</h3>
+            <a href="#" class="view-all">View all <i class="fa-solid fa-chevron-right"></i></a>
+        </div>
+
+        <ul class="ed-list">
+            <!-- Item 1 -->
+            <li class="ed-list-item">
+                <div class="ed-item-main">
+                    <div class="ed-item-header">
+                        <div class="ed-item-icon" style="background-color: #fdf0e6;">
+                            <!-- -->
+                            <img src="https://placehold.co/100x100/fdf0e6/f2994a?text=P&font=roboto" alt="drug-icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                        </div>
+                        <div class="ed-item-title-block">
+                            <span class="ed-item-sku">PN0001265</span>
+                            <span class="ed-item-name">Paracetamol Batch A</span>
+                        </div>
+                    </div>
+                    <div class="ed-item-meta">
+                        <div class="ed-item-meta-date">
+                            <i class="fa-regular fa-calendar-days"></i>
+                            <span>Created Sep 12, 2020</span>
+                        </div>
+                        <div class="ed-item-meta-priority medium">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            <span>Medium</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="list-table-header">
-                    <span>Customer</span>
-                    <span>Items</span>
-                    <span>Total</span>
+                <div class="ed-item-info">
+                    <span class="ed-info-header">Information</span>
+                    <div class="ed-info-details">
+                        <div class="ed-info-grid">
+                            <div class="ed-info-block">
+                                <span class="ed-info-label">Quantity</span>
+                                <span class="ed-info-value">100</span>
+                            </div>
+                            <div class="ed-info-block">
+                                <span class="ed-info-label">Expiry Date</span>
+                                <span class="ed-info-value">10 <span class="days">days</span></span>
+                            </div>
+                        </div>
+                        <div class="ed-info-action">
+                            <i class="fa-regular fa-eye"></i>
+                        </div>
+                    </div>
                 </div>
-                <ul class="data-list">
-                    <li class="data-list-item">
-                        <span class="product-name">คุณสมชาย ใจดี</span>
-                        <span class="qty">3</span>
-                        <span class="total-price">฿450.00</span>
-                    </li>
-                    <li class="data-list-item">
-                        <span class="product-name">คุณอารีรัตน์</span>
-                        <span class="qty">1</span>
-                        <span class="total-price">฿120.00</span>
-                    </li>
-                    <li class="data-list-item">
-                        <span class="product-name">(Walk-in)</span>
-                        <span class="qty">2</span>
-                        <span class="total-price">฿85.50</span>
-                    </li>
-                    <li class="data-list-item">
-                        <span class="product-name">คุณวิเชียร</span>
-                        <span class="qty">5</span>
-                        <span class="total-price">฿1,200.00</span>
-                    </li>
-                </ul>
+            </li>
+            
+            <!-- Item 2 -->
+            <li class="ed-list-item">
+                <div class="ed-item-main">
+                    <div class="ed-item-header">
+                        <div class="ed-item-icon" style="background-color: #e6f7f4;">
+                            <!-- -->
+                            <img src="https://placehold.co/100x100/e6f7f4/27ae60?text=A&font=roboto" alt="drug-icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                        </div>
+                        <div class="ed-item-title-block">
+                            <span class="ed-item-sku">PN0001221</span>
+                            <span class="ed-item-name">Amoxicillin Batch B</span>
+                        </div>
+                    </div>
+                    <div class="ed-item-meta">
+                        <div class="ed-item-meta-date">
+                            <i class="fa-regular fa-calendar-days"></i>
+                            <span>Created Sep 10, 2020</span>
+                        </div>
+                        <div class="ed-item-meta-priority medium">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            <span>Medium</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ed-item-info">
+                    <span class="ed-info-header">Information</span>
+                    <div class="ed-info-details">
+                        <div class="ed-info-grid">
+                            <div class="ed-info-block">
+                                <span class="ed-info-label">Quantity</span>
+                                <span class="ed-info-value">75</span>
+                            </div>
+                            <div class="ed-info-block">
+                                <span class="ed-info-label">Expiry Date</span>
+                                <span class="ed-info-value">15 <span class="days">days</span></span>
+                            </div>
+                        </div>
+                        <div class="ed-info-action">
+                            <i class="fa-regular fa-eye"></i>
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Item 3 -->
+            <li class="ed-list-item">
+                <div class="ed-item-main">
+                    <div class="ed-item-header">
+                        <div class="ed-item-icon" style="background-color: #f0eefe;">
+                            <!-- -->
+                            <img src="https://placehold.co/100x100/f0eefe/9b51e0?text=I&font=roboto" alt="drug-icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                        </div>
+                        <div class="ed-item-title-block">
+                            <span class="ed-item-sku">PN0001290</span>
+                            <span class="ed-item-name">Ibuprofen Batch C</span>
+                        </div>
+                    </div>
+                    <div class="ed-item-meta">
+                        <div class="ed-item-meta-date">
+                            <i class="fa-regular fa-calendar-days"></i>
+                            <span>Created May 28, 2020</span>
+                        </div>
+                        <div class="ed-item-meta-priority low">
+                            <i class="fa-solid fa-arrow-down"></i>
+                            <span>Low</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ed-item-info">
+                    <span class="ed-info-header">Information</span>
+                    <div class="ed-info-details">
+                        <div class="ed-info-grid">
+                            <div class="ed-info-block">
+                                <span class="ed-info-label">Quantity</span>
+                                <span class="ed-info-value">60</span>
+                            </div>
+                            <div class="ed-info-block">
+                                <span class="ed-info-label">Expiry Date</span>
+                                <span class="ed-info-value">20 <span class="days">days</span></span>
+                            </div>
+                        </div>
+                        <div class="ed-info-action">
+                            <i class="fa-regular fa-eye"></i>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            
+             <!-- Item 3 -->
+            <li class="ed-list-item">
+                <div class="ed-item-main">
+                    <div class="ed-item-header">
+                        <div class="ed-item-icon" style="background-color: #f0eefe;">
+                            <!-- -->
+                            <img src="https://placehold.co/100x100/f0eefe/9b51e0?text=I&font=roboto" alt="drug-icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                        </div>
+                        <div class="ed-item-title-block">
+                            <span class="ed-item-sku">PN0001290</span>
+                            <span class="ed-item-name">Ibuprofen Batch C</span>
+                        </div>
+                    </div>
+                    <div class="ed-item-meta">
+                        <div class="ed-item-meta-date">
+                            <i class="fa-regular fa-calendar-days"></i>
+                            <span>Created May 28, 2020</span>
+                        </div>
+                        <div class="ed-item-meta-priority low">
+                            <i class="fa-solid fa-arrow-down"></i>
+                            <span>Low</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ed-item-info">
+                    <span class="ed-info-header">Information</span>
+                    <div class="ed-info-details">
+                        <div class="ed-info-grid">
+                            <div class="ed-info-block">
+                                <span class="ed-info-label">Quantity</span>
+                                <span class="ed-info-value">60</span>
+                            </div>
+                            <div class="ed-info-block">
+                                <span class="ed-info-label">Expiry Date</span>
+                                <span class="ed-info-value">20 <span class="days">days</span></span>
+                            </div>
+                        </div>
+                        <div class="ed-info-action">
+                            <i class="fa-regular fa-eye"></i>
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+             <!-- Item 3 -->
+            <li class="ed-list-item">
+                <div class="ed-item-main">
+                    <div class="ed-item-header">
+                        <div class="ed-item-icon" style="background-color: #f0eefe;">
+                            <!-- -->
+                            <img src="https://placehold.co/100x100/f0eefe/9b51e0?text=I&font=roboto" alt="drug-icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                        </div>
+                        <div class="ed-item-title-block">
+                            <span class="ed-item-sku">PN0001290</span>
+                            <span class="ed-item-name">Ibuprofen Batch C</span>
+                        </div>
+                    </div>
+                    <div class="ed-item-meta">
+                        <div class="ed-item-meta-date">
+                            <i class="fa-regular fa-calendar-days"></i>
+                            <span>Created May 28, 2020</span>
+                        </div>
+                        <div class="ed-item-meta-priority low">
+                            <i class="fa-solid fa-arrow-down"></i>
+                            <span>Low</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ed-item-info">
+                    <span class="ed-info-header">Information</span>
+                    <div class="ed-info-details">
+                        <div class="ed-info-grid">
+                            <div class="ed-info-block">
+                                <span class="ed-info-label">Quantity</span>
+                                <span class="ed-info-value">60</span>
+                            </div>
+                            <div class="ed-info-block">
+                                <span class="ed-info-label">Expiry Date</span>
+                                <span class="ed-info-value">20 <span class="days">days</span></span>
+                            </div>
+                        </div>
+                        <div class="ed-info-action">
+                            <i class="fa-regular fa-eye"></i>
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+    </div>
+
+    <!-- Card 2: Activity Stream (New Design) -->
+    <div class="dashboard-card as-card"> <!-- as = Activity Stream -->
+        <div class="card-header">
+            <h3>Activity Stream</h3>
+        </div>
+        
+        <div class="as-user-block">
+            <img class="as-avatar" src="https://placehold.co/100x100/E0E0E0/757575?text=O" alt="User Avatar">
+            <div class="as-user-info">
+                <span class="name">Oscar Holloway</span>
+                <span class="role">Pharmacist | Staff</span>
             </div>
         </div>
 
-        <!-- [!!! NEW !!!] 5. Quick Actions -->
-        <div class="dashboard-grid quick-actions-grid">
-            <a href="#" class="dashboard-card action-card">
-                <i class="fa-solid fa-cash-register"></i>
-                <span>Go to POS</span>
-            </a>
-            <a href="#" class="dashboard-card action-card">
-                <i class="fa-solid fa-plus"></i>
-                <span>Add Product</span>
-            </a>
-            <a href="#" class="dashboard-card action-card">
-                <i class="fa-solid fa-boxes-packing"></i>
-                <span>Receive Stock</span>
-            </a>
-            <a href="#" class="dashboard-card action-card">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>Add Patient</span>
-            </a>
-            <a href="#" class="dashboard-card action-card">
-                <i class="fa-solid fa-chart-pie"></i>
-                <span>View Reports</span>
-            </a>
-        </div>
+        <ul class="as-action-list">
+            <li class="as-action-item">
+                <i class="fa-solid fa-cloud-arrow-up as-action-icon" style="color: #2F80ED;"></i>
+                <span class="as-action-text">Updated the status of Mind Map task to In Progress</span>
+            </li>
+            <li class="as-action-item">
+                <i class="fa-solid fa-paperclip as-action-icon" style="color: #9B51E0;"></i>
+                <span class="as-action-text">Attached files to the task</span>
+            </li>
+            <li class="as-action-item">
+                <i class="fa-solid fa-paperclip as-action-icon" style="color: #9B51E0;"></i>
+                <span class="as-action-text">Attached files to the task</span>
+            </li>
+            <li class="as-action-item">
+                <i class="fa-solid fa-paperclip as-action-icon" style="color: #9B51E0;"></i>
+                <span class="as-action-text">Attached files to the task</span>
+            </li>
+        </ul>
 
-        <!-- [!!! NEW !!!] 6. Pending Tasks Grid -->
-        <div class="dashboard-grid list-grid">
-            <!-- Left Card: Pending Purchase Orders -->
-            <div class="dashboard-card list-card">
-                <div class="card-header">
-                    <h3>Pending Purchase Orders</h3>
-                    <a href="#" class="view-all">View all</a>
-                </div>
-                <div class="list-table-header">
-                    <span>Order ID</span>
-                    <span>Supplier</span>
-                    <span>Status</span>
-                </div>
-                <ul class="data-list">
-                    <li class="data-list-item">
-                        <span class="product-name">PO-00126</span>
-                        <span class="supplier-name">Med-Supply Co.</span>
-                        <span class="status pending">Pending</span>
-                    </li>
-                    <li class="data-list-item">
-                        <span class="product-name">PO-00125</span>
-                        <span class="supplier-name">PharmaDeal</span>
-                        <span class="status intransit">In Transit</span>
-                    </li>
-                    <li class="data-list-item">
-                        <span class="product-name">PO-00124</span>
-                        <span class="supplier-name">Thai-Pha</span>
-                        <span class="status pending">Pending</span>
-                    </li>
-                </ul>
-            </div>
+        <a href="#" class="as-view-more">
+            View more
+            <i class="fa-solid fa-chevron-down"></i>
+        </a>
+    </div>
 
-            <!-- Right Card: Prescription Queue (ถ้ามีระบบนี้) -->
-            <div class="dashboard-card list-card">
-                <div class="card-header">
-                    <h3>Prescription Queue</h3>
-                    <a href="#" class="view-all">View all</a>
-                </div>
-                <div class="list-table-header">
-                    <span>Patient Name</span>
-                    <span>Doctor</span>
-                    <span>Status</span>
-                </div>
-                <ul class="data-list">
-                    <li class="data-list-item">
-                        <span class="product-name">คุณอารยา</span>
-                        <span class="supplier-name">นพ. สมเกียรติ</span>
-                        <span class="status pending">Waiting</span>
-                    </li>
-                    <li class="data-list-item">
-                        <span class="product-name">คุณปิติ</span>
-                        <span class="supplier-name">คลินิกใกล้บ้าน</span>
-                        <span class="status intransit">Filling</span>
-                    </li>
-                    <li class="data-list-item">
-                        <span class="product-name">คุณสมหญิง</span>
-                        <span class="supplier-name">นพ. สมเกียรติ</span>
-                        <span class="status pending">Waiting</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
+            
 
+        
     </div>
 
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         @vite(['resources/js/dashboard.js'])
     @endpush
-
-    
 
 </x-app-layout>

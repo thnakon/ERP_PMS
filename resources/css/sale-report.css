@@ -1,0 +1,403 @@
+/* * CSS สำหรับหน้า Sales Report (sale-report.css)
+ * สไตล์มินิมอลแบบ Apple
+ * [!!! REFACTORED !!!] 
+ * - เปลี่ยนชื่อคลาสทั้งหมดโดยใช้ prefix 'sr-' (Sales Report) 
+ * - เพื่อป้องกันการชนกับ CSS อื่นๆ
+ */
+
+:root {
+    --font-family-apple: -apple-system, BlinkMacSystemFont,"Noto Sans Thai", "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+    --bg-color: #f5f5f7; 
+    --card-bg-color: #ffffff; 
+    --text-primary: #1d1d1f; 
+    --text-secondary: #6e6e73; 
+    --border-color: #d2d2d7; 
+    --accent-color-blue: #007aff; 
+    --positive-delta: #34C759; 
+    --negative-delta: #FF3B30; 
+    --neutral-delta: var(--text-secondary);
+    --border-radius-card: 20px; 
+    --border-radius-element: 20px; 
+    --card-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); 
+    --hover-bg-color: #f3f2f8; 
+}
+
+/* [!!! HEADER STYLES (Refactored) !!!] */
+.sr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0; 
+    width: 100%;
+}
+
+.sr-header .sr-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sr-header .sr-breadcrumb {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.sr-header .sr-page-title {
+    color: var(--text-primary);
+    font-size: 1.75rem; /* 28px */
+    font-weight: 700;
+    margin: 0;
+}
+
+.sr-header .sr-header-right {
+    display: flex;
+}
+
+/* [!!! APPLE BUTTONS (Refactored) !!!] */
+.sr-button-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: var(--font-family-apple);
+    color: #ffffff;
+    background-color: var(--accent-color-blue);
+    border: none;
+    border-radius: var(--border-radius-element);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.sr-button-primary:hover {
+    background-color: #0070e0;
+}
+
+.sr-button-primary:active {
+    transform: scale(0.98);
+}
+
+.sr-button-primary i {
+    font-size: 0.9rem;
+}
+
+.sr-button-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: var(--font-family-apple);
+    color: var(--accent-color-blue);
+    background-color: var(--hover-bg-color); 
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-element);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.sr-button-secondary:hover {
+    background-color: #e9e9ed; 
+}
+
+
+/* [!!! MAIN REPORT CONTENT STYLES (Refactored) !!!] */
+.sr-container {
+    margin: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    background-color: var(--bg-color);
+    border-radius: var(--border-radius-card);
+    font-family: var(--font-family-apple);
+    color: var(--text-primary);
+}
+
+/* 1. Filters */
+.sr-filters-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 20px;
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius-card);
+}
+
+.sr-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-grow: 1;
+    min-width: 180px;
+}
+
+.sr-filter-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sr-select {
+    font-family: var(--font-family-apple);
+    font-size: 0.95rem;
+    padding: 10px 12px;
+    border: 1px solid transparent; 
+    border-radius: var(--border-radius-element);
+    background-color: var(--hover-bg-color); 
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236e6e73' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 16px;
+    cursor: pointer;
+}
+
+.sr-select:focus {
+    outline: none;
+    border-color: var(--accent-color-blue);
+    box-shadow: 0 0 0 2px rgba(0,122,255,0.2);
+}
+
+.sr-filter-apply-btn {
+    height: 40px; /* ให้ความสูงเท่ากับ select box */
+}
+
+
+/* 2. KPIs */
+.sr-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.sr-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px;
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius-card);
+    transition: box-shadow 0.2s ease;
+}
+
+.sr-kpi-card:hover {
+    box-shadow: var(--card-shadow);
+}
+
+.sr-kpi-icon-bg {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--icon-bg, #f0f0f0);
+    color: var(--icon-color, #333);
+}
+
+.sr-kpi-icon-bg i {
+    font-size: 1.25rem;
+}
+
+.sr-kpi-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.sr-kpi-title {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.sr-kpi-value {
+    font-size: 1.50rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-top: 4px;
+}
+
+.sr-kpi-delta {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.sr-kpi-delta.sr-delta-positive { color: var(--positive-delta); }
+.sr-kpi-delta.sr-delta-negative { color: var(--negative-delta); }
+.sr-kpi-delta.sr-delta-neutral { color: var(--neutral-delta); }
+
+
+/* 3. Widgets (Graphs & Tables) */
+.sr-widgets-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2-column grid */
+    gap: 20px;
+}
+
+.sr-widget-card {
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius-card);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sr-widget-card.sr-widget-full-width {
+    grid-column: span 2; /* ทำให้เต็ม 2 คอลลัมน์ */
+}
+
+.sr-widget-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.sr-chart-container {
+    position: relative;
+    width: 100%;
+}
+
+/* 4. Apple Table */
+.sr-table-container {
+    width: 100%;
+    overflow-x: auto; /* สำหรับตารางในมือถือ */
+}
+
+.sr-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.sr-table th,
+.sr-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.sr-table thead th {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    background-color: var(--bg-color);
+}
+
+.sr-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.sr-table tbody tr:hover {
+    background-color: var(--hover-bg-color); 
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .sr-widgets-grid {
+        grid-template-columns: 1fr; /* 1-column grid */
+    }
+    .sr-widget-card.sr-widget-full-width {
+        grid-column: span 1; /* รีเซ็ตเป็น 1 คอลัมน์ */
+    }
+}
+
+@media (max-width: 768px) {
+    .sr-container {
+        padding: 16px;
+    }
+    .sr-filters-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .sr-filter-group {
+        min-width: 100%;
+    }
+    .sr-kpi-grid {
+        grid-template-columns: 1fr; /* 1-column grid */
+    }
+}
+
+/* * [!!! HEADER STYLES (Refactored) !!!]
+ * CSS นี้จะจัดโครงสร้าง Header ให้อยู่ซ้าย-ขวา
+ */
+.sr-header {
+    display: flex;
+    justify-content: space-between; /* [สำคัญ] ดันซ้าย-ขวา */
+    align-items: center;
+    padding: 0; 
+    width: 100%;
+}
+
+.sr-header .sr-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sr-header .sr-breadcrumb {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.sr-header .sr-page-title {
+    color: var(--text-primary);
+    font-size: 1.75rem; /* 28px */
+    font-weight: 700;
+    margin: 0;
+}
+
+.sr-header .sr-header-right {
+    display: flex;
+    margin-left: auto; /* [สำคัญ] ดันไปทางขวา */
+}
+
+
+/* * [!!! NEW CLASS !!!]
+ * นี่คือคลาสปุ่มหลัก (Primary Button) สไตล์ Apple ที่คุณขอ
+ */
+.sr-button-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* ระยะห่างระหว่างไอคอนกับข้อความ */
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    
+    /* (ต้องแน่ใจว่าได้ประกาศ :root variables ไว้แล้ว) */
+    font-family: var(--font-family-apple); 
+    color: #ffffff; /* สีตัวอักษรขาว */
+    background-color: var(--accent-color-blue); /* สีฟ้า Apple */
+    border: none;
+    border-radius: var(--border-radius-element); /* 20px */
+    
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.sr-button-primary:hover {
+    background-color: #0070e0; /* สีเข้มขึ้นเมื่อ hover */
+}
+
+.sr-button-primary:active {
+    transform: scale(0.98); /* ยุบตัวเล็กน้อยเมื่อกด */
+}
+
+.sr-button-primary i {
+    font-size: 0.9rem;
+}

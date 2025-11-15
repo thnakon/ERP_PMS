@@ -21,7 +21,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/main.css', 'resources/js/main.js', 'resources/css/app.css', 'resources/js/app.js', 'resources/css/sidebar.css', 'resources/js/sidebar.js', 'resources/css/header.css', 'resources/js/header.js', 'resources/css/settings.css', 'resources/js/setting.js', 'resources/css/modal.css', 'resources/js/modal.js', 'resources/css/dashboard.css'])
+        @vite(['resources/css/main.css', 'resources/js/main.js', 'resources/css/app.css', 'resources/js/app.js', 'resources/css/sidebar.css','resources/js/dashboard.js' , 'resources/js/sidebar.js', 'resources/css/header.css', 'resources/js/header.js', 'resources/css/settings.css', 'resources/js/setting.js', 'resources/css/modal.css', 'resources/js/modal.js',
+         'resources/css/dashboard.css' , 'resources/css/sale-report.css', 'resources/js/sale-report.js', 'resources/css/footer.css', 'resources/js/footer.js'])
     @else
         {{-- (โค้ด fallback) --}}
         <style>
@@ -40,8 +41,10 @@
     <!-- Page Content -->
     <main class="main-content-wrapper">
         {{ $slot }}
-    </main>
 
+
+        @include('layouts.footer')
+    </main>
 
 
 

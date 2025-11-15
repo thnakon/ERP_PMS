@@ -1,6 +1,7 @@
 /*
  * resources/css/dashboard.css
  * Apple-style minimal dashboard CSS
+ * (Fully Responsive & Integrated)
  */
 
 /* 1. Root & Font Import */
@@ -35,9 +36,8 @@ body {
 /* 2. Main Content Wrapper */
 .dashboard-main-content {
     margin: 12px 10px;
-    margin-left: 15px;
+    margin-left: 14px;
     max-width: 1600px;
-   
 }
 
 /* 3. Page Header */
@@ -65,7 +65,6 @@ body {
     display: flex;
     align-items: center;
     background: var(--card-bg);
-    border: 1px solid var(--border-color);
     padding: 10px 16px;
     border-radius: 12px;
     font-size: 0.9rem;
@@ -83,7 +82,6 @@ body {
     background-color: var(--card-bg);
     border-radius: 16px;
     padding: 24px;
-    border: 1px solid var(--border-color);
     box-shadow: 0 4px 12px var(--shadow-color);
     transition: all 0.2s ease-in-out;
 }
@@ -109,7 +107,11 @@ body {
 }
 
 .list-grid {
-    grid-template-columns: repeat(2, 1fr);
+    /* [!!!] ปรับ Grid นี้ให้รองรับการ์ด 2 ใบที่มีความสูงต่างกัน
+        โดยให้ยืดตามธรรมชาติ */
+    grid-template-columns: 2fr 1fr;
+    /* align-items: start; */ /* [!!!] (OLD) ปิดอันนี้ */
+    align-items: stretch; /* [!!!] (NEW) เปลี่ยนเป็น stretch เพื่อให้สูงเท่ากัน */
 }
 
 /* 6. KPI Stat Cards */
@@ -134,22 +136,18 @@ body {
     background-color: #e6f2ff;
     color: var(--apple-blue);
 }
-
 .kpi-card .card-icon.icon-profit {
     background-color: #e5f9eb;
     color: var(--apple-green);
 }
-
 .kpi-card .card-icon.icon-customer {
     background-color: #f8f0fe;
     color: var(--apple-purple);
 }
-
 .kpi-card .card-icon.icon-stock {
     background-color: #fff0e0;
     color: var(--apple-orange);
 }
-
 
 .kpi-card .card-info {
     display: flex;
@@ -175,14 +173,8 @@ body {
     color: var(--text-tertiary);
     margin-top: 4px;
 }
-
-.kpi-card .kpi-comparison.good {
-    color: var(--apple-green);
-}
-
-.kpi-card .kpi-comparison.bad {
-    color: var(--apple-red);
-}
+.kpi-card .kpi-comparison.good { color: var(--apple-green); }
+.kpi-card .kpi-comparison.bad { color: var(--apple-red); }
 
 /* 7. Card Header */
 .card-header {
@@ -206,215 +198,496 @@ body {
     color: var(--apple-blue);
     font-weight: 500;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.card-header .view-all i {
+    font-size: 0.7rem;
 }
 
 /* 8. Chart Card */
+.chart-card .card-header {
+    /* [!!!] ปรับให้ header จัดการ title และปุ่มได้ดีขึ้น */
+    align-items: center; 
+}
+
 .chart-card .chart-container {
     position: relative;
     height: 320px;
 }
 
-.chart-legend {
+/* [!!! REMOVED !!!] ลบ .chart-legend และ .legend-dot ของเก่าออก */
+/*
+.chart-legend { ... }
+.chart-legend .legend-dot { ... }
+*/
+
+/* [!!! REVISED STYLE FOR SLIDING EFFECT !!!] */
+.chart-toggle-buttons {
     display: flex;
     align-items: center;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
+    /* [!!!] สีพื้นหลังของกรอบนอก (เหมือนในรูป) */
+    background-color: var(--bg-color, #f0f0f0); 
+    border-radius: 30px; /* ความโค้งมนของกรอบนอก */
+    padding: 4px;
+    position: relative; /* [!!!] สำคัญมากสำหรับ ::before */
 }
 
-.chart-legend .legend-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 6px;
-    background-color: var(--apple-blue);
+/* [!!!] นี่คือ "แผ่นสไลเดอร์" สีดำที่จะเลื่อนไปมา */
+.chart-toggle-buttons::before {
+    content: '';
+    position: absolute;
+    /* [!!!] 4px คือ padding ของตัวครอบ */
+    top: 4px;
+    bottom: 4px; 
+    
+    /* [!!!] JS จะอัปเดตค่า 2 ตัวนี้ */
+    left: var(--slider-left, 4px); 
+    width: var(--slider-width, 100px); /* (ค่าเริ่มต้น, JS จะเขียนทับ) */
+
+    /* [!!!] สีของปุ่ม Active ตามในรูป */
+    background-color: #333; 
+    border-radius: 30px; /* ความโค้งมนให้เท่ากัน */
+    z-index: 0; /* อยู่ข้างหลังปุ่ม */
 }
 
-/* 9. Notification Card */
-.notification-list {
+/* [!!!] เพิ่มคลาสนี้ด้วย JS เพื่อให้ transition ทำงาน "หลัง" จากโหลดเสร็จ */
+.chart-toggle-buttons.slider-ready::before {
+    transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.chart-toggle-buttons .toggle-btn {
+    font-family: var(--apple-font);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary, #6e6e73); /* สีตัวอักษรปกติ (เทา) */
+    background-color: transparent; /* [!!!] ปุ่มต้องโปร่งใส */
+    border: none;
+    border-radius: 30px;
+    padding: 6px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    
+    position: relative; /* [!!!] ให้ปุ่มอยู่เหนือแผ่นสไลเดอร์ */
+    z-index: 1;
+    
+    /* [!!!] อนิเมชั่นตอนเปลี่ยนสีตัวอักษร */
+    transition: color 0.3s ease-in-out;
+}
+
+.chart-toggle-buttons .toggle-btn:hover {
+    /* [!!!] ถ้ายังไม่ active ให้เปลี่ยนสีเมื่อ hover */
+    color: var(--text-primary, #1d1d1f);
+}
+
+.chart-toggle-buttons .toggle-btn.active {
+    background-color: transparent; /* [!!!] ไม่ใช้พื้นหลังที่ปุ่ม */
+    color: #ffffff; /* [!!!] สีตัวอักษร (เมื่อ active) - สีขาว */
+    font-weight: 600;
+    box-shadow: none; /* [!!!] ไม่ใช้เงา */
+}
+
+/* [!!!] ถ้า active อยู่แล้ว hover ก็ไม่ต้องเปลี่ยนสี */
+.chart-toggle-buttons .toggle-btn.active:hover {
+    color: #ffffff;
+}
+/* [!!! END REVISED STYLE !!!] */
+
+
+/* 9. NOTIFICATION CARD (ดีไซน์ใหม่จากครั้งก่อน) */
+.notification-card .card-header {
+    border-bottom: none; 
+    padding-bottom: 0; 
+}
+
+.an-notification-list { 
     list-style: none;
     padding: 0;
     margin: 0;
-    height: 320px;
-    overflow-y: auto;
-}
-
-.notification-item {
     display: flex;
+    flex-direction: column;
+    gap: 20px; 
+    min-height: 280px; 
+    max-height: 320px; 
+    overflow-y: auto; 
+}
+
+.an-notification-item {
+    display: grid;
+    grid-template-columns: 18px 1fr auto; 
+    gap: 16px;
     align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border-color);
+    position: relative; 
 }
 
-.notification-item:last-child {
-    border-bottom: none;
+.an-notification-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background-color: var(--border-color); 
+    border-radius: 5px;
+}
+.an-notification-item.an-critical::before {
+    background-color: var(--apple-red); 
+}
+.an-notification-item.an-warning::before {
+    background-color: var(--apple-yellow); 
+}
+.an-notification-item.an-info::before {
+    background-color: var(--apple-blue); 
 }
 
-.notification-item .notif-icon {
-    font-size: 1.1rem;
-    margin-right: 16px;
-    color: var(--text-tertiary);
+.an-notification-item .an-content {
+    grid-column: 2; 
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
-
-.notification-item.critical .notif-icon {
-    color: var(--apple-red);
-}
-
-.notification-item.warning .notif-icon {
-    color: var(--apple-orange);
-}
-
-.notification-item .notif-content {
-    flex-grow: 1;
-}
-
-.notification-item .notif-content strong {
-    display: block;
-    font-size: 0.9rem;
+.an-notification-item .an-title {
+    font-size: 1rem;
     font-weight: 600;
     color: var(--text-primary);
 }
-
-.notification-item .notif-content span {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
+.an-notification-item .an-subtitle {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary); 
 }
-
-.notification-item .notif-time {
+.an-notification-item .an-timestamp {
     font-size: 0.8rem;
-    color: var(--text-tertiary);
-    flex-shrink: 0;
-    margin-left: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
 }
 
-/* * [!!! วางทับโค้ดเดิมทั้งหมดในส่วนที่ 10 !!!] 
- * 10. List Cards (Expiring, Recent Sales) 
+.an-notification-item .an-meta {
+    grid-column: 3; 
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.an-notification-item .an-time-badge {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    background-color: var(--bg-color); 
+    border-radius: 20px; 
+    padding: 4px 10px;
+    font-weight: 500;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease; 
+}
+
+.an-notification-item .an-arrow {
+    font-size: 1rem;
+    color: var(--text-tertiary); 
+}
+.an-notification-item .an-arrow.an-positive {
+    color: var(--apple-orange); 
+}
+.an-notification-item .an-arrow.an-negative {
+    color: var(--apple-green); 
+}
+
+.an-view-more {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--apple-blue);
+    margin-top: 24px; 
+    padding: 4px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+.an-view-more:hover {
+    background-color: #f0f7ff; 
+}
+.an-view-more i {
+    font-size: 0.7rem;
+    margin-left: 4px;
+    transition: transform 0.2s ease;
+}
+.an-view-more:hover i {
+    transform: translateY(2px);
+}
+/* [!!! จบส่วนที่ 9 !!!] */
+
+
+/* * [!!! 10. LIST CARDS (REPLACED) !!!]
+ * แทนที่ด้วยดีไซน์ใหม่ "Expiring Drugs" และ "Activity Stream"
  */
 
-/* 10. List Cards (Expiring, Recent Sales) */
-
-/* [!!! 1. ปรับปรุง Header (ใช้ Grid) !!!] */
-.list-card .list-table-header {
-    /* display: flex; (ลบออก) */
-    /* justify-content: space-between; (ลบออก) */
-    
-    display: grid; /* [!!! เปลี่ยนเป็น Grid !!!] */
-    /* กำหนด 3 คอลัมน์: 
-       คอลัมน์ 1 และ 2 จะแบ่งพื้นที่ที่เหลือ
-       คอลัมน์ 3 (Status) จะใช้ขนาดพอดีตัว
-    */
-    grid-template-columns: 1fr 1fr auto;
-    gap: 16px; /* [!!! เพิ่ม !!!] ระยะห่างระหว่างคอลัมน์ */
-
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    padding: 0 12px 12px 12px;
-    border-bottom: 1px solid var(--border-color);
+/* 10.1 - Expiring Drugs Card (ed-) */
+/* [!!! NEW !!!] เพิ่มกฎนี้เพื่อให้การ์ดยืดได้ */
+.ed-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
-.list-table-header span:first-child {
-    flex-grow: 0; /* [!!! ปิด !!!] ปิด flex-grow */
-    text-align: left;
+.ed-card .card-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 12px;
 }
 
-.list-table-header span:not(:first-child) {
-    width: auto; /* [!!! ปรับ !!!] ให้ Grid จัดการความกว้าง */
-    text-align: left; /* [!!! ปรับ !!!] จัดชิดซ้าย (ดูดีกว่า) */
-}
-
-/* [!!! เพิ่ม !!!] จัดให้ "Status" (หัวข้อ) ชิดขวา */
-.list-table-header span:last-child {
-    text-align: right;
-}
-
-/* --------------------------------- */
-
-.list-card .data-list {
+.ed-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 280px; 
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 450px; /* จำกัดความสูง */
+    overflow-y: auto; /* เพิ่ม scrollbar */
+    flex-grow: 1; /* [!!! NEW !!!] ให้ list ยืดตามพื้นที่ */
 }
 
-/* [!!! 2. ปรับปรุง Data Row (ใช้ Grid) !!!] */
-.list-card .data-list-item {
-    /* display: flex; (ลบออก) */
-    /* justify-content: space-between; (ลบออก) */
+.ed-list-item {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; /* 60/40 split */
+    gap: 20px;
+    padding: 20px;
+    background-color: var(--card-bg); /* [!!!] พื้นหลังขาว */
+    border: 1px solid var(--border-color); /* [!!!] มีเส้นขอบ */
+    border-radius: 12px; /* [!!!] ความโค้งมน */
+}
 
-    display: grid; /* [!!! เปลี่ยนเป็น Grid !!!] */
-    /* [!!! สำคัญ !!!] ต้องใช้ Grid เดียวกันกับ Header */
-    grid-template-columns: 1fr 1fr auto;
-    gap: 16px; /* [!!! เพิ่ม !!!] ระยะห่างระหว่างคอลัมน์ */
-    
+/* ส่วนซ้าย (Main) */
+.ed-item-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    /* [!!!] เส้นขีดคั่น */
+    border-right: 1px solid var(--border-color);
+    padding-right: 20px;
+}
+
+.ed-item-header {
+    display: flex;
     align-items: center;
-    padding: 14px 12px;
+    gap: 12px;
+}
+
+.ed-item-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background-color: var(--bg-color); /* สี placeholder */
+    flex-shrink: 0;
+    overflow: hidden; /* [!!!] เผื่อใส่ <img> */
+}
+
+.ed-item-title-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.ed-item-sku {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.ed-item-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.ed-item-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.ed-item-meta-date,
+.ed-item-meta-priority {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.ed-item-meta-priority.medium {
+    color: var(--apple-orange);
+    font-weight: 500;
+}
+.ed-item-meta-priority.low {
+    color: var(--apple-green);
+    font-weight: 500;
+}
+
+/* ส่วนขวา (Info) */
+.ed-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center; /* [!!!] จัดให้อยู่กลางแนวตั้ง */
+}
+
+.ed-info-header {
     font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.ed-info-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ed-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.ed-info-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.ed-info-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+}
+
+.ed-info-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.ed-info-value .days {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-left: 2px;
+}
+
+.ed-info-action {
+    font-size: 1.2rem;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 4px;
+}
+.ed-info-action:hover {
+    color: var(--apple-blue);
+}
+
+
+/* 10.2 - Activity Stream Card (as-) */
+/* [!!! NEW !!!] เพิ่มกฎนี้เพื่อให้การ์ดยืดได้ */
+.as-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.as-card .card-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.as-user-block {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
     border-bottom: 1px solid var(--border-color);
 }
 
-.list-card .data-list-item:last-child {
-    border-bottom: none;
+.as-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
-.list-card .data-list-item .product-name {
+.as-user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.as-user-info .name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.as-user-info .role {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.as-action-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1; /* [!!! NEW !!!] ให้ list ยืดตามพื้นที่ */
+}
+
+.as-action-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background-color: #f0f7ff; /* สีฟ้าอ่อนๆ */
+    border-radius: 12px;
+}
+
+.as-action-icon {
+    font-size: 1.1rem;
+    color: var(--apple-blue); /* สีเริ่มต้น */
+}
+
+.as-action-text {
+    font-size: 0.9rem;
     font-weight: 500;
     color: var(--text-primary);
-    flex-grow: 0; /* [!!! ปิด !!!] ปิด flex-grow */
-    text-align: left;
 }
 
-/* [!!! 3. ปรับปรุงคอลัมน์ที่เหลือ !!!] */
-
-/* สำหรับการ์ด PO/Prescription */
-.list-card .data-list-item .supplier-name {
-    width: auto; /* [!!! ปรับ !!!] ให้ Grid จัดการความกว้าง */
-    text-align: left; /* [!!! ปรับ !!!] จัดชิดซ้าย (ดูดีกว่า) */
-    color: var(--text-secondary);
-}
-
-/* สำหรับการ์ด PO/Prescription */
-.list-card .data-list-item .status {
-    width: auto; /* [!!! ปรับ !!!] ให้ Grid จัดการความกว้าง */
-    /* ... (โค้ดสีและ padding อื่นๆ คงเดิม) ... */
-    
-    /* สไตล์เดิมของคุณ (คงไว้) */
-    text-align: right;
-    font-weight: 600;
-    padding: 4px 8px;
+/* "View more" (ใช้สไตล์เดียวกับ .an-view-more) */
+.as-view-more {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--apple-blue);
+    margin-top: auto; /* [!!! ADJUSTED !!!] เปลี่ยนจาก 24px เป็น auto */
+    padding: 4px;
     border-radius: 8px;
-    font-size: 0.8rem;
-    background-color: var(--bg-color);
+    transition: background-color 0.2s ease;
 }
-/* ... (โค้ด .status.pending, .status.intransit ฯลฯ คงเดิม) ... */
-.list-card .data-list-item .status.pending {
-    color: var(--apple-orange);
-    background-color: #fff0e0;
+.as-view-more:hover {
+    background-color: #f0f7ff; 
 }
-.list-card .data-list-item .status.intransit {
-    color: var(--apple-cyan);
-    background-color: #e0f9ff;
+.as-view-more i {
+    font-size: 0.7rem;
+    margin-left: 4px;
+    transition: transform 0.2s ease;
 }
+.as-view-more:hover i {
+    transform: translateY(2px);
+}
+/* [!!! จบส่วนที่ 10 (REPLACED) !!!] */
 
-.list-card .data-list-item .expiry-date,
-.list-card .data-list-item .qty,
-.list-card .data-list-item .total-price {
-    width: 100px;
-    text-align: right;
-    color: var(--text-secondary);
-}
 
-.list-card .data-list-item .expiry-date.warning {
-    color: var(--apple-orange);
-    font-weight: 600;
-}
-
-.list-card .data-list-item .total-price {
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-/* [!!! NEW !!!] 11. Quick Actions */
+/* 11. Quick Actions */
 .quick-actions-grid {
     grid-template-columns: repeat(5, 1fr);
 }
@@ -428,18 +701,15 @@ body {
     text-decoration: none;
     transition: all 0.2s ease-in-out;
 }
-
 .action-card:hover {
-    background-color: #f5f5f7; /* สีพื้นหลังเมื่อ hover */
+    background-color: #f5f5f7;
     transform: translateY(-4px);
 }
-
 .action-card i {
     font-size: 2rem;
     color: var(--apple-blue);
     margin-bottom: 16px;
 }
-
 .action-card span {
     font-size: 1rem;
     font-weight: 600;
@@ -447,25 +717,22 @@ body {
 }
 
 
-/* 12. Responsive */
+/* * [!!! 12. RESPONSIVE (UPDATED) !!!]
+ * เพิ่มกฎสำหรับ .ed- และ .as-
+ */
 @media (max-width: 1200px) {
     .kpi-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-
     .main-grid {
         grid-template-columns: 1fr;
     }
-
     .list-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* [!!!] เปลี่ยนเป็น 1 คอลัมน์ */
     }
-
     .quick-actions-grid {
-        /* [!!! ADJUSTED !!!] */
         grid-template-columns: repeat(3, 1fr);
     }
-
     .chart-card .chart-container {
         height: 300px;
     }
@@ -474,6 +741,8 @@ body {
 @media (max-width: 768px) {
     .dashboard-main-content {
         padding: 16px;
+        margin-left: 0; 
+        margin-right: 0;
     }
     
     .dashboard-page-header {
@@ -491,34 +760,151 @@ body {
     }
 
     .quick-actions-grid {
-        /* [!!! ADJUSTED !!!] */
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Responsive: Notification Card */
+    .an-notification-item {
+        gap: 12px; 
+        grid-template-columns: 12px 1fr auto; 
+    }
+    .an-notification-item::before {
+        width: 4px; 
+    }
+    .an-notification-item .an-meta {
+        gap: 8px; 
+    }
+    .an-notification-item .an-title {
+        font-size: 0.95rem; 
+    }
+    .an-notification-item .an-subtitle {
+        font-size: 0.85rem;
+    }
+
+    /* [!!! NEW !!!] Responsive: Expiring Drugs Card */
+    .ed-list-item {
+        grid-template-columns: 1fr; /* [!!!] เปลี่ยนเป็น 1 คอลัมน์ */
+        gap: 16px;
+        padding: 16px;
+    }
+    .ed-item-main {
+        border-right: none; /* [!!!] เอาเส้นคั่นออก */
+        padding-right: 0;
+        gap: 12px;
+        /* [!!!] เพิ่มเส้นคั่นแนวนอน */
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .ed-item-info {
+        gap: 12px;
+    }
+    .ed-info-grid {
+        gap: 12px;
+    }
+
+    /* [!!! NEW !!!] Responsive: Activity Stream Card */
+    .as-user-block {
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+    }
+    .as-action-item {
+        padding: 12px;
+        gap: 10px;
+    }
+    .as-action-text {
+        font-size: 0.85rem;
+    }
+
+    /* [!!! NEW !!!] Responsive: Chart Toggle Buttons */
+    .chart-card .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px; /* เพิ่มช่องว่างระหว่าง Title กับปุ่ม */
+    }
+    .chart-toggle-buttons {
+        width: 100%; /* ทำให้ปุ่มเต็มความกว้าง */
+    }
+    .chart-toggle-buttons .toggle-btn {
+        flex-grow: 1; /* แบ่งพื้นที่ปุ่มเท่าๆ กัน */
+        text-align: center; /* จัดกลาง */
+        padding: 8px 10px;
     }
 }
 
+@media (max-width: 500px) {
+    .dashboard-card {
+        padding: 16px; 
+    }
+    .kpi-card {
+        padding: 20px;
+    }
+    .kpi-card .card-icon {
+        margin-right: 16px;
+    }
+    .kpi-card .kpi-value {
+        font-size: 1.5rem;
+    }
+    
+    /* Responsive: Notification Card */
+    .an-notification-item .an-time-badge {
+        display: none; /* [!!!] ซ่อน Badge เวลา */
+    }
+    .an-notification-item .an-meta {
+        justify-content: flex-end; 
+    }
+
+    /* Responsive: Expiring Drugs Card */
+    .ed-item-header {
+        gap: 10px;
+    }
+    .ed-item-icon {
+        width: 40px;
+        height: 40px;
+    }
+    .ed-item-name {
+        font-size: 0.95rem;
+    }
+    .ed-item-meta {
+        font-size: 0.75rem;
+    }
+    .ed-info-value {
+        font-size: 1rem;
+    }
+}
+/* [!!! REVISED SIDEBAR CSS !!!] */
+/* (โค้ด Sidebar ที่ G_CYNT_S ส่งมา - แก้ไขให้ถูกต้อง) */
 .apple-sidebar {
     width: 250px;
     transition: width 0.3s ease, transform 0.3s ease;
+    /* ... (กฎอื่นๆ ของ sidebar) ... */
 }
-
 .apple-sidebar.collapsed {
     width: 70px;
 }
-
 .apple-sidebar .sidebar-text {
     opacity: 1;
     transition: opacity 0.3s ease;
 }
-
 .apple-sidebar.collapsed .sidebar-text {
     opacity: 0;
     pointer-events: none;
 }
 
+/* นี่คือ CSS ที่ถูกต้องสำหรับ Overlay ที่ทำงานกับ JS */
 .sidebar-overlay {
-    opacity: 0 !important;
-    pointer-events: none !important;
+    position: fixed; /* หรือ absolute */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* สีพื้นหลังทึบจางๆ */
+    opacity: 1;
+    pointer-events: auto; /* รับการคลิก (เพื่อปิด) */
+    z-index: 99; /* [!!!] ต้องอยู่ล่าง Sidebar แต่ทับ Content */
+    transition: opacity 0.3s ease, pointer-events 0.3s ease;
 }
 
-
-
+/* เมื่อมีคลาส .hidden (จาก JS) */
+.sidebar-overlay.hidden {
+    opacity: 0;
+}

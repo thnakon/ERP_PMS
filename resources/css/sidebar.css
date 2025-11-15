@@ -233,6 +233,7 @@
 
 .sidebar-overlay.hidden {
     opacity: 0;
+
 }
 
 /* --- โครงสร้าง body ของ sidebar ให้มีพื้นที่บน-ล่าง --- */
@@ -484,10 +485,42 @@
 /* active */
 /* [!!! ADD THIS !!!] สไตล์สำหรับเมนูที่ถูกเลือก */
 .menu-item.active {
-    background-color: #f3f2f8; /* สีพื้นหลังทึบ (สไตล์ Apple) */
+    background-color: #f3f2f8; 
 }
 
 .menu-item.active:hover {
-    background-color: #f3f2f8; /* สีเดิม ไม่ต้องเปลี่ยนตอน hover */
+    background-color: #f3f2f8;
 }
 
+/* * [!!! ขาดส่วนนี้ !!!] 
+ * สไตล์สำหรับ *เมนูย่อย* (submenu-item) ที่ถูกเลือก 
+ */
+.submenu-item.active {
+    background-color: #f3f2f8; 
+    /* หรืออาจจะอยากให้เด่นขึ้นอีก เช่น
+    font-weight: 600; 
+    */
+}
+
+.submenu-item.active:hover {
+    background-color: #f3f2f8;
+}
+
+
+/* [!!! ADD THIS !!!] ทำให้เมนูย่อย (submenu) แสดงผลค้างไว้
+     เมื่อเมนูหลัก (has-submenu) มีคลาส active */
+.has-submenu.active .submenu {
+    display: block;
+}
+
+/* (ทางเลือก) ทำให้ลูกศรหมุน เมื่อเมนู active */
+.has-submenu.active .submenu-toggle .arrow {
+    transform: rotate(90deg);
+}
+
+/* (ทางเลือก) ทำให้ตัวเมนูหลัก "Reports" ดู active ด้วย */
+.has-submenu.active > .submenu-toggle {
+    /* background-color: #f0f0f0; 
+    font-weight: 600;
+    */
+}

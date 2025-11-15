@@ -90,7 +90,7 @@
     justify-content: center;
     cursor: pointer;
     font-size: 18px; /* ขนาดไอคอน */
-    color: #1d1d1f; /* สีข้อความหลัก */
+    color: #525255; /* สีข้อความหลัก */
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     transition: background-color 0.3s ease;
 }
@@ -332,10 +332,32 @@
 /* === [CODE_NEW] Live Search Results Dropdown === */
 
 /* 1. Wrapper (สำหรับยึดตำแหน่ง) */
+/* === [CODE_MODIFIED] ปรับปรุง Wrapper ของการค้นหา === */
 .global-search-wrapper {
-    position: relative;
-    width: 300px; /* ควรตั้งค่าความกว้างให้เท่ากับ .header-search-container */
-    transition: width 0.3s ease;
+    /* (ของเดิม - เก็บไว้) 
+       ตัวนี้สำคัญมากสำหรับ Dropdown */
+    position: relative; 
+    
+    /* [!! ADD THIS !!] 
+       เปลี่ยนให้เป็น Flex เพื่อจัดเรียงลูกๆ แนวนอน */
+    display: flex;
+    
+    /* [!! ADD THIS !!] 
+       จัดให้ปุ่มกับช่องค้นหาอยู่กึ่งกลางแนวตั้ง */
+    align-items: center; 
+    
+    /* [!! ADD THIS !!] 
+       สร้างระยะห่างระหว่างช่องค้นหากับปุ่ม */
+    gap: 16px; /* (ปรับค่าได้ตามชอบ) */
+
+    /* [!! CHECK THIS !!] 
+       คุณอาจจะต้องลบ 'width: 300px' (จาก CSS เดิม) ออก
+       หรือเปลี่ยนเป็น 'width: auto;' เพื่อให้มันขยายตามขนาดของ
+       ช่องค้นหา + ปุ่ม ครับ
+    */
+    width: auto; 
+    
+    /* (ลบ 'transition: width 0.3s ease;' ออกก็ได้ ถ้าไม่ใช้แล้ว) */
 }
 
 /* 2. สไตล์กล่องผลลัพธ์ (สไตล์ Apple Minimal) */
@@ -490,4 +512,11 @@
     font-weight: bold;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     line-height: 1;
+}
+
+/* === [NEW] Wrapper for Search + Filter Button === */
+.header-left-section {
+    display: flex;
+    align-items: center;
+    gap: 16px; /* ระยะห่างระหว่างกล่องค้นหากับปุ่ม Filter (ปรับได้) */
 }

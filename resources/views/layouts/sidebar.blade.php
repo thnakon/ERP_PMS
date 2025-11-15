@@ -82,29 +82,43 @@
                 </div>
             </div>
 
-            <div class="has-submenu">
+            <div class="has-submenu {{ Route::is('peoples.*') ? 'active' : '' }}">
                 <div class="submenu-toggle">
                     <i class="fa-solid fa-users"></i>
                     <span>People</span>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </div>
                 <div class="submenu">
-                    <a href="#" class="submenu-item"><i class="fa-solid fa-user"></i>Patients | Customers</a>
+                    <a href="{{ route('peoples.patients-customer') }}" class="submenu-item {{ Route::is('peoples.patients-customer') ? 'active' : '' }}"><i class="fa-solid fa-user"></i>Patients | Customers</a>
                     <a href="#" class="submenu-item"><i class="fa-solid fa-user-nurse"></i>Staff | Users</a>
                     <a href="#" class="submenu-item"><i class="fa-solid fa-signal"></i>Recent</a>
                 </div>
             </div>
 
-            <div class="has-submenu">
+            <div class="has-submenu {{ Route::is('reports.*') ? 'active' : '' }}">
                 <div class="submenu-toggle">
                     <i class="fa-solid fa-chart-pie"></i>
                     <span>Reports</span>
                     <i class="fa-solid fa-chevron-right arrow"></i>
                 </div>
                 <div class="submenu">
-                    <a href="#" class="submenu-item"><i class="fa-solid fa-capsules"></i>Sales Report</a>
-                    <a href="#" class="submenu-item"><i class="fa-solid fa-warehouse"></i>Inventory Report</a>
-                    <a href="#" class="submenu-item"><i class="fa-solid fa-coins"></i>Financial Report</a>
+                    {{-- [!!!] 1. แก้ไข Active State เป็น 'reports.sales' --}}
+                    <a href="{{ route('reports.sales') }}"
+                        class="submenu-item {{ Route::is('reports.sales') ? 'active open' : '' }}">
+                        <i class="fa-solid fa-capsules"></i>Sales Report <span class="sidebar-badge">1</span></a>
+                    </a>
+
+                    {{-- [!!!] 2. แก้ไข href และ Active State เป็น 'reports.inventory' --}}
+                    <a href="{{ route('reports.inventory') }}"
+                        class="submenu-item {{ Route::is('reports.inventory') ? 'active' : '' }}">
+                        <i class="fa-solid fa-warehouse"></i>Inventory Report
+                    </a>
+
+                    {{-- [!!!] 3. แก้ไข href และ Active State เป็น 'reports.finance' --}}
+                    <a href="{{ route('reports.finance') }}"
+                        class="submenu-item {{ Route::is('reports.finance') ? 'active' : '' }}">
+                        <i class="fa-solid fa-coins"></i>Financial Report
+                    </a>
                 </div>
             </div>
 

@@ -10,7 +10,7 @@
         <!-- [!!! NEW HEADER !!!] ส่วนหัวของหน้าดีไซน์ใหม่ -->
         <div class="settings-page-header">
             <div class="header-left">
-                <p class="breadcrumb">Dashboard ▶ Settings</p>
+                <p class="breadcrumb">Dashboard / Settings</p>
                 <h2 class="settings-page-title">Settings</h2>
             </div>
             <div class="header-right">

@@ -11,10 +11,13 @@
                 <i id="aiSearchButton" class="fa-solid fa-atom gradient-icon ai-search-icon"></i>
             </div>
 
-            <div id="liveSearchResults" class="live-search-results">
-            </div>
+            <div id="liveSearchResults" class="live-search-results"> </div>
 
+            <button class="header-action-btn">
+            <i class="fa-solid fa-filter"></i>
+            </button>
         </div>
+        
     </div>
 
     <div class="header-user-actions">
@@ -54,29 +57,66 @@
                     </div>
                 </a>
                 <div class="dropdown-divider"></div>
+                <a href="#" class="menu-item"> <!-- ใส่ route สำหรับจัดการบัญชีถ้ามี -->
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fa-solid fa-user-circle"></i>
+                        <span>Oboun Account</span>
+                    </div>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <div class="menu-item-content">
+                        <i class="fa-solid fa-credit-card"></i>
+                        <span>Billing & Subscription</span>
+                    </div>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <div class="menu-item-content">
+                        <i class="fa-solid fa-palette"></i>
+                        <span>Appearance</span>
+                    </div>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <div class="menu-item-content">
+                        <i class="fa-solid fa-language"></i>
+                        <span>Language</span>
+                    </div>
+                </a>
+
+                <div class="dropdown-divider"></div>
+
                 <a href="{{ route('settings.index') }}" class="menu-item">
                     <div style="display: flex; align-items: center; gap: 12px;">
-
                         <i class="fa-solid fa-gear"></i>
                         <span>Settings</span>
                     </div>
                 </a>
-                <!-- [!!! ADJUSTED !!!] เพิ่ม id="openSupportModalBtn" -->
-                <a href="#" class="menu-item open-support-modal-btn">
+
+                <div class="dropdown-divider"></div>
+
+                <a href="#" class="menu-item open-support-modal-btn" id="openSupportModalBtn">
                     <div class="menu-item-content">
                         <i class="fa-solid fa-headset"></i>
                         <span>Support</span>
                     </div>
                 </a>
 
+                <a href="#" class="menu-item open-feedback-modal-btn" id="openFeedbackModalBtn">
+                    <div class="menu-item-content">
+                        <i class="fa-solid fa-comment-dots"></i>
+                        <span>Send Feedback</span>
+                    </div>
+                </a>
+
+
                 <div class="dropdown-divider"></div>
-<form method="POST" action="{{ route('logout') }}" style="margin: 0;" id="logout-form-header">
-    @csrf
-    <a href="#" 
-       class="dropdown-item danger" 
-       id="open-logout-modal-header"> Log Out
-    </a>
-</form>
+                <form method="POST" action="{{ route('logout') }}" style="margin: 0;" id="logout-form-header">
+                    @csrf
+                    <a href="#" class="dropdown-item danger" id="open-logout-modal-header"> Log Out
+                    </a>
+                </form>
 
             </div>
 

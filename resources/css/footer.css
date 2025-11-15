@@ -1,0 +1,113 @@
+/*
+ * resources/css/footer.css
+ * Apple-style minimal footer CSS
+ */
+
+:root {
+    /* * [!!!]
+     * ถ้าไฟล์นี้ถูกโหลด *พร้อมกับ* dashboard.css 
+     * คุณไม่จำเป็นต้องประกาศตัวแปรซ้ำ
+     * * แต่ถ้ามันถูกโหลดแยกกัน, ให้ใช้ตัวแปรเหล่านี้
+     * หรือใช้ค่า Hex/Font-family โดยตรง
+     */
+    --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+        "IBM Plex Sans Thai", "Noto Sans Thai", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-tertiary: #86868b;
+    --border-color: #e8e8ea;
+    --apple-blue: #007aff;
+}
+
+.apple-footer-container {
+    font-family: var(--apple-font, sans-serif);
+    width: 100%;
+    padding: 20px 0; /* เว้นระยะบน-ล่าง */
+    
+    /* * [!!!] 
+     * ใช้ border-top สีเดียวกับ dashboard
+     * เพื่อกั้นส่วนอย่างชัดเจน 
+     */
+    border-top: 1px solid var(--border-color, #e8e8ea);
+}
+
+.footer-content-wrapper {
+    /* [!!!] 
+     * เราจะใช้ max-width + margin auto 
+     * เพื่อให้เนื้อหาอยู่ตรงกลาง
+     * และมีขนาดเดียวกับ .dashboard-main-content 
+     */
+    max-width: 1600px; 
+    margin: 0 auto;
+    padding: 0 14px; /* padding ซ้าย-ขวา ให้ตรงกับ content หลัก */
+
+    /* [!!!] 
+     * ใช้ Flexbox เพื่อจัดวาง ซ้าย (Links) และ ขวา (Credits)
+     */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* [!!!] ให้ขึ้นบรรทัดใหม่บนจอมือถือ */
+    gap: 16px; /* [!!!] ระยะห่างเมื่อขึ้นบรรทัดใหม่ */
+}
+
+/* 1. ส่วนลิงก์ (ซ้าย) */
+.footer-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.footer-link {
+    font-size: 0.85rem; /* 13px-14px */
+    font-weight: 500;
+    color: var(--text-secondary, #6e6e73); /* สีเทา */
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+    color: var(--apple-blue, #007aff); /* สีฟ้า Apple */
+}
+
+/* 2. ส่วนเครดิต (ขวา) */
+.footer-credits {
+    display: flex;
+    flex-direction: column; /* ให้ copyright อยู่บน "Powered by" */
+    align-items: flex-end; /* จัดชิดขวา */
+    gap: 4px;
+    font-size: 0.85rem;
+    color: var(--text-tertiary, #86868b); /* สีเทาที่จางกว่า */
+    text-align: right;
+}
+
+.footer-powered-by {
+    font-weight: 500;
+}
+
+/* [!!!] ทำให้ "Oboun" เด่นขึ้น */
+.footer-powered-by strong {
+    font-weight: 600;
+    color: var(--text-primary, #1d1d1f); /* สีเข้ม */
+}
+
+
+/* [!!!] 3. Responsive (สำหรับมือถือ) */
+@media (max-width: 768px) {
+    .footer-content-wrapper {
+        flex-direction: column; /* [!!!] เปลี่ยนเป็นแนวตั้ง */
+        align-items: center; /* [!!!] จัดกลาง */
+        gap: 20px;
+    }
+
+    .footer-links {
+        order: 2; /* [!!!] สลับให้ลิงก์อยู่ล่าง */
+    }
+
+    .footer-credits {
+        order: 1; /* [!!!] ให้เครดิตอยู่บน */
+        align-items: center; /* [!!!] จัดกลาง */
+        text-align: center;
+    }
+}
+
