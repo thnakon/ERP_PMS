@@ -31,9 +31,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/finance', [ReportsController::class, 'finance'])->name('reports.finance');
     Route::get('/reports/inventory', [ReportsController::class, 'inventory'])->name('reports.inventory');
 
-    Route::get('/peoples/patients-customer', [PeoplesController::class, 'patientscustomer'])->name('peoples.patients-customer');
-    Route::get('/peoples/staff-user', [PeoplesController::class, 'staffuser'])->name('reports.staff-user');
-    Route::get('/peoples/recent', [PeoplesController::class, 'recent'])->name('reports.recent');
+        Route::get('/peoples/patients-customer', [PeoplesController::class, 'patientscustomer'])->name('peoples.patients-customer');
+        Route::get('/peoples/staff-user', [PeoplesController::class, 'staffuser'])->name('peoples.staff-user');
+        Route::get('/peoples/recent', [PeoplesController::class, 'recent'])->name('peoples.recent');
 });
 
 // Route สำหรับ Live Search (ที่ JavaScript เรียก)

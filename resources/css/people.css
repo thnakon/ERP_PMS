@@ -1,0 +1,468 @@
+/* --- [!!! REFACTORED STYLES !!!] --- */
+/* (อัปเดตตัวแปรและสไตล์ปุ่มให้ตรงกับ sale-report.css) */
+
+:root {
+    /* [!!! NEW] (จาก sale-report.css) */
+    --font-family-apple: -apple-system, BlinkMacSystemFont,"Noto Sans Thai", "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+    --bg-color: #f5f5f7; 
+    --card-bg-color: #ffffff; 
+    --text-primary: #1d1d1f; 
+    --text-secondary: #6e6e73; 
+    --border-color: #d2d2d7; 
+    --accent-color-blue: #007aff; 
+    --accent-color-blue-hover: #0070e0; /* (จากปุ่มใหม่) */
+    --hover-bg-color: #f3f2f8; 
+    --border-radius-card: 20px; 
+    --border-radius-element: 20px; 
+    
+    /* [!!! KEPT] (จาก people.css) */
+    --inactive-bg: #fefbed;
+}
+
+/* --- Slider Toggle (ปรับแค่ตัวแปร) --- */
+.people-view-toggle {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff; /* [MOD] (ตามที่คุณระบุ) */
+    border-radius: 30px;
+    padding: 4px;
+    position: relative;
+}
+
+.people-view-toggle::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    bottom: 4px; 
+    left: var(--slider-left, 4px); 
+    width: var(--slider-width, 100px); 
+    background-color: var(--text-primary); 
+    border-radius: 30px;
+    z-index: 0;
+}
+
+.people-view-toggle.slider-ready::before {
+    transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.people-view-toggle .people-toggle-btn {
+    font-family: var(--font-family-apple); /* [MOD] */
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background-color: transparent;
+    border: none;
+    border-radius: 30px;
+    padding: 6px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.people-view-toggle .people-toggle-btn:hover {
+    color: var(--text-primary);
+}
+.people-view-toggle .people-toggle-btn.active {
+    background-color: transparent;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: none;
+}
+.people-view-toggle .people-toggle-btn.active:hover {
+    color: #ffffff;
+}
+
+/* --- Body & Container (ปรับแค่ตัวแปร) --- */
+body {
+    font-family: var(--font-family-apple); /* [MOD] */
+    background-color: var(--bg-color); /* [MOD] */
+    color: var(--text-primary);
+}
+
+.sr-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/* --- [!!! NEW BREADCRUMB/TITLE !!!] --- */
+.people-breadcrumb-bar {
+    font-family: var(--font-family-apple);
+    font-size: 1rem; /* 16px */
+    color: var(--text-secondary);
+    margin: 0;
+    padding: 0;
+}
+.people-overview-title {
+    font-family: var(--font-family-apple);
+    font-size: 2.5rem; /* 40px */
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 4px 0 24px 0; /* (ปรับ margin) */
+    line-height: 1.2;
+}
+
+
+/* --- Header (ปรับแค่ตัวแปร) --- */
+.people-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.people-page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    flex-grow: 1;
+}
+
+.people-view-toggle {
+    flex-shrink: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.people-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+/* --- [!!! REPLACED BUTTON STYLES !!!] --- */
+.sr-button-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: var(--font-family-apple);
+    color: #ffffff;
+    background-color: var(--accent-color-blue);
+    border: none;
+    border-radius: var(--border-radius-element); /* [MOD] 20px */
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.sr-button-primary:hover {
+    background-color: var(--accent-color-blue-hover); /* [MOD] */
+}
+.sr-button-primary:active {
+    transform: scale(0.98);
+}
+.sr-button-primary i {
+    font-size: 0.9rem;
+}
+
+/* --- [!!! UPDATED ICON BUTTON STYLES !!!] --- */
+.sr-icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    background-color: #ffffff; /* [MOD] (ตามที่คุณระบุ) */
+    border: none;
+    border-radius: var(--border-radius-element); /* [MOD] 20px */
+    width: 40px;  /* [MOD] */
+    height: 40px; /* [MOD] */
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    margin-right: 10px;
+}
+.sr-icon-button:hover {
+    background-color: #e9e9ed; /* [MOD] */
+    color: var(--text-primary);
+}
+
+/* --- Content Area & View Toggling --- */
+.people-content-area {
+    position: relative;
+}
+.people-view-wrapper {
+}
+#activity-view {
+    display: none;
+}
+
+/* --- [!!! REMOVED Search Bar !!!] --- */
+/* (ลบ .sr-search-bar ออก) */
+
+
+/* --- List View (ปรับ radius, bg, font) --- */
+.people-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.people-list-row {
+    display: grid;
+    grid-template-columns: 2.5fr 1.5fr 1.5fr 1fr 0.5fr; 
+    align-items: center;
+    gap: 16px;
+    background-color: var(--card-bg-color); /* [MOD] */
+    border-radius: var(--border-radius-card); /* [MOD] 20px */
+    padding: 16px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s ease; /* [!!! MOD: "transform" removed !!!] */
+}
+.people-list-row:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06); /* [!!! MOD: Softer shadow, "transform" removed !!!] */
+}
+.people-list-row.header-row {
+    background-color: transparent;
+    box-shadow: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    padding-bottom: 8px;
+}
+.people-list-row.header-row:hover {
+    transform: none;
+}
+.col-name { display: flex; align-items: center; gap: 12px; }
+.sr-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.sr-user-info { display: flex; flex-direction: column; }
+.sr-user-name { font-weight: 600; color: var(--text-primary); }
+.sr-user-email { font-size: 0.85rem; color: var(--text-secondary); }
+.col-phone, .col-visit { font-size: 0.9rem; color: var(--text-secondary); }
+.col-actions { display: flex; justify-content: flex-end; }
+
+.col-allergies .sr-allergy-warning {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.85rem; font-weight: 500; color: #c93400;
+    background-color: #fff4e0; border: 1px solid #ffcb8c;
+    border-radius: 20px; padding: 4px 10px;
+}
+.col-allergies .sr-allergy-none { font-size: 0.9rem; color: var(--text-secondary); }
+
+/* (Action Buttons - ปรับ radius, hover) */
+.sr-action-btn {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; color: var(--text-secondary);
+    background-color: transparent; border: none;
+    border-radius: 10px; /* [MOD] */
+    width: 32px; height: 32px; cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.sr-action-btn:hover {
+    background-color: var(--hover-bg-color); /* [MOD] */
+    color: var(--text-primary);
+}
+
+
+/* --- Activity View (ปรับ radius, bg, border) --- */
+.people-grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.people-activity-card {
+    background-color: var(--card-bg-color); /* [MOD] */
+    border-radius: var(--border-radius-card); /* [MOD] 20px */
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s ease; /* [!!! MOD: "transform" removed !!!] */
+    position: relative;
+    overflow: hidden;
+}
+.people-activity-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06); /* [!!! MOD: Softer shadow, "transform" removed !!!] */
+}
+.activity-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 12px auto;
+}
+.activity-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+}
+.activity-title {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0 0 12px 0;
+}
+.people-badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background-color: var(--bg-color); /* [MOD] */
+    border-radius: 10px; /* [MOD] */
+    padding: 4px 8px;
+    display: inline-block;
+}
+.people-card-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color); /* [MOD] */
+}
+.stat-item { display: flex; flex-direction: column; }
+.stat-number { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); }
+.stat-label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; }
+
+/* (Inactive State - ใช้ตัวแปร) */
+.people-activity-card.is-inactive {
+    background-color: var(--inactive-bg);
+}
+.inactive-overlay {
+    position: absolute;
+    top: 0; right: 0; left: 0; bottom: 0;
+    background-color: rgba(255, 251, 235, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: 600;
+    color: rgba(0,0,0,0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.people-activity-card.is-inactive .inactive-overlay {
+    opacity: 1;
+}
+.inactive-overlay span {
+    animation: floating 1.5s infinite ease-in-out;
+}
+.inactive-overlay span:nth-child(2) { animation-delay: 0.3s; }
+.inactive-overlay span:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes floating {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+
+/* --- [!!! NEW PAGINATION (Refined) !!!] --- */
+/* (ปรับสไตล์ทั้งหมดให้เหมือนในรูปตัวอย่าง) */
+.people-pagination {
+    display: flex;
+    justify-content: space-between; /* [MOD] แยกข้อความกับปุ่ม */
+    align-items: center;
+    padding: 12px 24px; /* [MOD] เพิ่ม padding ให้เป็น card */
+    margin-top: 24px;
+    background-color: var(--card-bg-color); /* [MOD] เพิ่มพื้นหลังสีขาว */
+    border-radius: var(--border-radius-card); /* [MOD] ทำให้โค้งมน */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04); /* [MOD] เพิ่มเงา */
+
+    /* [!!! NEW: Align card to the right !!!] */
+    width: fit-content; /* 1. ทำให้ card หดตามเนื้อหา */
+    margin-left: auto; /* 2. ดัน card ไปทางขวา */
+}
+.pagination-text {
+    font-size: 1rem; /* [MOD] ขนาดใหญ่ขึ้น */
+    font-weight: 600; /* [MOD] หนาขึ้น */
+    color: var(--text-primary); /* [MOD] สีเข้มขึ้น */
+    margin-right: 0; /* [MOD] ลบ margin */
+}
+.pagination-controls {
+    display: flex;
+    gap: 16px; /* [MOD] เพิ่มระยะห่างปุ่ม */
+}
+.pagination-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* [MOD] ลบ width/height/border */
+    background-color: transparent;
+    border: none;
+    border-radius: 10px; /* (สำหรับ hover) */
+    color: var(--accent-color-blue); /* [MOD] สีฟ้า */
+    font-size: 1.2rem; /* [MOD] ไอคอนใหญ่ขึ้น */
+    cursor: pointer;
+    padding: 4px; /* [MOD] เพิ่ม padding */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.pagination-btn:hover {
+    background-color: var(--hover-bg-color);
+}
+.pagination-btn.disabled {
+    color: var(--border-color); /* [MOD] สีเทาจาง */
+    cursor: not-allowed;
+    background-color: transparent; /* [MOD] */
+    border: none; /* [MOD] */
+}
+/* [MOD] เพิ่ม :hover state สำหรับ disabled */
+.pagination-btn.disabled:hover {
+    background-color: transparent;
+    color: var(--border-color);
+}
+
+
+/* --- Responsive (เหมือนเดิม) --- */
+@media (max-width: 900px) {
+    .people-list-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .people-list-row.header-row { display: none; }
+    .people-list-row [data-label] {
+        display: flex; justify-content: space-between; align-items: center;
+        font-size: 0.9rem; padding: 4px 0;
+    }
+    .people-list-row [data-label]::before {
+        content: attr(data-label);
+        font-weight: 600; color: var(--text-primary);
+        margin-right: 16px;
+    }
+    .col-actions { justify-content: flex-start; }
+}
+
+@media (max-width: 768px) {
+    .people-header {
+        flex-direction: column;
+        align-items: center;
+    }
+    .people-page-title {
+        width: 100%;
+        text-align: center;
+    }
+    .people-view-toggle {
+        order: 1;
+        width: 100%;
+        justify-content: center;
+    }
+    .people-header-right {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* [!!! NEW] (ปรับ Responsive ของ Title ใหม่) */
+    .people-breadcrumb-bar {
+        text-align: center;
+    }
+    .people-overview-title {
+        font-size: 2rem; /* 32px */
+        text-align: center;
+    }
+
+    /* [!!! NEW] (ปรับ Pagination ให้อยู่ตรงกลาง) */
+    .people-pagination {
+        justify-content: center;
+        margin-left: auto;  /* [!!! ADDED !!!] */
+        margin-right: auto; /* [!!! ADDED !!!] */
+    }
+}

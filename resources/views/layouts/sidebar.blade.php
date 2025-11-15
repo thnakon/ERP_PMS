@@ -82,7 +82,7 @@
                 </div>
             </div>
 
-            <div class="has-submenu {{ Route::is('peoples.*') ? 'active' : '' }}">
+            <div class="has-submenu">
                 <div class="submenu-toggle">
                     <i class="fa-solid fa-users"></i>
                     <span>People</span>
@@ -90,12 +90,12 @@
                 </div>
                 <div class="submenu">
                     <a href="{{ route('peoples.patients-customer') }}" class="submenu-item {{ Route::is('peoples.patients-customer') ? 'active' : '' }}"><i class="fa-solid fa-user"></i>Patients | Customers</a>
-                    <a href="#" class="submenu-item"><i class="fa-solid fa-user-nurse"></i>Staff | Users</a>
-                    <a href="#" class="submenu-item"><i class="fa-solid fa-signal"></i>Recent</a>
+                    <a href="{{ route('peoples.staff-user') }}" class="submenu-item {{ Route::is('peoples.staff-user') ? 'active' : '' }}"><i class="fa-solid fa-user-nurse"></i>Staff | Users</a>
+                    <a href="{{ route('peoples.recent') }}" class="submenu-item {{ Route::is('peoples.recent') ? 'active' : '' }}"><i class="fa-solid fa-signal"></i>Recent</a>
                 </div>
             </div>
 
-            <div class="has-submenu {{ Route::is('reports.*') ? 'active' : '' }}">
+            <div class="has-submenu">
                 <div class="submenu-toggle">
                     <i class="fa-solid fa-chart-pie"></i>
                     <span>Reports</span>
