@@ -1,15 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- [!!! RENAMED SLIDER SCRIPT !!!] ---
-    // (เปลี่ยน .chart-toggle-buttons เป็น .people-view-toggle)
     const toggleContainer = document.querySelector('.people-view-toggle');
     
-    // [!!! NEW] ตัวแปรสำหรับ View
-    const listView = document.getElementById('list-view');
-    const activityView = document.getElementById('activity-view');
+    // [!!! MODIFIED] หา view wrapper ที่ "มองเห็นได้" ในหน้านี้
+    // (จะหา #patient-list-view หรือ #staff-list-view ก็ได้)
+    const listView = document.querySelector('#patient-list-view, #staff-list-view');
+    const activityView = document.querySelector('#patient-activity-view, #staff-activity-view');
 
-    if (toggleContainer && listView && activityView) {
-        // (เปลี่ยน .toggle-btn เป็น .people-toggle-btn)
+    // [MOD] ปรับเงื่อนไขเป็น || (หรือ) เพราะในหน้าหนึ่งจะมีแค่อย่างใดอย่างหนึ่ง
+    if (toggleContainer && (listView || activityView)) { 
+        
         const toggleButtons = toggleContainer.querySelectorAll('.people-toggle-btn');
         const activeButton = toggleContainer.querySelector('.people-toggle-btn.active');
 
@@ -42,17 +43,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 // อัปเดตตำแหน่ง Slider
                 updateSlider(button);
 
-                // --- [!!! NEW VIEW TOGGLING LOGIC !!!] ---
-                const targetViewId = button.dataset.target; // (จะได้ 'list-view' หรือ 'activity-view')
+                // --- [!!! LOGIC การสลับ VIEW ที่แก้ไขแล้ว !!!] ---
+                const targetView = button.dataset.target; // (จะได้ 'list-view' หรือ 'activity-view')
 
-                if (targetViewId === 'list-view') {
-                    listView.style.display = 'block';
-                    activityView.style.display = 'none';
-                } else if (targetViewId === 'activity-view') {
-                    listView.style.display = 'none';
-                    activityView.style.display = 'block';
+                // (ซ่อน/แสดง view ที่เราเจอในหน้านี้)
+                if (targetView === 'list-view') {
+                    if (listView) listView.style.display = 'block';
+                    if (activityView) activityView.style.display = 'none';
+                } else if (targetView === 'activity-view') {
+                    if (listView) listView.style.display = 'none';
+                    if (activityView) activityView.style.display = 'block';
                 }
-                // --- [!!! END NEW LOGIC !!!] ---
+                // --- [!!! END LOGIC !!!] ---
             });
         });
 

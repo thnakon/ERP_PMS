@@ -5,26 +5,26 @@
 --}}
 
 <x-app-layout>
-   
+
     {{-- [!!!] 2. ส่วนเนื้อหาหลัก (Container) --}}
     <div>
         <div>
             <div class="sr-container">
                 {{-- [!!! REFACTORED HEADER !!!] --}}
-        <div class="sr-header">
-            <div class="sr-header-left">
-                <p class="sr-breadcrumb">Dashboard / Settings / Inventory-Report</p>
-                <h2 class="sr-page-title">Inventory Report</h2>
-            </div>
-            <div class="sr-header-right">
-                {{-- [!!! ADJUSTED !!!] เปลี่ยน div/span เป็น <button> 
+                <div class="sr-header">
+                    <div class="sr-header-left">
+                        <p class="sr-breadcrumb">Dashboard / Settings / Inventory-Report</p>
+                        <h2 class="sr-page-title">Inventory Report</h2>
+                    </div>
+                    <div class="sr-header-right">
+                        {{-- [!!! ADJUSTED !!!] เปลี่ยน div/span เป็น <button> 
              และใช้คลาสใหม่ sr-button-primary --}}
-                <button class="sr-button-primary">
-                    <i class="fa-solid fa-plus"></i>
-                    <span>เพิ่มรายงานใหม่</span>
-                </button>
-            </div>
-        </div>
+                        <button class="sr-button-primary">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>เพิ่มรายงานใหม่</span>
+                        </button>
+                    </div>
+                </div>
 
                 {{-- 2.1 Filters --}}
                 <div class="sr-filters-wrapper">
@@ -108,15 +108,17 @@
 
                 {{-- 2.3 Widgets Grid (Tabs) --}}
                 <div class="sr-widgets-grid">
-                    
+
                     {{-- [!!!] WIDGET TABS (Full Width) --}}
                     <div class="sr-widget-card sr-widget-full-width">
-                        
+
                         {{-- [!!!] นี่คือ SLIDING TOGGLE --}}
-                        <div class="chart-toggle-buttons-wrapper" style="display: flex; justify-content: center; padding-bottom: 16px;">
+                        <div class="chart-toggle-buttons-wrapper"
+                            style="display: flex; justify-content: center; padding-bottom: 16px;">
                             <div class="chart-toggle-buttons" id="inventory-tabs">
                                 {{-- JS จะใช้ data-target เพื่อหา ID ของ content --}}
-                                <button class="toggle-btn active" data-target="#expiryReportContent">Expiry Report</button>
+                                <button class="toggle-btn active" data-target="#expiryReportContent">Expiry
+                                    Report</button>
                                 <button class="toggle-btn" data-target="#lowStockReportContent">Low Stock</button>
                                 <button class="toggle-btn" data-target="#deadStockReportContent">Dead Stock</button>
                                 <button class="toggle-btn" data-target="#fullListContent">Full List</button>
@@ -128,7 +130,8 @@
 
                             {{-- Tab 1: Expiry Report --}}
                             <div id="expiryReportContent" class="tab-pane active">
-                                <h3 class="sr-widget-title" style="text-align: center; margin-bottom: 16px;">Expiry Report (Items expiring in 90 days)</h3>
+                                <h3 class="sr-widget-title" style="text-align: center; margin-bottom: 16px;">Expiry
+                                    Report (Items expiring in 90 days)</h3>
                                 <div class="sr-table-container">
                                     <table class="sr-table">
                                         <thead>
@@ -162,7 +165,8 @@
 
                             {{-- Tab 2: Low Stock Report --}}
                             <div id="lowStockReportContent" class="tab-pane" style="display: none;">
-                                <h3 class="sr-widget-title" style="text-align: center; margin-bottom: 16px;">Low Stock Report (Below Reorder Point)</h3>
+                                <h3 class="sr-widget-title" style="text-align: center; margin-bottom: 16px;">Low Stock
+                                    Report (Below Reorder Point)</h3>
                                 <div class="sr-table-container">
                                     <table class="sr-table">
                                         <thead>
@@ -193,7 +197,8 @@
 
                             {{-- Tab 3: Dead Stock Report --}}
                             <div id="deadStockReportContent" class="tab-pane" style="display: none;">
-                                <h3 class="sr-widget-title" style="text-align: center; margin-bottom: 16px;">Dead Stock (No sales in 180 days)</h3>
+                                <h3 class="sr-widget-title" style="text-align: center; margin-bottom: 16px;">Dead
+                                    Stock (No sales in 180 days)</h3>
                                 <div class="sr-table-container">
                                     <table class="sr-table">
                                         <thead>
@@ -218,7 +223,8 @@
 
                             {{-- Tab 4: Full List --}}
                             <div id="fullListContent" class="tab-pane" style="display: none;">
-                                <h3 class="sr-widget-title" style="text-align: center; margin-bottom: 16px;">Full Inventory List</h3>
+                                <h3 class="sr-widget-title" style="text-align: center; margin-bottom: 16px;">Full
+                                    Inventory List</h3>
                                 {{-- เพิ่มกราฟในแท็บนี้ได้ --}}
                                 <div class="sr-chart-container" style="height: 250px; margin-bottom: 24px;">
                                     <canvas id="stockByCategoryChart"></canvas>
@@ -249,7 +255,7 @@
                                                 <td>฿50.00</td>
                                                 <td>฿75.00</td>
                                             </tr>
-                                             <tr>
+                                            <tr>
                                                 <td>Vitamin C 1000mg</td>
                                                 <td>อาหารเสริม</td>
                                                 <td>120</td>
@@ -262,7 +268,7 @@
                             </div>
 
                         </div>
-                        
+
                     </div>
                 </div>
 

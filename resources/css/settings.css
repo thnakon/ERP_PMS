@@ -59,7 +59,7 @@
     border-radius: 22px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     /* [!!! NEW !!!] เพิ่ม padding-top เพื่อที่ให้ Nav ไม่อยู่ชิดขอบ */
-    padding-top: 20px;
+    padding-top: 10px;
 }
 
 /* 3. แท็บเมนู (ปรับเป็นแนวนอน) */
@@ -84,7 +84,7 @@
     gap: 0px; 
     padding: 6px; 
     border-bottom: none; 
-    background: #f5f5f7; 
+    background: #ffffff; 
     box-shadow: none;
     border-radius: 99px; 
     flex-shrink: 0;
@@ -94,10 +94,8 @@
 }
 .settings-tabs-wrapper {
     /* [!!! MOVED !!!] ย้าย margin มาไว้ที่นี่ */
-    margin-left: 24px;
-    margin-right: 24px;
-    margin-bottom: 24px;
-
+    margin-bottom: 10px;
+    
     /* [!!! MOVED !!!] ย้าย overflow และ responsive fix มาไว้ที่นี่ */
     overflow-x: auto;
     -webkit-overflow-scrolling: touch; 
@@ -204,7 +202,7 @@
 /* ======================================= */
 .settings-card {
     border-radius: 14px;
-    padding: 24px;
+    padding: 18px;
 }
 
 /* [!!! NEW !!!] ทำให้การ์ดแรกไม่มีขอบบน (สำหรับดีไซน์ใหม่) */
@@ -218,12 +216,6 @@
 
 /* --- เอาใหม่ ผมขอเปลี่ยนใจ --- */
 /* ให้การ์ดทุกใบเป็นแบบแยกกัน จะมินิมอลกว่า */
-
-.settings-card {
-    border-radius: 14px;
-    padding: 24px;
-}
-
 
 .card-title {
     font-size: 1.5rem; /* ~24px */

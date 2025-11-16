@@ -88,7 +88,7 @@ body {
     width: 100%;
     max-width: 1280px;
     margin: 0 auto;
-    padding: 24px;
+    padding: 18px;
 }
 
 /* --- [!!! NEW BREADCRUMB/TITLE !!!] --- */
@@ -195,7 +195,9 @@ body {
 }
 .people-view-wrapper {
 }
-#activity-view {
+/* [!!! ID UPDATED !!!] */
+#patient-activity-view,
+#staff-activity-view {
     display: none;
 }
 
@@ -211,17 +213,17 @@ body {
 }
 .people-list-row {
     display: grid;
-    grid-template-columns: 2.5fr 1.5fr 1.5fr 1fr 0.5fr; 
     align-items: center;
     gap: 16px;
     background-color: var(--card-bg-color); /* [MOD] */
     border-radius: var(--border-radius-card); /* [MOD] 20px */
     padding: 16px 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    transition: box-shadow 0.2s ease; /* [!!! MOD: "transform" removed !!!] */
+    transition: box-shadow 0.2s ease, transform 0.2s ease; /* [!!! MOD: "transform" ADDED back !!!] */
 }
 .people-list-row:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06); /* [!!! MOD: Softer shadow, "transform" removed !!!] */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06); /* [!!! MOD: Softer shadow !!!] */
+    transform: translateY(-2px); /* [!!! MOD: "transform" ADDED back !!!] */
 }
 .people-list-row.header-row {
     background-color: transparent;
@@ -235,12 +237,63 @@ body {
 .people-list-row.header-row:hover {
     transform: none;
 }
+
+/* --- [!!! CSS FIX: Column Layouts !!!] --- */
+/* (Default 7-col layout for Patients) */
+#patient-list-view .people-list-row {
+    grid-template-columns: 2.5fr 1.5fr 1fr 0.5fr 1.5fr 1fr 0.5fr; 
+}
+/* (Hide patient cols in patient header) */
+#patient-list-view .people-list-row.header-row .col-email,
+#patient-list-view .people-list-row.header-row .col-role,
+#patient-list-view .people-list-row.header-row .col-status {
+    display: none;
+}
+/* (Hide staff cols in patient rows) */
+#patient-list-view .people-list-row:not(.header-row) .col-email,
+#patient-list-view .people-list-row:not(.header-row) .col-role,
+#patient-list-view .people-list-row:not(.header-row) .col-status {
+    display: none;
+}
+
+/* (5-col layout for Staff) */
+#staff-list-view .people-list-row {
+    grid-template-columns: 2.5fr 2fr 1fr 1fr 0.5fr;
+}
+/* (Hide patient cols in staff header) */
+#staff-list-view .people-list-row.header-row .col-phone,
+#staff-list-view .people-list-row.header-row .col-gender,
+#staff-list-view .people-list-row.header-row .col-age,
+#staff-list-view .people-list-row.header-row .col-allergies,
+#staff-list-view .people-list-row.header-row .col-visit {
+    display: none;
+}
+/* (Hide patient cols in staff rows) */
+#staff-list-view .people-list-row:not(.header-row) .col-phone,
+#staff-list-view .people-list-row:not(.header-row) .col-gender,
+#staff-list-view .people-list-row:not(.header-row) .col-age,
+#staff-list-view .people-list-row:not(.header-row) .col-allergies,
+#staff-list-view .people-list-row:not(.header-row) .col-visit {
+    display: none;
+}
+
+
 .col-name { display: flex; align-items: center; gap: 12px; }
 .sr-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
 .sr-user-info { display: flex; flex-direction: column; }
 .sr-user-name { font-weight: 600; color: var(--text-primary); }
 .sr-user-email { font-size: 0.85rem; color: var(--text-secondary); }
-.col-phone, .col-visit { font-size: 0.9rem; color: var(--text-secondary); }
+.col-phone, 
+.col-visit,
+.col-gender, /* [!!! NEW !!!] */
+.col-age,     /* [!!! NEW !!!] */
+.col-email,   /* [!!! NEW !!!] */
+.col-role,    /* [!!! NEW !!!] */
+.col-status   /* [!!! NEW !!!] */
+{ 
+    font-size: 0.9rem; 
+    color: var(--text-secondary); 
+}
 .col-actions { display: flex; justify-content: flex-end; }
 
 .col-allergies .sr-allergy-warning {
@@ -265,6 +318,37 @@ body {
     color: var(--text-primary);
 }
 
+/* --- [!!! NEW: Staff Badges !!!] --- */
+.people-role-badge,
+.people-status-badge {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    text-align: center;
+}
+.people-status-badge.active {
+    color: #008a2a;
+    background-color: #e5fbeB;
+}
+.people-status-badge.inactive {
+    color: var(--text-secondary);
+    background-color: var(--bg-color);
+}
+.people-role-badge.admin {
+    color: #c93400;
+    background-color: #fff4e0;
+}
+.people-role-badge.pharmacist {
+    color: var(--accent-color-blue);
+    background-color: #e6f7ff;
+}
+.people-role-badge.staff {
+    color: #5e5ce6;
+    background-color: #f0efff;
+}
+
 
 /* --- Activity View (ปรับ radius, bg, border) --- */
 .people-grid-view {
@@ -279,12 +363,13 @@ body {
     padding: 24px;
     text-align: center;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    transition: box-shadow 0.2s ease; /* [!!! MOD: "transform" removed !!!] */
+    transition: box-shadow 0.2s ease, transform 0.2s ease; /* [!!! MOD: "transform" ADDED back !!!] */
     position: relative;
     overflow: hidden;
 }
 .people-activity-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06); /* [!!! MOD: Softer shadow, "transform" removed !!!] */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06); /* [!!! MOD: Softer shadow !!!] */
+    transform: translateY(-2px); /* [!!! MOD: "transform" ADDED back !!!] */
 }
 .activity-avatar {
     width: 80px;
@@ -312,6 +397,25 @@ body {
     padding: 4px 8px;
     display: inline-block;
 }
+/* [!!! NEW: Activity Badge Colors !!!] */
+.people-badge.active {
+    color: #008a2a;
+    background-color: #e5fbeB;
+}
+.people-badge.inactive {
+    color: var(--text-secondary);
+    background-color: var(--bg-color);
+}
+.people-badge.New {
+    color: #5e5ce6;
+    background-color: #f0efff;
+}
+.people-badge.Member {
+    color: var(--accent-color-blue);
+    background-color: #e6f7ff;
+}
+
+
 .people-card-stats {
     display: flex;
     justify-content: space-around;
@@ -355,6 +459,108 @@ body {
   50% { transform: translateY(-10px); }
 }
 
+/* --- [!!! NEW: Recent/Log Page Styles !!!] --- */
+.people-filters-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 20px;
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius-card);
+}
+.people-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-grow: 1;
+    min-width: 180px;
+}
+.people-filter-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.people-select {
+    font-family: var(--font-family-apple);
+    font-size: 0.95rem;
+    padding: 10px 12px;
+    border: 1px solid transparent; 
+    border-radius: var(--border-radius-element);
+    background-color: var(--hover-bg-color); 
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236e6e73' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 16px;
+    cursor: pointer;
+}
+.people-select:focus {
+    outline: none;
+    border-color: var(--accent-color-blue);
+    box-shadow: 0 0 0 2px rgba(0,122,255,0.2);
+}
+.people-button-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: var(--font-family-apple);
+    color: var(--accent-color-blue);
+    background-color: var(--hover-bg-color); 
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-element);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    height: 44px; /* (Match .people-select height) */
+}
+.people-button-secondary:hover {
+    background-color: #e9e9ed; 
+}
+/* (Log Table Grid) */
+.people-list-row.log-header,
+.people-list-row.log-row {
+    grid-template-columns: 1.5fr 1.5fr 1fr 3fr;
+    gap: 20px;
+}
+.col-log-time, .col-log-user, .col-log-action, .col-log-details {
+    font-size: 0.9rem; 
+    color: var(--text-secondary); 
+}
+.col-log-details {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+.log-action-tag {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    text-align: center;
+}
+.log-action-tag.create {
+    color: #008a2a;
+    background-color: #e5fbeB;
+}
+.log-action-tag.update {
+    color: #c93400;
+    background-color: #fff4e0;
+}
+.log-action-tag.delete {
+    color: #FF3B30;
+    background-color: #ffeaea;
+}
+.log-action-tag.view {
+    color: var(--text-secondary);
+    background-color: var(--bg-color);
+}
+
 
 /* --- [!!! NEW PAGINATION (Refined) !!!] --- */
 /* (ปรับสไตล์ทั้งหมดให้เหมือนในรูปตัวอย่าง) */
@@ -363,7 +569,7 @@ body {
     justify-content: space-between; /* [MOD] แยกข้อความกับปุ่ม */
     align-items: center;
     padding: 12px 24px; /* [MOD] เพิ่ม padding ให้เป็น card */
-    margin-top: 24px;
+    margin-top: 2px;
     background-color: var(--card-bg-color); /* [MOD] เพิ่มพื้นหลังสีขาว */
     border-radius: var(--border-radius-card); /* [MOD] ทำให้โค้งมน */
     box-shadow: 0 2px 8px rgba(0,0,0,0.04); /* [MOD] เพิ่มเงา */
@@ -429,6 +635,29 @@ body {
         margin-right: 16px;
     }
     .col-actions { justify-content: flex-start; }
+    
+    /* [!!! NEW: Log Responsive Grid !!!] */
+    .people-list-row.log-header,
+    .people-list-row.log-row {
+        grid-template-columns: 1fr;
+    }
+
+    /* [!!! CSS FIX: Responsive Columns !!!] */
+    /* (Show patient cols in patient rows) */
+    #patient-list-view .people-list-row:not(.header-row) .col-phone,
+    #patient-list-view .people-list-row:not(.header-row) .col-gender,
+    #patient-list-view .people-list-row:not(.header-row) .col-age,
+    #patient-list-view .people-list-row:not(.header-row) .col-allergies,
+    #patient-list-view .people-list-row:not(.header-row) .col-visit {
+        display: flex; /* [MOD] */
+    }
+    /* (Show staff cols in staff rows) */
+    #staff-list-view .people-list-row:not(.header-row) .col-email,
+    #staff-list-view .people-list-row:not(.header-row) .col-role,
+    #staff-list-view .people-list-row:not(.header-row) .col-status {
+        display: flex; /* [MOD] */
+    }
+
 }
 
 @media (max-width: 768px) {
@@ -464,5 +693,14 @@ body {
         justify-content: center;
         margin-left: auto;  /* [!!! ADDED !!!] */
         margin-right: auto; /* [!!! ADDED !!!] */
+    }
+
+    /* [!!! NEW: Filter Responsive !!!] */
+    .people-filters-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .people-filter-group {
+        min-width: 100%;
     }
 }
