@@ -5,18 +5,38 @@
         <!-- Global Search Wrapper (รวมช่องค้นหาและผลลัพธ์) -->
         <div class="global-search-wrapper">
             <div class="header-search-container">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <i class="fa-solid fa-magnifying-glass search-icon"
+   style="
+       background: linear-gradient(90deg,#007aff,#7d22ff,#d31aff,#ff3b30,#ff9500);
+       -webkit-background-clip: text;
+       -webkit-text-fill-color: transparent;
+   ">
+</i>
+
                 <input type="text" id="globalSearch" placeholder="Search or Ai search" autocomplete="off" />
-                <i id="aiSearchButton" class="fa-solid fa-atom gradient-icon ai-search-icon"></i>
+                <i id="aiSearchButton" class="fa-solid fa-atom ai-search-icon" 
+   style="
+       background: linear-gradient(90deg,#007aff,#7d22ff,#d31aff,#ff3b30,#ff9500);
+       -webkit-background-clip: text;
+       -webkit-text-fill-color: transparent;
+   ">
+</i>
+
             </div>
             <!-- ผลลัพธ์การค้นหา -->
             <div id="liveSearchResults" class="live-search-results"> </div>
         </div>
         
-        <!-- Filter Button -->
-        <button class="header-action-btn" title="Filter Records">
-            <i class="fa-solid fa-filter"></i>
-        </button>
+        <button class="header-action-btn" title="Speedometer">
+    <i class="fa-solid fa-microphone"
+       style="
+           background: linear-gradient(90deg,#007aff);
+           -webkit-background-clip: text;
+           -webkit-text-fill-color: transparent;
+       ">
+    </i>
+</button>
+
     </div>
 
     <div class="header-user-actions">

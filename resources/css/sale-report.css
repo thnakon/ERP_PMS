@@ -62,7 +62,7 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
-    background-color: var(--bg-color);
+  
     border-radius: var(--border-radius-card);
     font-family: var(--font-family-apple);
     color: var(--text-primary);
@@ -72,7 +72,7 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
-    background-color: var(--bg-color);
+  
     border-radius: var(--border-radius-card);
     font-family: var(--font-family-apple);
     color: var(--text-primary);
@@ -83,7 +83,7 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
-    background-color: var(--bg-color);
+   
     border-radius: var(--border-radius-card);
     font-family: var(--font-family-apple);
     color: var(--text-primary);
@@ -93,7 +93,7 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
-    background-color: var(--bg-color);
+  
     border-radius: var(--border-radius-card);
     font-family: var(--font-family-apple);
     color: var(--text-primary);
@@ -337,12 +337,7 @@
     margin: 0;
 }
 
-.sr-header .sr-page-title {
-    color: var(--text-primary);
-    font-size: 1.75rem; /* 28px */
-    font-weight: 700;
-    margin: 0;
-}
+
 
 .sr-header .sr-header-right {
     display: flex;
