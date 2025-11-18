@@ -188,6 +188,7 @@
     flex: 1; 
     overflow-y: auto;
     padding-right: 5px;
+    padding-bottom: 30px; /* <--- เพิ่มเพื่อกันรายการโดนตัด */
 }
 
 /* === (Optional) แต่ง Scrollbar ให้สวยขึ้น === */
@@ -292,7 +293,7 @@
 }
 
 .submenu {
-    display: none;
+    display: none;     /* <--- เพิ่มบรรทัดนี้ */
     flex-direction: column;
     margin-left: 20px;
     margin-top: 10px;
@@ -312,8 +313,9 @@
 }
 
 .has-submenu.open .submenu {
-    display: flex;
+    display: flex !important;
     animation: fadeIn 0.25s ease;
+    max-height: 500px !important; /* <--- ใช้ 500px เหมือนเดิม *หรือ* */
 }
 
 .has-submenu.open .arrow {
@@ -510,7 +512,8 @@
 /* [!!! ADD THIS !!!] ทำให้เมนูย่อย (submenu) แสดงผลค้างไว้
      เมื่อเมนูหลัก (has-submenu) มีคลาส active */
 .has-submenu.active .submenu {
-    display: block;
+    display: block !important;
+    max-height: 500px !important; /* เพื่อให้เกิด Animation */
 }
 
 /* (ทางเลือก) ทำให้ลูกศรหมุน เมื่อเมนู active */
@@ -523,4 +526,28 @@
     /* background-color: #f0f0f0; 
     font-weight: 600;
     */
+}
+
+/* [!!! ADD THIS !!!] */
+/* นี่คือ CSS ที่จะทำให้คลาส 'open' ทำงาน */
+
+/* 1. ซ่อนเมนูย่อยไว้เป็นค่าเริ่มต้น (ใช้ max-height เพื่ออนิเมชั่น) */
+.has-submenu .submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+    /* คุณอาจต้องปรับ padding/margin ตรงนี้ถ้ามันยังดูแปลกๆ */
+    padding-left: 20px; /* (ตัวอย่าง) */
+}
+
+/* 2. ตั้งค่าลูกศรเริ่มต้น */
+.has-submenu .submenu-toggle .arrow {
+    transition: transform 0.3s ease;
+    transform: rotate(0deg);
+}
+
+
+/* 4. ...และหมุนลูกศร 90 องศา */
+.has-submenu.open .submenu-toggle .arrow {
+    transform: rotate(90deg);
 }

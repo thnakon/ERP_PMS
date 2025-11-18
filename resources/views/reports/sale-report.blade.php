@@ -23,9 +23,9 @@
     {{-- CDN for Chart.js (for drawing charts) --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-
+    <div class="settings-layout">    
     {{-- [!!! REFACTORED !!!] All class names are retained --}}
-    <div class="sr-container">
+    <div class="sr-container-s">
 
         {{-- [!!! REFACTORED HEADER !!!] --}}
         <div class="sr-header">
@@ -258,6 +258,8 @@
 
         </div> <!-- .sr-widgets-grid -->
     </div> <!-- .sr-container -->
+</div>
+    
 
     {{-- Load this page's specific JS file --}}
     <script src="{{ asset('resources/js/sale-report.js') }}"></script>

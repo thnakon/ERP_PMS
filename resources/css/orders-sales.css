@@ -1,0 +1,519 @@
+    /* --- [!!! REFACTORED STYLES FOR ORDERS/SALES PAGE !!!] --- */
+
+    :root {
+        /* [!!! NEW] (จาก sale-report.css) */
+        --font-family-apple: -apple-system, BlinkMacSystemFont,"Noto Sans Thai", "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+        --bg-color: #f5f5f7; 
+        --card-bg-color: #ffffff; 
+        --text-primary: #1d1d1f; 
+        --text-secondary: #6e6e73; 
+        --border-color: #d2d2d7; 
+        --accent-color-blue: #007aff; 
+        --accent-color-blue-hover: #0070e0;
+        --hover-bg-color: #f3f2f8; 
+        --border-radius-card: 20px; 
+        --border-radius-element: 14px; /* ปรับให้ดูเพรียวขึ้นเล็กน้อย */
+        
+        /* [!!! KEPT] */
+        --inactive-bg: #fefbed;
+
+        /* [!!! NEW STATUS COLORS !!!] */
+        --status-completed: #008a2a;
+        --status-completed-bg: #e5fbeB;
+        --status-refunded: #c93400;
+        --status-refunded-bg: #fff4e0;
+        --status-cancelled: #6e6e73;
+        --status-cancelled-bg: #e9e9ed;
+    }
+
+    /* --- Global Body & Container --- */
+    body {
+    font-family: var(--font-family-apple);
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+
+}
+.os-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background-color: var(--bg-color);
+    border-radius: var(--border-radius-card);
+    font-family: var(--font-family-apple);
+    color: var(--text-primary);
+    margin: 24px auto;
+    margin-left: 14px;
+    margin-right: 10px;
+}
+
+    /* --- Title & Breadcrumb --- */
+    .os-breadcrumb-bar {
+        font-family: var(--font-family-apple);
+        font-size: 1rem;
+        color: var(--text-secondary);
+        margin: 0;
+        padding: 0;
+    }
+    .os-overview-title {
+        font-family: var(--font-family-apple);
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 4px 0 24px 0;
+        line-height: 1.2;
+    }
+
+
+    /* --- Filter Section (ส่วนตัวกรอง) --- */
+    .os-filters-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 16px;
+        padding: 24px; /* เพิ่ม padding */
+        background-color: var(--card-bg-color);
+        border-radius: var(--border-radius-card);
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+    .os-filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex-grow: 1;
+        min-width: 150px;
+    }
+    .os-filter-group.search {
+        flex-basis: 300px; /* ให้ช่องค้นหาหลักใหญ่ขึ้น */
+        min-width: 250px;
+    }
+    .os-filter-group label {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .os-input,
+    .os-select {
+        font-family: var(--font-family-apple);
+        font-size: 0.95rem;
+        padding: 10px 12px;
+        border: 1px solid transparent; 
+        border-radius: var(--border-radius-element);
+        background-color: var(--hover-bg-color); 
+        color: var(--text-primary);
+        transition: all 0.2s ease;
+    }
+    .os-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236e6e73' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px 16px;
+        cursor: pointer;
+    }
+    .os-input:focus,
+    .os-select:focus {
+        outline: none;
+        border-color: var(--accent-color-blue);
+        box-shadow: 0 0 0 2px rgba(0,122,255,0.2);
+        background-color: #ffffff;
+    }
+
+    /* --- Primary Button --- */
+    .os-button-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 16px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        font-family: var(--font-family-apple);
+        color: #ffffff;
+        background-color: var(--accent-color-blue);
+        border: none;
+        border-radius: var(--border-radius-element);
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+        height: 44px; /* Match filter element height */
+    }
+    .os-button-primary:hover {
+        background-color: var(--accent-color-blue-hover);
+    }
+    .os-button-primary:active {
+        transform: scale(0.98);
+    }
+    .os-button-primary i {
+        font-size: 0.9rem;
+    }
+
+    /* --- Icon Button --- */
+    .os-icon-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        color: var(--text-secondary);
+        background-color: #ffffff;
+        border: 1px solid var(--border-color); /* เพิ่มขอบ */
+        border-radius: var(--border-radius-element);
+        width: 44px;
+        height: 44px;
+        cursor: pointer;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    .os-icon-button:hover {
+        background-color: var(--hover-bg-color);
+        color: var(--text-primary);
+        border-color: var(--text-secondary);
+    }
+
+
+    /* --- Order List Table (ตารางสรุปรายการบิล) --- */
+    .os-list-container {
+        display: flex;
+        flex-direction: column;
+        gap: 2px; /* ช่องว่างระหว่างแถวน้อยลง */
+        background-color: var(--card-bg-color);
+        border-radius: var(--border-radius-card);
+        padding: 0 0 10px 0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+    .os-list-row {
+        display: grid;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 24px;
+        transition: background-color 0.2s ease;
+        /* 7 Columns: Receipt, Date, Customer, Staff, Total, Status, Actions */
+        grid-template-columns: 1.2fr 1.5fr 2fr 1.5fr 1fr 1fr 0.5fr;
+    }
+    .os-list-row:not(.header-row):hover {
+        background-color: var(--hover-bg-color);
+        cursor: pointer;
+    }
+    .os-list-row.header-row {
+        background-color: transparent;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .os-list-row.header-row:hover {
+        background-color: transparent;
+    }
+    .os-list-row:not(.header-row) .os-col {
+        font-size: 0.9rem; 
+        color: var(--text-primary); 
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .os-col.total-col {
+        font-weight: 600;
+        text-align: right;
+    }
+    .os-col.actions-col {
+        justify-self: flex-end;
+    }
+
+    /* --- Status Badge --- */
+    .os-status-badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 12px;
+        display: inline-block;
+        text-align: center;
+        min-width: 80px;
+    }
+    .os-status-badge.completed {
+        color: var(--status-completed);
+        background-color: var(--status-completed-bg);
+    }
+    .os-status-badge.refunded {
+        color: var(--status-refunded);
+        background-color: var(--status-refunded-bg);
+    }
+    .os-status-badge.cancelled {
+        color: var(--status-cancelled);
+        background-color: var(--status-cancelled-bg);
+    }
+
+    /* --- Action Button in Table --- */
+    .os-view-btn {
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem; color: var(--text-secondary);
+        background-color: var(--hover-bg-color);
+        border: none;
+        border-radius: 10px;
+        width: 32px; height: 32px; cursor: pointer;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .os-view-btn:hover {
+        background-color: #e9e9ed;
+        color: var(--accent-color-blue);
+    }
+
+
+    /* --- Modal (View Details) --- */
+    .os-modal-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        
+        /* [FIXED] ใช้ visibility และ opacity แทน display: none/flex เพื่อให้ transition ทำงาน */
+        background-color: rgba(0, 0, 0, 0.0); /* เริ่มที่โปร่งใส */
+        visibility: hidden; 
+        opacity: 0; 
+
+        display: flex; /* กำหนดให้เป็น flex เสมอ แต่ซ่อนด้วย visibility/opacity */
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        
+        /* Transition: opacity และ background-color ทันที, visibility หน่วง 0.3s ตอนซ่อน */
+        transition: opacity 0.3s ease, background-color 0.3s ease, visibility 0s 0.3s;
+        backdrop-filter: blur(5px);
+    }
+
+    .os-modal-overlay.active {
+        visibility: visible;
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.4); /* Fade ไปสีทึบ */
+        /* ยกเลิกการหน่วงเวลาเมื่อแสดงผล */
+        transition-delay: 0s;
+    }
+
+    .os-modal-content {
+        background-color: var(--card-bg-color);
+        border-radius: var(--border-radius-card);
+        width: 90%;
+        max-width: 700px;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        
+        /* [NEW] Initial state for slide-up animation (invisible and moved down) */
+        opacity: 0;
+        transform: translateY(20px);
+        /* [NEW] Transition for Apple-style ease-out (cubic-bezier) */
+        transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), 
+                    transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    /* [NEW] Target the content ONLY when the overlay is active to apply the final state */
+    .os-modal-overlay.active .os-modal-content {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .os-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .os-modal-header h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-primary);
+    }
+    .os-modal-header h2 i {
+        color: var(--accent-color-blue);
+    }
+    .os-modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: color 0.2s ease;
+        padding: 5px;
+    }
+    .os-modal-close:hover {
+        color: var(--text-primary);
+    }
+
+    /* Modal Details Grid */
+    .os-detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 20px;
+        margin-bottom: 20px;
+    }
+    .os-detail-item {
+        font-size: 0.9rem;
+    }
+    .os-detail-label {
+        font-weight: 500;
+        color: var(--text-secondary);
+    }
+    .os-detail-value {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    /* Item List in Modal */
+    .os-item-list-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px; /* เพิ่มช่องว่างระหว่างแถว */
+        margin: 20px 0;
+    }
+    .os-item-list-table th, .os-item-list-table td {
+        padding: 10px 15px;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+    .os-item-list-table th {
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .os-item-list-table tbody tr {
+        background-color: var(--hover-bg-color);
+        border-radius: 10px;
+        transition: background-color 0.2s ease;
+    }
+    .os-item-list-table tbody tr:hover {
+        background-color: #e9e9ed;
+    }
+
+    /* Financial Summary */
+    .os-financial-summary {
+        max-width: 300px;
+        margin-left: auto;
+        padding-top: 15px;
+        border-top: 1px solid var(--border-color);
+    }
+    .os-summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        font-size: 1rem;
+    }
+    .os-summary-row.grand-total {
+        font-size: 1.2rem;
+        font-weight: 700;
+        padding-top: 15px;
+        border-top: 1px solid var(--border-color);
+        margin-top: 10px;
+        color: var(--text-primary);
+    }
+    .os-summary-label {
+        color: var(--text-secondary);
+    }
+    .os-summary-value {
+        font-weight: 600;
+    }
+    .os-summary-row.grand-total .os-summary-value {
+        color: var(--accent-color-blue);
+    }
+
+    /* Modal Actions */
+    .os-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+        margin-top: 20px;
+    }
+    .os-action-btn-print {
+        background-color: var(--hover-bg-color);
+        color: var(--text-primary);
+    }
+    .os-action-btn-print:hover {
+        background-color: #e9e9ed;
+    }
+    .os-action-btn-refund {
+        background-color: #ffcc00; /* Yellow for Refund */
+        color: var(--text-primary);
+    }
+    .os-action-btn-refund:hover {
+        background-color: #e6b800;
+    }
+    .os-action-btn-void {
+        background-color: #ff3b30; /* Red for Void/Cancel */
+        color: #ffffff;
+    }
+    .os-action-btn-void:hover {
+        background-color: #cc231b;
+    }
+
+
+    /* --- Responsive (ปรับใหม่) --- */
+    @media (max-width: 900px) {
+        .os-list-container {
+            padding: 0;
+        }
+        .os-list-row {
+            grid-template-columns: 1fr;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .os-list-row.header-row { display: none; }
+        .os-list-row .os-col {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.9rem; padding: 4px 0;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+        }
+        .os-list-row .os-col::before {
+            content: attr(data-label);
+            font-weight: 600; color: var(--text-secondary);
+            margin-right: 16px;
+            min-width: 100px;
+        }
+        .os-col.actions-col { justify-content: flex-start; }
+        .os-col.total-col { text-align: left; }
+        .os-filters-wrapper {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .os-filter-group {
+            min-width: 100%;
+        }
+        .os-filter-group.search {
+            flex-basis: auto;
+        }
+        .os-detail-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        body {
+            padding: 15px;
+        }
+        .os-overview-title {
+            font-size: 2rem;
+        }
+        .os-modal-content {
+            padding: 20px;
+        }
+        .os-modal-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .os-item-list-table th, .os-item-list-table td {
+            padding: 8px 10px;
+        }
+    }
+
+    /* [Utility for Font Awesome Icons] */
+    .os-icon {
+        margin-right: 5px;
+        width: 1em; /* Fix alignment */
+        text-align: center;
+    }

@@ -7,9 +7,9 @@
 <x-app-layout>
 
     {{-- [!!!] 2. ส่วนเนื้อหาหลัก (Container) --}}
-    <div>
-        <div>
-            <div class="sr-container">
+    <div class="settings-layout">
+      
+            <div class="sr-container-i">
                 {{-- [!!! REFACTORED HEADER !!!] --}}
                 <div class="sr-header">
                     <div class="sr-header-left">
@@ -273,7 +273,6 @@
                 </div>
 
             </div>
-        </div>
     </div>
 
     {{-- [!!!] 3. โหลด CSS และ JS --}}

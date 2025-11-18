@@ -4,6 +4,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\PeoplesController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\PosController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -15,10 +18,18 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    //pos
+    Route::get('/pos', [\App\Http\Controllers\PosController::class, 'index'])->name('pos.index');
+
+    //orders - sale
+    Route::get('/orders-sales', [\App\Http\Controllers\OrdersController::class, 'index'])->name('orders.index');
+
+    //profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    //setting
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
 
     // [!!! อัปเดตส่วนของ Reports !!!]
@@ -27,13 +38,26 @@ Route::middleware('auth')->group(function () {
 
     // Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index'); // <-- ของเดิม
     
+    //Inventory
+    Route::get('/inventorys/manage-products', [InventoryController::class, 'manageProducts'])->name('inventorys.manage-products');
+    Route::get('/inventorys/categories', [InventoryController::class, 'categories'])->name('inventorys.categories');
+    Route::get('/inventorys/expiry-management', [InventoryController::class, 'expiryManagement'])->name('inventorys.expiry-management');
+    Route::get('/inventorys/stock-adjustments', [InventoryController::class, 'stockAdjustments'])->name('inventorys.stock-adjustments');
+
+    //report subpages
     Route::get('/reports/sales', [ReportsController::class, 'sales'])->name('reports.sales');
     Route::get('/reports/finance', [ReportsController::class, 'finance'])->name('reports.finance');
     Route::get('/reports/inventory', [ReportsController::class, 'inventory'])->name('reports.inventory');
 
-        Route::get('/peoples/patients-customer', [PeoplesController::class, 'patientscustomer'])->name('peoples.patients-customer');
-        Route::get('/peoples/staff-user', [PeoplesController::class, 'staffuser'])->name('peoples.staff-user');
-        Route::get('/peoples/recent', [PeoplesController::class, 'recent'])->name('peoples.recent');
+    //people subpages
+    Route::get('/peoples/patients-customer', [PeoplesController::class, 'patientscustomer'])->name('peoples.patients-customer');
+    Route::get('/peoples/staff-user', [PeoplesController::class, 'staffuser'])->name('peoples.staff-user');
+    Route::get('/peoples/recent', [PeoplesController::class, 'recent'])->name('peoples.recent');
+
+    //Purchasing subpages
+    Route::get('/purchasing/suppliers', [PurchaseController::class, 'suppliers'])->name('purchasing.suppliers');
+    Route::get('/purchasing/purchase-orders', [PurchaseController::class, 'purchaseOrders'])->name('purchasing.purchaseOrders');
+    Route::get('/purchasing/goods-received', [PurchaseController::class, 'goodsReceived'])->name('purchasing.goodsReceived');
 });
 
 // Route สำหรับ Live Search (ที่ JavaScript เรียก)

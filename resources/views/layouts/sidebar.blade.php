@@ -1,160 +1,206 @@
 <div id="sidebar" class="apple-sidebar">
 
-    <div class="sidebar-search-container">
-        <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input type="text" id="sidebarSearch" placeholder="Search">
-        <i class="fa-solid fa-microphone mic-icon"></i>
-    </div>
+<div class="sidebar-search-container">
+    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+    <input type="text" id="sidebarSearch" placeholder="Search">
+    <i class="fa-solid fa-microphone mic-icon"></i>
+</div>
 
-    <div class="sidebar-top-section">
-        <div class="sidebar-header">
-            <div class="logo-section">
-                <a href="{{ route('dashboard') }}"><img src="{{ asset('images/LOGO.png') }}" alt="Logo"
-                        class="sidebar-logo"></a>
-                <div class="sidebar-title">
-                    <strong>Oboun ERP</strong><br>
-                    <span class="subtitle">Pharmacy Management System</span>
-                </div>
+<div class="sidebar-top-section">
+    <div class="sidebar-header">
+        <div class="logo-section">
+            <a href="{{ route('dashboard') }}">
+                <img src="{{ asset('images/LOGO.png') }}" alt="Logo" class="sidebar-logo">
+            </a>
+            <div class="sidebar-title">
+                <strong>Oboun ERP</strong><br>
+                <span class="subtitle">Pharmacy Management System</span>
             </div>
         </div>
-
-        <button id="toggleSidebar" class="toggle-btn" type="button">
-            <i class="fa fa-bars"></i>
-        </button>
-
     </div>
 
-    <div class="sidebar-body">
-        <div class="sidebar-content">
+    <button id="toggleSidebar" class="toggle-btn" type="button">
+        <i class="fa fa-bars"></i>
+    </button>
+</div>
 
-            <a href="{{ route('dashboard') }}" class="menu-item {{ Route::is('dashboard') ? 'active' : '' }}">
-                <div class="menu-item-content">
-                    <i class="fa-solid fa-table-cells-large"></i>
-                    <span>Dashboard</span>
-                </div>
-                <span class="sidebar-badge">1</span>
-            </a>
+<div class="sidebar-body">
+    <div class="sidebar-content">
 
-            <a href="#" class="menu-item">
-                <div class="menu-item-content">
-                    <i class="fa-solid fa-cash-register"></i>
-                    <span>Point of Sale</span>
-                </div>
-            </a>
+        <!-- Dashboard -->
+        <a href="{{ route('dashboard') }}" class="menu-item {{ Route::is('dashboard') ? 'active' : '' }}">
+            <div class="menu-item-content">
+                <i class="fa-solid fa-table-cells-large"></i>
+                <span>Dashboard</span>
+            </div>
+            <span class="sidebar-badge">1</span>
+        </a>
 
-            <a href="#" class="menu-item">
-                <div class="menu-item-content">
-                    <i class="fa-solid fa-receipt"></i>
-                    <span>Orders | Sales</span>
-                </div>
-                <span class="sidebar-badge">1</span>
-            </a>
+        <!-- Point of Sale -->
+        <a href="{{ route('pos.index') }}" class="menu-item {{ Route::is('pos.index') ? 'active' : '' }}">
+            <div class="menu-item-content">
+                <i class="fa-solid fa-cash-register"></i>
+                <span>Point of Sale</span>
+            </div>
+        </a>
 
-            <div class="has-submenu">
-                <div class="submenu-toggle">
-                    <i class="fa-solid fa-boxes-stacked"></i>
-                    <span>Inventory</span>
+        <!-- Orders | Sales (แก้ไข: ใช้ 'orders.index' เพื่อ Active ตัวเอง) -->
+        <a href="{{ route('orders.index') }}" class="menu-item {{ Route::is('orders.index') ? 'active' : '' }}">
+            <div class="menu-item-content">
+                <i class="fa-solid fa-receipt"></i>
+                <span>Orders | Sales</span>
+            </div>
+            <span class="sidebar-badge">1</span>
+        </a>
 
-                    <span class="sidebar-badge">3</span>
-
-                    <i class="fa-solid fa-chevron-right arrow"></i>
-                </div>
-                <div class="submenu">
-                    <a href="#" class="submenu-item"><i class="fa-solid fa-tablets"></i>Manage Products</a>
-                    <a href="#" class="submenu-item"><i class="fa-solid fa-layer-group"></i>Categories</a>
-                    <a href="#" class="submenu-item"><i class="fa-solid fa-exclamation"></i><span>Expiry
-                            Management</span> <span class="sidebar-badge">2</span></a>
-                    <a href="#" class="submenu-item"><i class="fa-brands fa-stack-overflow"></i><span>Stock
-                            Adjustments</span> <span class="sidebar-badge">1</span></a>
-                </div>
+        <!-- Inventory (Route Group) -->
+        <div class="has-submenu {{ Route::is('inventorys.*') ? 'open active' : '' }}">
+            <div class="submenu-toggle {{ Route::is('inventorys.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                <span>Inventory</span>
+                <i class="fa-solid fa-chevron-right arrow"></i>
             </div>
 
-            <div class="has-submenu">
-                <div class="submenu-toggle">
-                    <i class="fa-solid fa-truck-moving"></i>
-                    <span>Purchasing</span>
-                    <i class="fa-solid fa-chevron-right arrow"></i>
-                </div>
-                <div class="submenu">
-                    <a href="#" class="submenu-item"><i class="fa-solid fa-truck-field"></i>Suppliers</a>
-                    <a href="#" class="submenu-item"><i class="fa-solid fa-cart-shopping"></i>Purchase Orders</a>
-                    <a href="#" class="submenu-item"><i class="fa-brands fa-get-pocket"></i>Goods Received</a>
-                </div>
-            </div>
-
-            <div class="has-submenu">
-                <div class="submenu-toggle">
-                    <i class="fa-solid fa-users"></i>
-                    <span>People</span>
-                    <i class="fa-solid fa-chevron-right arrow"></i>
-                </div>
-                <div class="submenu">
-                    <a href="{{ route('peoples.patients-customer') }}" class="submenu-item {{ Route::is('peoples.patients-customer') ? 'active' : '' }}"><i class="fa-solid fa-user"></i>Patients | Customers</a>
-                    <a href="{{ route('peoples.staff-user') }}" class="submenu-item {{ Route::is('peoples.staff-user') ? 'active' : '' }}"><i class="fa-solid fa-user-nurse"></i>Staff | Users</a>
-                    <a href="{{ route('peoples.recent') }}" class="submenu-item {{ Route::is('peoples.recent') ? 'active' : '' }}"><i class="fa-solid fa-signal"></i>Recent</a>
-                </div>
-            </div>
-
-            <div class="has-submenu">
-                <div class="submenu-toggle">
-                    <i class="fa-solid fa-chart-pie"></i>
-                    <span>Reports</span>
-                    <i class="fa-solid fa-chevron-right arrow"></i>
-                </div>
-                <div class="submenu">
-                    {{-- [!!!] 1. แก้ไข Active State เป็น 'reports.sales' --}}
-                    <a href="{{ route('reports.sales') }}"
-                        class="submenu-item {{ Route::is('reports.sales') ? 'active open' : '' }}">
-                        <i class="fa-solid fa-capsules"></i>Sales Report <span class="sidebar-badge">1</span></a>
-                    </a>
-
-                    {{-- [!!!] 2. แก้ไข href และ Active State เป็น 'reports.inventory' --}}
-                    <a href="{{ route('reports.inventory') }}"
-                        class="submenu-item {{ Route::is('reports.inventory') ? 'active' : '' }}">
-                        <i class="fa-solid fa-warehouse"></i>Inventory Report
-                    </a>
-
-                    {{-- [!!!] 3. แก้ไข href และ Active State เป็น 'reports.finance' --}}
-                    <a href="{{ route('reports.finance') }}"
-                        class="submenu-item {{ Route::is('reports.finance') ? 'active' : '' }}">
-                        <i class="fa-solid fa-coins"></i>Financial Report
-                    </a>
-                </div>
-            </div>
-
-            <!-- ค้นหาลิงก์ Settings ของคุณ -->
-            <a href="{{ route('settings.index') }}"
-                class="menu-item {{ Route::is('settings.index') ? 'active' : '' }}">
-                <div class="menu-item-content">
-                    <i class="fa-solid fa-gear"></i>
-                    <span>Settings</span>
-                </div>
-                <span class="sidebar-badge">1 </span>
-            </a>
-
-            <!-- [!!! ADJUSTED !!!] เพิ่ม id="openSupportModalBtn" -->
-            <a href="#" class="menu-item open-support-modal-btn">
-                <div class="menu-item-content">
-                    <i class="fa-solid fa-headset"></i>
-                    <span>Support</span>
-                </div>
-            </a>
-
-        </div>
-
-        <div class="sidebar-footer">
-            <form method="POST" action="{{ route('logout') }}" style="margin: 0;" id="logout-form">
-                @csrf
-
-                <a href="#" class="menu-item logout-item" id="open-logout-modal">
-                    <div class="menu-item-content">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        <span>{{ __('Log out') }}</span>
-                    </div>
+            <div class="submenu">
+                <a href="{{ route('inventorys.manage-products') }}"
+                    class="submenu-item {{ Route::is('inventorys.manage-products') ? 'active' : '' }}">
+                    <i class="fa-solid fa-tablets"></i>Manage Products
+                    <span class="sidebar-badge">2</span>
                 </a>
-            </form>
+
+                <a href="{{ route('inventorys.categories') }}"
+                    class="submenu-item {{ Route::is('inventorys.categories') ? 'active' : '' }}">
+                    <i class="fa-solid fa-layer-group"></i>Categories
+                </a>
+
+                <a href="{{ route('inventorys.expiry-management') }}"
+                    class="submenu-item {{ Route::is('inventorys.expiry-management') ? 'active' : '' }}">
+                    <i class="fa-solid fa-exclamation"></i>
+                    <span>Expiry Management</span>
+                    <span class="sidebar-badge">2</span>
+                </a>
+
+                <a href="{{ route('inventorys.stock-adjustments') }}"
+                    class="submenu-item {{ Route::is('inventorys.stock-adjustments') ? 'active' : '' }}">
+                    <i class="fa-brands fa-stack-overflow"></i>
+                    <span>Stock Adjustments</span>
+                    <span class="sidebar-badge">1</span>
+                </a>
+            </div>
         </div>
+
+        <!-- Purchasing (Route Group: เพิ่ม 'active' ที่เมนูหลัก) -->
+        <div class="has-submenu {{ Route::is('purchasing.*') ? 'open active' : '' }}">
+            <div class="submenu-toggle {{ Route::is('purchasing.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-truck-moving"></i>
+                <span>Purchasing</span>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </div>
+            <div class="submenu">
+                <a href="{{ route('purchasing.suppliers') }}"
+                    class="submenu-item {{ Route::is('purchasing.suppliers') ? 'active' : '' }}">
+                    <i class="fa-solid fa-truck-field"></i>Suppliers
+                </a>
+
+                <a href="{{ route('purchasing.purchaseOrders') }}"
+                    class="submenu-item {{ Route::is('purchasing.purchaseOrders') ? 'active' : '' }}">
+                    <i class="fa-solid fa-cart-shopping"></i>Purchase Orders
+                </a>
+
+                <a href="{{ route('purchasing.goodsReceived') }}"
+                    class="submenu-item {{ Route::is('purchasing.goodsReceived') ? 'active' : '' }}">
+                    <i class="fa-brands fa-get-pocket"></i>Goods Received
+                </a>
+            </div>
+        </div>
+
+        <!-- People (Route Group: เพิ่ม 'active' ที่เมนูหลัก) -->
+        <div class="has-submenu {{ Route::is('peoples.*') ? 'open active' : '' }}">
+            <div class="submenu-toggle {{ Route::is('peoples.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-users"></i>
+                <span>People</span>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </div>
+            <div class="submenu">
+                <a href="{{ route('peoples.patients-customer') }}"
+                    class="submenu-item {{ Route::is('peoples.patients-customer') ? 'active' : '' }}">
+                    <i class="fa-solid fa-user"></i>Patients | Customers
+                </a>
+
+                <a href="{{ route('peoples.staff-user') }}"
+                    class="submenu-item {{ Route::is('peoples.staff-user') ? 'active' : '' }}">
+                    <i class="fa-solid fa-user-nurse"></i>Staff | Users
+                </a>
+
+                <a href="{{ route('peoples.recent') }}"
+                    class="submenu-item {{ Route::is('peoples.recent') ? 'active' : '' }}">
+                    <i class="fa-solid fa-signal"></i>Recent
+                </a>
+            </div>
+        </div>
+
+        <!-- Reports (Route Group: เพิ่ม 'active' ที่เมนูหลัก) -->
+        <div class="has-submenu {{ Route::is('reports.*') ? 'open active' : '' }}">
+            <div class="submenu-toggle {{ Route::is('reports.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Reports</span>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </div>
+            <div class="submenu">
+
+                <a href="{{ route('reports.sales') }}"
+                    class="submenu-item {{ Route::is('reports.sales') ? 'active' : '' }}">
+                    <i class="fa-solid fa-capsules"></i>
+                    Sales Report
+                    <span class="sidebar-badge">1</span>
+                </a>
+
+                <a href="{{ route('reports.inventory') }}"
+                    class="submenu-item {{ Route::is('reports.inventory') ? 'active' : '' }}">
+                    <i class="fa-solid fa-warehouse"></i>
+                    Inventory Report
+                </a>
+
+                <a href="{{ route('reports.finance') }}"
+                    class="submenu-item {{ Route::is('reports.finance') ? 'active' : '' }}">
+                    <i class="fa-solid fa-coins"></i>
+                    Financial Report
+                </a>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <a href="{{ route('settings.index') }}"
+            class="menu-item {{ Route::is('settings.index') ? 'active' : '' }}">
+            <div class="menu-item-content">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </div>
+            <span class="sidebar-badge">1</span>
+        </a>
+
+        <!-- Support -->
+        <a href="#" class="menu-item open-support-modal-btn">
+            <div class="menu-item-content">
+                <i class="fa-solid fa-headset"></i>
+                <span>Support</span>
+            </div>
+        </a>
+
+    </div>
+
+    <div class="sidebar-footer">
+        <form method="POST" action="{{ route('logout') }}" id="logout-form">
+            @csrf
+            <a href="#" class="menu-item logout-item" id="open-logout-modal">
+                <div class="menu-item-content">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>{{ __('Log out') }}</span>
+                </div>
+            </a>
+        </form>
     </div>
 </div>
 
-<div id="sidebarOverlay" class="sidebar-overlay hidden"></div>
+
+</div>

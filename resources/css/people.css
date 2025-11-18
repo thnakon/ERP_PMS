@@ -84,12 +84,6 @@ body {
     color: var(--text-primary);
 }
 
-.sr-container {
-    width: 100%;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 18px;
-}
 
 /* --- [!!! NEW BREADCRUMB/TITLE !!!] --- */
 .people-breadcrumb-bar {
@@ -154,7 +148,7 @@ body {
     color: #ffffff;
     background-color: var(--accent-color-blue);
     border: none;
-    border-radius: var(--border-radius-element); /* [MOD] 20px */
+    border-radius: 30px; /* [MOD] 20px */
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
