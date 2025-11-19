@@ -38,7 +38,7 @@
     border-radius: var(--border-radius-card);
     font-family: var(--font-family-apple);
     color: var(--text-primary);
-    margin: 24px auto;
+    margin: 10px auto;
     margin-left: 14px;
     margin-right: 10px;
 }
@@ -46,7 +46,6 @@
 .inv-breadcrumb-bar {
     font-size: 0.9rem;
     color: var(--text-secondary);
-    margin-bottom: 8px;
 }
 
 .inv-page-title {
@@ -167,7 +166,7 @@
     display: grid;
     align-items: center;
     background-color: var(--card-bg-color);
-    border-radius: 16px;
+    border-radius: 23px;
     padding: 12px 16px; /* Reduced padding slightly for tighter lists */
     margin-bottom: 8px;
     box-shadow: var(--shadow-sm);
@@ -336,4 +335,95 @@
     /* Hide less important columns on mobile/tablet */
     .grid-products > div:not(:first-child):not(:nth-child(2)):not(:last-child) { display: none; }
     /* Show critical info in product column via stacked layout if needed - but for now keeping it simple */
+}
+
+/* กล่องสำหรับคลิกอัปโหลด */
+.inv-image-upload-box {
+    width: 100%;
+    height: 150px; /* ความสูงของกล่อง */
+    background-color: #f9fafb;
+    border: 2px dashed #d1d5db; /* เส้นประสีเทา */
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.inv-image-upload-box:hover {
+    background-color: #eff6ff;
+    border-color: #3b82f6; /* เปลี่ยนเป็นสีฟ้าเมื่อเอาเมาส์ชี้ */
+}
+
+/* จัดการข้อความและไอคอนภายใน */
+#inv-image-placeholder {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+/* จัดการรูปภาพ Preview */
+#inv-image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* แสดงรูปให้เห็นครบถ้วน ไม่โดนตัด */
+    background-color: #fff;
+}
+
+/* --- Modal Styles (ปรับปรุงเพื่อรองรับการเลื่อน) --- */
+
+.inv-modal {
+    background-color: #ffffff;
+    width: 100%; 
+    max-width: 600px;
+    /* เพิ่ม: กำหนดความสูงสูงสุด (Max Height) ของ Modal */
+    max-height: 90vh; /* 90% ของความสูงหน้าจอ เพื่อให้มีขอบบน-ล่าง */
+    
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    transform: scale(0.9);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    
+    /* เพิ่ม: ใช้ Flexbox เพื่อจัดการ Header, Body, Footer */
+    display: flex;
+    flex-direction: column;
+}
+.inv-modal-overlay.show .inv-modal { transform: scale(1); }
+
+/* ****************************************************** */
+/* * เพิ่มส่วนนี้: ทำให้ส่วนเนื้อหาหลักสามารถเลื่อนได้  * */
+/* ****************************************************** */
+.inv-modal-body {
+    /* ใช้ Flex-grow เพื่อให้ Body ขยายเต็มพื้นที่ที่เหลือ */
+    flex-grow: 1; 
+    /* กำหนดให้สามารถเลื่อน (Scroll) ได้เมื่อเนื้อหาเกิน */
+    overflow-y: auto; 
+    /* เพิ่ม padding/margin ด้านล่างเล็กน้อย เพื่อไม่ให้เนื้อหาชนกับ footer เมื่อเลื่อน */
+    padding-right: 12px; /* เพิ่มพื้นที่เล็กน้อยเพื่อไม่ให้ Scrollbar ชิดขอบ */
+    /* *** สำคัญ: เนื่องจากเราใช้ padding: 32px กับ inv-modal หลัก *** */
+    /* เราอาจจะต้องปรับการจัดระยะขอบใหม่ หรือใช้ padding-bottom ใน inv-modal-footer แทน */
+    
+    /* หากมีปัญหาเรื่องขอบชน ให้พิจารณาเปลี่ยนไปใช้ padding-top/bottom 0 แล้วใช้ margin ภายใน */
+}
+/* ****************************************************** */
+
+
+.inv-modal-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 24px; 
+    flex-shrink: 0; /* ป้องกัน Header หดตัว */
+}
+
+.inv-modal-footer { 
+    display: flex; 
+    justify-content: flex-end; 
+    gap: 12px; 
+    margin-top: 32px; 
+    flex-shrink: 0; /* ป้องกัน Footer หดตัว */
 }

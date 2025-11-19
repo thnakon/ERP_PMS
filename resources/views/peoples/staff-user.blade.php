@@ -1,12 +1,10 @@
 <x-app-layout>
     <head>
-        {{-- (... head content ... ) --}}
-        {{-- (CSS/JS ถูกโหลดมาจาก app-layout แล้ว) --}}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="{{ asset('css/people.css') }}">
     </head>
     
     <div class="sr-container">
-{{-- [!!! REFACTORED HEADER !!!] --}}
         <div class="sr-header">
             <div class="sr-header-left">
                 <p class="sr-breadcrumb">Dashboard / People / < <a href="{{ route('peoples.patients-customer') }}" style="color: #017aff">Patients-Customers</a> / Staff-Users > <a href="{{ route('peoples.recent') }}" style="color: #017aff">Recent</a></p>
@@ -28,8 +26,6 @@
                 <button class="sr-icon-button" title="Filter">
                     <i class="fa-solid fa-filter"></i>
                 </button>
-                {{-- [!!! ADJUSTED !!!] เปลี่ยน div/span เป็น <button> 
-                และใช้คลาสใหม่ sr-button-primary --}}
                 <button class="sr-button-primary">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add new staff</span>
@@ -39,13 +35,55 @@
 
         <div class="people-content-area">
 
-            {{-- [!!! VIEW 1: LIST VIEW (Staff) !!!] --}}
-            {{-- [!!! ID UPDATED !!!] --}}
+            {{-- [!!! VIEW 1: LIST VIEW !!!] --}}
             <div id="staff-list-view" class="people-view-wrapper">
-                
+                <div class="inv-filters-wrapper">
+                    {{-- Bulk Actions --}}
+                    {{-- Bulk Actions --}}
+<div id="bulk-actions"
+    style="
+        display: none;
+        align-items: center;
+        gap: 16px;
+
+        
+        border-radius: 32px;
+     
+        margin-left: auto;
+  
+    ">
+
+    <!-- Selected Counter -->
+    <span style="font-weight: 600; color: #6e6e73; font-size: 0.9rem;">
+        Selected: <span id="selected-count">0</span>
+    </span>
+
+    <!-- Deactivate Button -->
+    <button 
+        style="
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 32px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #ff3b30;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+        ">
+        <i class="fa-solid fa-user-slash"></i>
+        Deactivate Selected
+    </button>
+
+</div>
+
+                </div>
+
                 <div class="people-list-container">
-                    {{-- ส่วนหัวตาราง --}}
                     <div class="people-list-row header-row">
+                        <div class="people-checkbox" id="select-all"></div>
                         <div class="col-name">Name</div>
                         <div class="col-email">Email / Username</div>
                         <div class="col-role">Role</div>
@@ -53,28 +91,9 @@
                         <div class="col-actions"></div>
                     </div>
 
-                    {{-- Data Row 1 (Admin) --}}
+                    {{-- Data Row 1 --}}
                     <div class="people-list-row">
-                        <div class="col-name" data-label="Name">
-                            <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=AP" alt="Avatar" class="sr-avatar">
-                            <div class="sr-user-info">
-                                <span class="sr-user-name">ภก. อภิชาติ</span>
-                                <span class="sr-user-email">admin@oboun.com</span>
-                            </div>
-                        </div>
-                        <div class="col-email" data-label="Email">admin@oboun.com</div>
-                        <div class="col-role" data-label="Role">
-                            <span class="people-role-badge admin">Admin</span>
-                        </div>
-                        <div class="col-status" data-label="Status">
-                            <span class="people-status-badge active">Active</span>
-                        </div>
-                        <div class="col-actions">
-                            <button class="sr-action-btn" title="Edit"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                        </div>
-                    </div>
-                    {{-- Data Row 1 (Admin) --}}
-                    <div class="people-list-row">
+                        <div class="people-checkbox item-checkbox"></div>
                         <div class="col-name" data-label="Name">
                             <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=AP" alt="Avatar" class="sr-avatar">
                             <div class="sr-user-info">
@@ -94,8 +113,9 @@
                         </div>
                     </div>
                     
-                    {{-- Data Row 2 (Pharmacist) --}}
+                    {{-- Data Row 2 --}}
                     <div class="people-list-row">
+                        <div class="people-checkbox item-checkbox"></div>
                         <div class="col-name" data-label="Name">
                             <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=SR" alt="Avatar" class="sr-avatar">
                             <div class="sr-user-info">
@@ -115,8 +135,9 @@
                         </div>
                     </div>
 
-                    {{-- Data Row 3 (Staff) --}}
+                    {{-- Data Row 3 --}}
                     <div class="people-list-row">
+                        <div class="people-checkbox item-checkbox"></div>
                         <div class="col-name" data-label="Name">
                             <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=NV" alt="Avatar" class="sr-avatar">
                             <div class="sr-user-info">
@@ -136,8 +157,9 @@
                         </div>
                     </div>
 
-                    {{-- Data Row 4 (Inactive) --}}
+                    {{-- Data Row 4 --}}
                     <div class="people-list-row">
+                        <div class="people-checkbox item-checkbox"></div>
                         <div class="col-name" data-label="Name">
                             <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=AD" alt="Avatar" class="sr-avatar">
                             <div class="sr-user-info">
@@ -158,16 +180,13 @@
                     </div>
 
                 </div>
-            </div> {{-- end #staff-list-view --}}
+            </div>
 
-
-            {{-- [!!! VIEW 2: ACTIVITY VIEW (Staff) !!!] --}}
-            {{-- [!!! ID UPDATED !!!] --}}
+            {{-- [!!! VIEW 2: ACTIVITY VIEW !!!] --}}
             <div id="staff-activity-view" class="people-view-wrapper">
-                <div class="people-grid-view">
-                    
-                    {{-- Card 1 (Admin) --}}
-                    <div class="people-activity-card">
+                 <div class="people-grid-view">
+                    {{-- Activity cards... --}}
+                     <div class="people-activity-card">
                         <img src="https://placehold.co/80x80/E2E8F0/4A5568?text=AP" alt="Avatar" class="activity-avatar">
                         <h4 class="activity-name">ภก. อภิชาติ</h4>
                         <p class="activity-title">Admin / Owner</p>
@@ -178,64 +197,19 @@
                             <div class="stat-item"><span class="stat-number">2</span><span class="stat-label">Tasks</span></div>
                         </div>
                     </div>
+                 </div>
+            </div>
 
-                    {{-- Card 2 (Pharmacist) --}}
-                    <div class="people-activity-card">
-                        <img src="https://placehold.co/80x80/E2E8F0/4A5568?text=SR" alt="Avatar" class="activity-avatar">
-                        <h4 class="activity-name">ภญ. สุรีพร</h4>
-                        <p class="activity-title">Pharmacist</p>
-                        <span class="people-badge active">Active</span>
-                        <div class="people-card-stats">
-                            <div class="stat-item"><span class="stat-number">180</span><span class="stat-label">Sales</span></div>
-                            <div class="stat-item"><span class="stat-number">95</span><span class="stat-label">Logs</span></div>
-                            <div class="stat-item"><span class="stat-number">5</span><span class="stat-label">Tasks</span></div>
-                        </div>
-                    </div>
+        </div>
 
-                    {{-- Card 3 (Staff) --}}
-                    <div class="people-activity-card">
-                        <img src="https://placehold.co/80x80/E2E8F0/4A5568?text=NV" alt="Avatar" class="activity-avatar">
-                        <h4 class="activity-name">พนักงาน ก. (ณัฐวุฒิ)</h4>
-                        <p class="activity-title">Staff</p>
-                        <span class="people-badge active">Active</span>
-                        <div class="people-card-stats">
-                            <div class="stat-item"><span class="stat-number">165</span><span class="stat-label">Sales</span></div>
-                            <div class="stat-item"><span class="stat-number">70</span><span class="stat-label">Logs</span></div>
-                            <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">Tasks</span></div>
-                        </div>
-                    </div>
-
-                    {{-- Card 4 (Inactive) --}}
-                    <div class="people-activity-card is-inactive">
-                         <div class="inactive-overlay"><span>Z</span><span>z</span><span>z</span></div>
-                        <img src="https://placehold.co/80x80/E2E8F0/4A5568?text=AD" alt="Avatar" class="activity-avatar">
-                        <h4 class="activity-name">อดีตพนักงาน ข.</h4>
-                        <p class="activity-title">Staff</p>
-                        <span class="people-badge inactive">Inactive</span>
-                        <div class="people-card-stats">
-                            <div class="stat-item"><span class="stat-number">...</span><span class="stat-label">Sales</span></div>
-                            <div class="stat-item"><span class="stat-number">...</span><span class="stat-label">Logs</span></div>
-                            <div class="stat-item"><span class="stat-number">...</span><span class="stat-label">Tasks</span></div>
-                        </div>
-                    </div>
-
-                </div>
-            </div> {{-- end #staff-activity-view --}}
-
-        </div> {{-- end .people-content-area --}}
-
-        {{-- [!!! PAGINATION !!!] --}}
         <div class="people-pagination">
             <span class="pagination-text">1-4 of 4</span>
             <div class="pagination-controls">
-                <button class="pagination-btn disabled" aria-label="Previous Page">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button class="pagination-btn disabled" aria-label="Next Page">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
+                <button class="pagination-btn disabled"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="pagination-btn disabled"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
         </div>
     
-    </div> {{-- end .sr-container --}}
+    </div>
+    <script src="{{ asset('js/people.js') }}"></script>
 </x-app-layout>

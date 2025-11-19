@@ -10,20 +10,43 @@
     --text-secondary: #6e6e73; 
     --border-color: #d2d2d7; 
     --accent-color-blue: #007aff; 
-    --accent-color-blue-hover: #0070e0; /* (จากปุ่มใหม่) */
+    --accent-color-blue-hover: #0070e0; 
     --hover-bg-color: #f3f2f8; 
     --border-radius-card: 20px; 
     --border-radius-element: 20px; 
     
-    /* [!!! KEPT] (จาก people.css) */
+    /* [!!! KEPT] */
     --inactive-bg: #fefbed;
 }
 
-/* --- Slider Toggle (ปรับแค่ตัวแปร) --- */
+/* --- Checkbox Styles (New) --- */
+.people-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d2d2d7;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.people-checkbox.checked {
+    background-color: var(--accent-color-blue);
+    border-color: var(--accent-color-blue);
+}
+.people-checkbox.checked::after {
+    content: '✔';
+    font-size: 12px;
+    color: white;
+}
+
+/* --- Slider Toggle --- */
 .people-view-toggle {
     display: flex;
     align-items: center;
-    background-color: #ffffff; /* [MOD] (ตามที่คุณระบุ) */
+    background-color: #ffffff; 
     border-radius: 30px;
     padding: 4px;
     position: relative;
@@ -47,7 +70,7 @@
 }
 
 .people-view-toggle .people-toggle-btn {
-    font-family: var(--font-family-apple); /* [MOD] */
+    font-family: var(--font-family-apple); 
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--text-secondary);
@@ -64,46 +87,34 @@
     align-items: center;
     gap: 6px;
 }
-.people-view-toggle .people-toggle-btn:hover {
-    color: var(--text-primary);
-}
+.people-view-toggle .people-toggle-btn:hover { color: var(--text-primary); }
 .people-view-toggle .people-toggle-btn.active {
     background-color: transparent;
     color: #ffffff;
     font-weight: 600;
     box-shadow: none;
 }
-.people-view-toggle .people-toggle-btn.active:hover {
-    color: #ffffff;
-}
-
-/* --- Body & Container (ปรับแค่ตัวแปร) --- */
-body {
-    font-family: var(--font-family-apple); /* [MOD] */
-    background-color: var(--bg-color); /* [MOD] */
-    color: var(--text-primary);
-}
+.people-view-toggle .people-toggle-btn.active:hover { color: #ffffff; }
 
 
-/* --- [!!! NEW BREADCRUMB/TITLE !!!] --- */
+/* --- Breadcrumb/Title --- */
 .people-breadcrumb-bar {
     font-family: var(--font-family-apple);
-    font-size: 1rem; /* 16px */
+    font-size: 1rem;
     color: var(--text-secondary);
     margin: 0;
     padding: 0;
 }
 .people-overview-title {
     font-family: var(--font-family-apple);
-    font-size: 2.5rem; /* 40px */
+    font-size: 2.5rem; 
     font-weight: 700;
     color: var(--text-primary);
-    margin: 4px 0 24px 0; /* (ปรับ margin) */
+    margin: 4px 0 24px 0; 
     line-height: 1.2;
 }
 
-
-/* --- Header (ปรับแค่ตัวแปร) --- */
+/* --- Header --- */
 .people-header {
     display: flex;
     justify-content: space-between;
@@ -135,158 +146,70 @@ body {
     justify-content: flex-end;
 }
 
-/* --- [!!! REPLACED BUTTON STYLES !!!] --- */
+/* --- Buttons --- */
 .sr-button-primary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px 16px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    font-family: var(--font-family-apple);
-    color: #ffffff;
-    background-color: var(--accent-color-blue);
-    border: none;
-    border-radius: 30px; /* [MOD] 20px */
-    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 16px; font-size: 0.95rem; font-weight: 600;
+    font-family: var(--font-family-apple); color: #ffffff;
+    background-color: var(--accent-color-blue); border: none;
+    border-radius: 30px; cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
-.sr-button-primary:hover {
-    background-color: var(--accent-color-blue-hover); /* [MOD] */
-}
-.sr-button-primary:active {
-    transform: scale(0.98);
-}
-.sr-button-primary i {
-    font-size: 0.9rem;
-}
+.sr-button-primary:hover { background-color: var(--accent-color-blue-hover); }
+.sr-button-primary:active { transform: scale(0.98); }
+.sr-button-primary i { font-size: 0.9rem; }
 
-/* --- [!!! UPDATED ICON BUTTON STYLES !!!] --- */
 .sr-icon-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    color: var(--text-secondary);
-    background-color: #ffffff; /* [MOD] (ตามที่คุณระบุ) */
-    border: none;
-    border-radius: var(--border-radius-element); /* [MOD] 20px */
-    width: 40px;  /* [MOD] */
-    height: 40px; /* [MOD] */
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: #504f6c; background-color: #ffffff;
+    border: none; border-radius: 50px; width: 41px; height: 41px;
+    cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease;
     margin-right: 10px;
 }
-.sr-icon-button:hover {
-    background-color: #e9e9ed; /* [MOD] */
-    color: var(--text-primary);
-}
+.sr-icon-button:hover { background-color: #e9e9ed; color: var(--text-primary); }
 
-/* --- Content Area & View Toggling --- */
-.people-content-area {
-    position: relative;
-}
-.people-view-wrapper {
-}
-/* [!!! ID UPDATED !!!] */
-#patient-activity-view,
-#staff-activity-view {
-    display: none;
-}
+/* --- Content Area --- */
+.people-content-area { position: relative; }
+#patient-activity-view, #staff-activity-view { display: none; }
 
-/* --- [!!! REMOVED Search Bar !!!] --- */
-/* (ลบ .sr-search-bar ออก) */
-
-
-/* --- List View (ปรับ radius, bg, font) --- */
-.people-list-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
+/* --- List View --- */
+.people-list-container { display: flex; flex-direction: column; gap: 12px; }
 .people-list-row {
-    display: grid;
-    align-items: center;
-    gap: 16px;
-    background-color: var(--card-bg-color); /* [MOD] */
-    border-radius: var(--border-radius-card); /* [MOD] 20px */
-    padding: 16px 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    transition: box-shadow 0.2s ease, transform 0.2s ease; /* [!!! MOD: "transform" ADDED back !!!] */
+    display: grid; align-items: center; gap: 16px;
+    background-color: var(--card-bg-color); border-radius: var(--border-radius-card);
+    padding: 16px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 .people-list-row:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06); /* [!!! MOD: Softer shadow !!!] */
-    transform: translateY(-2px); /* [!!! MOD: "transform" ADDED back !!!] */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06); transform: translateY(-2px);
 }
 .people-list-row.header-row {
-    background-color: transparent;
-    box-shadow: none;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    padding-bottom: 8px;
+    background-color: transparent; box-shadow: none;
+    font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);
+    text-transform: uppercase; padding-bottom: 8px;
 }
-.people-list-row.header-row:hover {
-    transform: none;
-}
+.people-list-row.header-row:hover { transform: none; }
 
-/* --- [!!! CSS FIX: Column Layouts !!!] --- */
-/* (Default 7-col layout for Patients) */
+/* --- [!!! CSS FIX: Column Layouts with Checkbox !!!] --- */
+/* Patients: Checkbox + 7 Columns */
 #patient-list-view .people-list-row {
-    grid-template-columns: 2.5fr 1.5fr 1fr 0.5fr 1.5fr 1fr 0.5fr; 
+    grid-template-columns: 40px 2.5fr 1.5fr 1fr 0.5fr 1.5fr 1fr 0.5fr; 
 }
-/* (Hide patient cols in patient header) */
-#patient-list-view .people-list-row.header-row .col-email,
-#patient-list-view .people-list-row.header-row .col-role,
-#patient-list-view .people-list-row.header-row .col-status {
-    display: none;
-}
-/* (Hide staff cols in patient rows) */
-#patient-list-view .people-list-row:not(.header-row) .col-email,
-#patient-list-view .people-list-row:not(.header-row) .col-role,
-#patient-list-view .people-list-row:not(.header-row) .col-status {
-    display: none;
-}
-
-/* (5-col layout for Staff) */
+/* Staff: Checkbox + 5 Columns */
 #staff-list-view .people-list-row {
-    grid-template-columns: 2.5fr 2fr 1fr 1fr 0.5fr;
-}
-/* (Hide patient cols in staff header) */
-#staff-list-view .people-list-row.header-row .col-phone,
-#staff-list-view .people-list-row.header-row .col-gender,
-#staff-list-view .people-list-row.header-row .col-age,
-#staff-list-view .people-list-row.header-row .col-allergies,
-#staff-list-view .people-list-row.header-row .col-visit {
-    display: none;
-}
-/* (Hide patient cols in staff rows) */
-#staff-list-view .people-list-row:not(.header-row) .col-phone,
-#staff-list-view .people-list-row:not(.header-row) .col-gender,
-#staff-list-view .people-list-row:not(.header-row) .col-age,
-#staff-list-view .people-list-row:not(.header-row) .col-allergies,
-#staff-list-view .people-list-row:not(.header-row) .col-visit {
-    display: none;
+    grid-template-columns: 40px 2.5fr 2fr 1fr 1fr 0.5fr;
 }
 
+/* Hiding irrelevant cols in headers/rows is done via specific IDs in Blade or responsive query */
+/* (Note: The specificity here ensures correct grid behavior) */
 
 .col-name { display: flex; align-items: center; gap: 12px; }
 .sr-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
 .sr-user-info { display: flex; flex-direction: column; }
 .sr-user-name { font-weight: 600; color: var(--text-primary); }
 .sr-user-email { font-size: 0.85rem; color: var(--text-secondary); }
-.col-phone, 
-.col-visit,
-.col-gender, /* [!!! NEW !!!] */
-.col-age,     /* [!!! NEW !!!] */
-.col-email,   /* [!!! NEW !!!] */
-.col-role,    /* [!!! NEW !!!] */
-.col-status   /* [!!! NEW !!!] */
-{ 
-    font-size: 0.9rem; 
-    color: var(--text-secondary); 
+.col-phone, .col-visit, .col-gender, .col-age, .col-email, .col-role, .col-status { 
+    font-size: 0.9rem; color: var(--text-secondary); 
 }
 .col-actions { display: flex; justify-content: flex-end; }
 
@@ -298,403 +221,158 @@ body {
 }
 .col-allergies .sr-allergy-none { font-size: 0.9rem; color: var(--text-secondary); }
 
-/* (Action Buttons - ปรับ radius, hover) */
+/* Action Buttons */
 .sr-action-btn {
     display: flex; align-items: center; justify-content: center;
     font-size: 0.9rem; color: var(--text-secondary);
     background-color: transparent; border: none;
-    border-radius: 10px; /* [MOD] */
-    width: 32px; height: 32px; cursor: pointer;
+    border-radius: 10px; width: 32px; height: 32px; cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
-.sr-action-btn:hover {
-    background-color: var(--hover-bg-color); /* [MOD] */
-    color: var(--text-primary);
-}
+.sr-action-btn:hover { background-color: var(--hover-bg-color); color: var(--text-primary); }
 
-/* --- [!!! NEW: Staff Badges !!!] --- */
-.people-role-badge,
-.people-status-badge {
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    display: inline-block;
-    text-align: center;
+/* Badges */
+.people-role-badge, .people-status-badge {
+    font-size: 0.8rem; font-weight: 600; padding: 4px 10px;
+    border-radius: 20px; display: inline-block; text-align: center;
 }
-.people-status-badge.active {
-    color: #008a2a;
-    background-color: #e5fbeB;
-}
-.people-status-badge.inactive {
-    color: var(--text-secondary);
-    background-color: var(--bg-color);
-}
-.people-role-badge.admin {
-    color: #c93400;
-    background-color: #fff4e0;
-}
-.people-role-badge.pharmacist {
-    color: var(--accent-color-blue);
-    background-color: #e6f7ff;
-}
-.people-role-badge.staff {
-    color: #5e5ce6;
-    background-color: #f0efff;
-}
+.people-status-badge.active { color: #008a2a; background-color: #e5fbeB; }
+.people-status-badge.inactive { color: var(--text-secondary); background-color: var(--bg-color); }
+.people-role-badge.admin { color: #c93400; background-color: #fff4e0; }
+.people-role-badge.pharmacist { color: var(--accent-color-blue); background-color: #e6f7ff; }
+.people-role-badge.staff { color: #5e5ce6; background-color: #f0efff; }
 
-
-/* --- Activity View (ปรับ radius, bg, border) --- */
+/* --- Activity View --- */
 .people-grid-view {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;
 }
-
 .people-activity-card {
-    background-color: var(--card-bg-color); /* [MOD] */
-    border-radius: var(--border-radius-card); /* [MOD] 20px */
-    padding: 24px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    transition: box-shadow 0.2s ease, transform 0.2s ease; /* [!!! MOD: "transform" ADDED back !!!] */
-    position: relative;
-    overflow: hidden;
+    background-color: var(--card-bg-color); border-radius: var(--border-radius-card);
+    padding: 24px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s ease, transform 0.2s ease; position: relative; overflow: hidden;
 }
-.people-activity-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06); /* [!!! MOD: Softer shadow !!!] */
-    transform: translateY(-2px); /* [!!! MOD: "transform" ADDED back !!!] */
-}
-.activity-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin: 0 auto 12px auto;
-}
-.activity-name {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin: 0 0 4px 0;
-}
-.activity-title {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin: 0 0 12px 0;
-}
+.people-activity-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06); transform: translateY(-2px); }
+.activity-avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 12px auto; }
+.activity-name { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin: 0 0 4px 0; }
+.activity-title { font-size: 0.9rem; color: var(--text-secondary); margin: 0 0 12px 0; }
 .people-badge {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    background-color: var(--bg-color); /* [MOD] */
-    border-radius: 10px; /* [MOD] */
-    padding: 4px 8px;
-    display: inline-block;
+    font-size: 0.75rem; font-weight: 500; color: var(--text-secondary);
+    background-color: var(--bg-color); border-radius: 10px; padding: 4px 8px; display: inline-block;
 }
-/* [!!! NEW: Activity Badge Colors !!!] */
-.people-badge.active {
-    color: #008a2a;
-    background-color: #e5fbeB;
-}
-.people-badge.inactive {
-    color: var(--text-secondary);
-    background-color: var(--bg-color);
-}
-.people-badge.New {
-    color: #5e5ce6;
-    background-color: #f0efff;
-}
-.people-badge.Member {
-    color: var(--accent-color-blue);
-    background-color: #e6f7ff;
-}
-
+.people-badge.active { color: #008a2a; background-color: #e5fbeB; }
+.people-badge.inactive { color: var(--text-secondary); background-color: var(--bg-color); }
+.people-badge.New { color: #5e5ce6; background-color: #f0efff; }
+.people-badge.Member { color: var(--accent-color-blue); background-color: #e6f7ff; }
 
 .people-card-stats {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border-color); /* [MOD] */
+    display: flex; justify-content: space-around; margin-top: 20px; padding-top: 16px;
+    border-top: 1px solid var(--border-color);
 }
 .stat-item { display: flex; flex-direction: column; }
 .stat-number { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); }
 .stat-label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; }
 
-/* (Inactive State - ใช้ตัวแปร) */
-.people-activity-card.is-inactive {
-    background-color: var(--inactive-bg);
-}
+.people-activity-card.is-inactive { background-color: var(--inactive-bg); }
 .inactive-overlay {
-    position: absolute;
-    top: 0; right: 0; left: 0; bottom: 0;
-    background-color: rgba(255, 251, 235, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2rem;
-    font-weight: 600;
-    color: rgba(0,0,0,0.1);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
+    position: absolute; top: 0; right: 0; left: 0; bottom: 0;
+    background-color: rgba(255, 251, 235, 0.5); display: flex; justify-content: center; align-items: center;
+    font-size: 2rem; font-weight: 600; color: rgba(0,0,0,0.1); opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
 }
-.people-activity-card.is-inactive .inactive-overlay {
-    opacity: 1;
-}
-.inactive-overlay span {
-    animation: floating 1.5s infinite ease-in-out;
-}
+.people-activity-card.is-inactive .inactive-overlay { opacity: 1; }
+.inactive-overlay span { animation: floating 1.5s infinite ease-in-out; }
 .inactive-overlay span:nth-child(2) { animation-delay: 0.3s; }
 .inactive-overlay span:nth-child(3) { animation-delay: 0.6s; }
 
-@keyframes floating {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
+@keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-/* --- [!!! NEW: Recent/Log Page Styles !!!] --- */
+/* --- Recent/Log Page Styles --- */
 .people-filters-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 16px;
-    padding: 20px;
-    background-color: var(--card-bg-color);
-    border-radius: var(--border-radius-card);
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px;
+    padding: 20px; background-color: var(--card-bg-color); border-radius: var(--border-radius-card);
 }
-.people-filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    flex-grow: 1;
-    min-width: 180px;
-}
-.people-filter-group label {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
+.people-filter-group { display: flex; flex-direction: column; gap: 6px; flex-grow: 1; min-width: 180px; }
+.people-filter-group label { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
 .people-select {
-    font-family: var(--font-family-apple);
-    font-size: 0.95rem;
-    padding: 10px 12px;
-    border: 1px solid transparent; 
-    border-radius: var(--border-radius-element);
-    background-color: var(--hover-bg-color); 
-    appearance: none;
+    font-family: var(--font-family-apple); font-size: 0.95rem; padding: 10px 12px;
+    border: 1px solid transparent; border-radius: var(--border-radius-element);
+    background-color: var(--hover-bg-color); appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236e6e73' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px 16px;
-    cursor: pointer;
+    background-repeat: no-repeat; background-position: right 12px center; background-size: 16px 16px; cursor: pointer;
 }
-.people-select:focus {
-    outline: none;
-    border-color: var(--accent-color-blue);
-    box-shadow: 0 0 0 2px rgba(0,122,255,0.2);
-}
+.people-select:focus { outline: none; border-color: var(--accent-color-blue); box-shadow: 0 0 0 2px rgba(0,122,255,0.2); }
 .people-button-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    font-family: var(--font-family-apple);
-    color: var(--accent-color-blue);
-    background-color: var(--hover-bg-color); 
-    border: 1px solid transparent;
-    border-radius: var(--border-radius-element);
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    height: 44px; /* (Match .people-select height) */
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;
+    font-size: 0.95rem; font-weight: 600; font-family: var(--font-family-apple);
+    color: var(--accent-color-blue); background-color: var(--hover-bg-color); 
+    border: 1px solid transparent; border-radius: var(--border-radius-element);
+    cursor: pointer; transition: background-color 0.2s ease; height: 44px;
 }
-.people-button-secondary:hover {
-    background-color: #e9e9ed; 
-}
-/* (Log Table Grid) */
-.people-list-row.log-header,
+.people-button-secondary:hover { background-color: #e9e9ed; }
+
+.people-list-row.log-header, 
 .people-list-row.log-row {
-    grid-template-columns: 1.5fr 1.5fr 1fr 3fr;
-    gap: 20px;
+    /* 40px (Checkbox) + 4 Columns */
+    grid-template-columns: 40px 1.5fr 1.5fr 1fr 3fr; 
+    gap: 20px; 
 }
-.col-log-time, .col-log-user, .col-log-action, .col-log-details {
-    font-size: 0.9rem; 
-    color: var(--text-secondary); 
-}
-.col-log-details {
-    color: var(--text-primary);
-    font-weight: 500;
-}
-.log-action-tag {
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    display: inline-block;
-    text-align: center;
-}
-.log-action-tag.create {
-    color: #008a2a;
-    background-color: #e5fbeB;
-}
-.log-action-tag.update {
-    color: #c93400;
-    background-color: #fff4e0;
-}
-.log-action-tag.delete {
-    color: #FF3B30;
-    background-color: #ffeaea;
-}
-.log-action-tag.view {
-    color: var(--text-secondary);
-    background-color: var(--bg-color);
-}
+.col-log-time, .col-log-user, .col-log-action, .col-log-details { font-size: 0.9rem; color: var(--text-secondary); }
+.col-log-details { color: var(--text-primary); font-weight: 500; }
+.log-action-tag { font-size: 0.8rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; display: inline-block; text-align: center; }
+.log-action-tag.create { color: #008a2a; background-color: #e5fbeB; }
+.log-action-tag.update { color: #c93400; background-color: #fff4e0; }
+.log-action-tag.delete { color: #FF3B30; background-color: #ffeaea; }
+.log-action-tag.view { color: var(--text-secondary); background-color: var(--bg-color); }
 
-
-/* --- [!!! NEW PAGINATION (Refined) !!!] --- */
-/* (ปรับสไตล์ทั้งหมดให้เหมือนในรูปตัวอย่าง) */
+/* --- Pagination --- */
 .people-pagination {
-    display: flex;
-    justify-content: space-between; /* [MOD] แยกข้อความกับปุ่ม */
-    align-items: center;
-    padding: 12px 24px; /* [MOD] เพิ่ม padding ให้เป็น card */
-    margin-top: 2px;
-    background-color: var(--card-bg-color); /* [MOD] เพิ่มพื้นหลังสีขาว */
-    border-radius: var(--border-radius-card); /* [MOD] ทำให้โค้งมน */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04); /* [MOD] เพิ่มเงา */
-
-    /* [!!! NEW: Align card to the right !!!] */
-    width: fit-content; /* 1. ทำให้ card หดตามเนื้อหา */
-    margin-left: auto; /* 2. ดัน card ไปทางขวา */
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 24px; margin-top: 2px; background-color: var(--card-bg-color);
+    border-radius: var(--border-radius-card); box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    width: fit-content; margin-left: auto;
 }
-.pagination-text {
-    font-size: 1rem; /* [MOD] ขนาดใหญ่ขึ้น */
-    font-weight: 600; /* [MOD] หนาขึ้น */
-    color: var(--text-primary); /* [MOD] สีเข้มขึ้น */
-    margin-right: 0; /* [MOD] ลบ margin */
-}
-.pagination-controls {
-    display: flex;
-    gap: 16px; /* [MOD] เพิ่มระยะห่างปุ่ม */
-}
+.pagination-text { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-right: 0; }
+.pagination-controls { display: flex; gap: 16px; }
 .pagination-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* [MOD] ลบ width/height/border */
-    background-color: transparent;
-    border: none;
-    border-radius: 10px; /* (สำหรับ hover) */
-    color: var(--accent-color-blue); /* [MOD] สีฟ้า */
-    font-size: 1.2rem; /* [MOD] ไอคอนใหญ่ขึ้น */
-    cursor: pointer;
-    padding: 4px; /* [MOD] เพิ่ม padding */
-    transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex; align-items: center; justify-content: center; background-color: transparent;
+    border: none; border-radius: 10px; color: var(--accent-color-blue); font-size: 1.2rem;
+    cursor: pointer; padding: 4px; transition: background-color 0.2s ease, color 0.2s ease;
 }
-.pagination-btn:hover {
-    background-color: var(--hover-bg-color);
-}
-.pagination-btn.disabled {
-    color: var(--border-color); /* [MOD] สีเทาจาง */
-    cursor: not-allowed;
-    background-color: transparent; /* [MOD] */
-    border: none; /* [MOD] */
-}
-/* [MOD] เพิ่ม :hover state สำหรับ disabled */
-.pagination-btn.disabled:hover {
-    background-color: transparent;
-    color: var(--border-color);
-}
+.pagination-btn:hover { background-color: var(--hover-bg-color); }
+.pagination-btn.disabled, .pagination-btn.disabled:hover { color: var(--border-color); cursor: not-allowed; background-color: transparent; }
 
-
-/* --- Responsive (เหมือนเดิม) --- */
+/* --- Responsive --- */
 @media (max-width: 900px) {
-    .people-list-row {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
+    .people-list-row { grid-template-columns: 1fr; gap: 12px; }
     .people-list-row.header-row { display: none; }
     .people-list-row [data-label] {
         display: flex; justify-content: space-between; align-items: center;
         font-size: 0.9rem; padding: 4px 0;
     }
     .people-list-row [data-label]::before {
-        content: attr(data-label);
-        font-weight: 600; color: var(--text-primary);
-        margin-right: 16px;
+        content: attr(data-label); font-weight: 600; color: var(--text-primary); margin-right: 16px;
     }
     .col-actions { justify-content: flex-start; }
+    .people-list-row.log-header, .people-list-row.log-row { grid-template-columns: 1fr; }
     
-    /* [!!! NEW: Log Responsive Grid !!!] */
-    .people-list-row.log-header,
-    .people-list-row.log-row {
-        grid-template-columns: 1fr;
-    }
-
-    /* [!!! CSS FIX: Responsive Columns !!!] */
-    /* (Show patient cols in patient rows) */
     #patient-list-view .people-list-row:not(.header-row) .col-phone,
     #patient-list-view .people-list-row:not(.header-row) .col-gender,
     #patient-list-view .people-list-row:not(.header-row) .col-age,
     #patient-list-view .people-list-row:not(.header-row) .col-allergies,
-    #patient-list-view .people-list-row:not(.header-row) .col-visit {
-        display: flex; /* [MOD] */
-    }
-    /* (Show staff cols in staff rows) */
+    #patient-list-view .people-list-row:not(.header-row) .col-visit { display: flex; }
+    
     #staff-list-view .people-list-row:not(.header-row) .col-email,
     #staff-list-view .people-list-row:not(.header-row) .col-role,
-    #staff-list-view .people-list-row:not(.header-row) .col-status {
-        display: flex; /* [MOD] */
-    }
-
+    #staff-list-view .people-list-row:not(.header-row) .col-status { display: flex; }
 }
 
 @media (max-width: 768px) {
-    .people-header {
-        flex-direction: column;
-        align-items: center;
-    }
-    .people-page-title {
-        width: 100%;
-        text-align: center;
-    }
-    .people-view-toggle {
-        order: 1;
-        width: 100%;
-        justify-content: center;
-    }
-    .people-header-right {
-        width: 100%;
-        justify-content: center;
-    }
-
-    /* [!!! NEW] (ปรับ Responsive ของ Title ใหม่) */
-    .people-breadcrumb-bar {
-        text-align: center;
-    }
-    .people-overview-title {
-        font-size: 2rem; /* 32px */
-        text-align: center;
-    }
-
-    /* [!!! NEW] (ปรับ Pagination ให้อยู่ตรงกลาง) */
-    .people-pagination {
-        justify-content: center;
-        margin-left: auto;  /* [!!! ADDED !!!] */
-        margin-right: auto; /* [!!! ADDED !!!] */
-    }
-
-    /* [!!! NEW: Filter Responsive !!!] */
-    .people-filters-wrapper {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .people-filter-group {
-        min-width: 100%;
-    }
+    .people-header { flex-direction: column; align-items: center; }
+    .people-page-title { width: 100%; text-align: center; }
+    .people-view-toggle { order: 1; width: 100%; justify-content: center; }
+    .people-header-right { width: 100%; justify-content: center; }
+    .people-breadcrumb-bar { text-align: center; }
+    .people-overview-title { font-size: 2rem; text-align: center; }
+    .people-pagination { justify-content: center; margin-left: auto; margin-right: auto; }
+    .people-filters-wrapper { flex-direction: column; align-items: stretch; }
+    .people-filter-group { min-width: 100%; }
 }

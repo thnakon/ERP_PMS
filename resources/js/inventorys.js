@@ -172,3 +172,26 @@ window.addEventListener('click', function(e) {
         e.target.classList.remove('show');
     }
 });
+
+function previewImage(event) {
+    const input = event.target;
+    const preview = document.getElementById('inv-image-preview');
+    const placeholder = document.getElementById('inv-image-placeholder');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';      // โชว์รูป
+            placeholder.style.display = 'none';   // ซ่อนข้อความ
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        // กรณีไม่ได้เลือกไฟล์ ให้กลับไปสถานะเดิม
+        preview.src = '';
+        preview.style.display = 'none';
+        placeholder.style.display = 'block';
+    }
+}

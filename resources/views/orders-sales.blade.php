@@ -17,7 +17,10 @@
     {{-- [!!! REFACTORED HEADER !!!] --}}
         <div class="sr-header">
             <div class="sr-header-left">
-                <p class="sr-breadcrumb">Dashboard / Orders-Sales </p>
+                <p class="sr-breadcrumb">
+    Dashboard / <span style="color: #3a3a3c; font-weight: 600;">Orders-Sales</span>
+</p>
+
                 <h2 class="sr-page-title">Orders | Sales (6)</h2>
             </div>
 
@@ -27,10 +30,10 @@
                 </button>
                 {{-- [!!! ADJUSTED !!!] เปลี่ยน div/span เป็น <button> 
                 และใช้คลาสใหม่ sr-button-primary --}}
-                <button class="sr-button-primary">
+                <a href="{{ route('pos.index') }}"><button class="sr-button-primary">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add new Orders</span>
-                </button>
+                </button></a>
             </div>
         </div>
 

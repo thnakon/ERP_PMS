@@ -15,7 +15,12 @@
 
         <div class="dashboard-page-header">
             <div class="header-left">
-                <p class="breadcrumb">Dashboard / Welcome back, {{ Auth::user()->name ?? 'Pharmacist' }} !</p>
+                <p class="breadcrumb">
+    <span style="color: #3a3a3c; font-weight: 600;">Dashboard</span>
+    / Welcome back, {{ Auth::user()->name ?? 'Pharmacist' }} !
+</p>
+
+
                 <h2 class="dashboard-page-title">Overview</h2>
             </div>
             <div class="header-right">
@@ -147,7 +152,7 @@
                 </ul>
                 
                 {{-- ลิงก์ View more ด้านล่าง --}}
-                <a href="#" class="an-view-more">
+                <a href="{{ route('inventorys.stock-adjustments') }}" class="an-view-more">
                     View more
                     <i class="fa-solid fa-chevron-down"></i>
                 </a>
@@ -160,7 +165,7 @@
     <div class="dashboard-card ed-card"> <!-- ed = Expiring Drugs -->
         <div class="card-header">
             <h3>Top 5 Expiring Drugs</h3>
-            <a href="#" class="view-all">View all <i class="fa-solid fa-chevron-right"></i></a>
+            <a href="{{ route('inventorys.expiry-management') }}" class="view-all">View all <i class="fa-solid fa-chevron-right"></i></a>
         </div>
 
         <ul class="ed-list">
@@ -420,7 +425,7 @@
             </li>
         </ul>
 
-        <a href="#" class="as-view-more">
+        <a href="{{ route('peoples.recent') }}" class="as-view-more">
             View more
             <i class="fa-solid fa-chevron-down"></i>
         </a>

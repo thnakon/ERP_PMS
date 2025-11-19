@@ -11,7 +11,10 @@
 <body>
 
 <div class="inv-container">
-    <div class="inv-breadcrumb-bar">Inventory > Categories</div>
+    <div class="inv-breadcrumb-bar">
+    Dashboard / Inventory /
+    <span style="color: #3a3a3c; font-weight: 600;">Categories</span> > <a href="{{ route('inventorys.expiry-management') }}" style="color: #017aff"> Expiry Management </a>
+</div>
     <div class="inv-header">
         <div class="inv-header-left">
             <h1 class="inv-page-title">Categories</h1>

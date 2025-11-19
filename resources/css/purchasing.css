@@ -216,7 +216,7 @@ body {
     color: #ffffff;
     background-color: var(--accent-color-blue);
     border: none;
-    border-radius: var(--border-radius-element);
+    border-radius: 22px;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
     height: 44px;
@@ -246,7 +246,7 @@ body {
     color: var(--accent-color-blue);
     background-color: var(--hover-bg-color);
     border: 1px solid transparent;
-    border-radius: var(--border-radius-element);
+    border-radius: 22px;
     cursor: pointer;
     transition: background-color 0.2s ease;
     height: 44px;
@@ -290,7 +290,7 @@ body {
     align-items: center;
     gap: 16px;
     background-color: var(--card-bg-color);
-    border-radius: var(--border-radius-card);
+    border-radius: 22px;
     padding: 16px 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     transition: box-shadow 0.2s ease, transform 0.2s ease;
@@ -420,7 +420,6 @@ body {
 .modal-footer {
     padding: 16px 24px;
     border-top: 1px solid var(--border-color);
-    background-color: var(--bg-color);
     display: flex;
     justify-content: flex-end;
     gap: 12px;
@@ -678,4 +677,94 @@ textarea.purchasing-input {
         width: 100%;
         overflow-x: auto;
     }
+}
+
+
+/* 1. ทำให้ Form ยึดเต็มพื้นที่ Modal และจัดการลูกๆ แบบ Flex */
+#supplier-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* สำคัญ: ให้สูงเต็ม modal-content */
+    overflow: hidden; /* ป้องกันการล้น */
+}
+
+/* 2. ปรับ modal-body ให้ยืดหยุ่น (Grow) เพื่อกินพื้นที่ว่างที่เหลือ */
+.modal-body {
+    flex-grow: 1;  /* สำคัญ: ให้ขยายจนดัน Footer ไปล่างสุด */
+    overflow-y: auto; /* ให้ Scroll เฉพาะส่วนนี้ */
+    padding: 24px; /* (ค่าเดิม) */
+}
+
+/* 3. modal-footer ไม่ต้องแก้ (มันจะถูกดันไปล่างสุดโดยอัตโนมัติ) */
+/* ... (Existing CSS) ... */
+
+/* Make form a flex container to manage its children (header, body, footer) */
+/* เพิ่ม #create-po-form ตรงนี้ */
+#supplier-form,
+#create-po-form { 
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Important: Takes full height of modal-content */
+}
+
+/* ... (Rest of CSS) ... */
+
+/* ... (Existing CSS) ... */
+
+/* Make form a flex container to manage its children (header, body, footer) */
+/* [!!! ADDED #create-gr-form HERE !!!] */
+#supplier-form,
+#create-po-form,
+#create-gr-form { 
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Important: Takes full height of modal-content */
+    overflow: hidden; /* ป้องกันการล้น */
+}
+
+/* ... (Rest of CSS) ... *//* ... Existing CSS ... */
+
+/* Grid columns for Suppliers (Added 50px for Checkbox) */
+#supplier-list .purchasing-list-row {
+    /* Old: 2.5fr 1.5fr 1.5fr 1fr 1fr 0.5fr */
+    grid-template-columns: 50px 2.5fr 1.5fr 1.5fr 1fr 1fr 0.5fr;
+}
+
+/* Grid columns for Purchase Orders (Added 50px for Checkbox) */
+#po-list .purchasing-list-row {
+    /* Old: 1fr 2fr 1.5fr 1.5fr 1fr 1fr 0.5fr */
+    grid-template-columns: 50px 1fr 2fr 1.5fr 1.5fr 1fr 1fr 0.5fr;
+}
+
+
+/* ... Rest of CSS ... */
+
+/* สไตล์ปกติ (ยังไม่ติ๊ก) */
+.inv-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d2d2d7;
+    border-radius: 4px; /* หรือ 50% ถ้าอยากได้วงกลม */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    background-color: #fff;
+}
+
+/* สไตล์ตอนติ๊กถูก (JS จะเติม class นี้ให้) */
+.inv-checkbox.active {
+    background-color: #0071e3; /* สีฟ้า Apple */
+    border-color: #0071e3;
+}
+
+/* สร้างเครื่องหมายถูกด้วย CSS pseudo-element */
+.inv-checkbox.active::after {
+     content: '✔';
+    font-size: 12px;
+    color: white;
+}
+
+/* (Optional) ไฮไลท์ทั้งแถวเมื่อเลือก */
+.purchasing-list-row.selected-row {
+    background-color: #f5f5f7;
 }

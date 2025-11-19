@@ -1,6 +1,5 @@
-@extends('layouts.app')
+<x-app-layout>
 
-@section('content')
 <div class="page-container" style="padding-top: 90px; padding-left: 300px; padding-right: 30px; max-width: 900px;">
 
     <div class="search-results-header" style="margin-bottom: 30px;">
@@ -21,4 +20,4 @@
     </div>
 
 </div>
-@endsection
+</x-app-layout>

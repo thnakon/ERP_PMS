@@ -1,4 +1,3 @@
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,13 +19,28 @@
                 <h2 class="sr-page-title">Goods Received (4)</h2>
             </div>
 
-            <div class="sr-header-right" style="margin-right: 10px">    
+            <div class="sr-header-right" style="margin-right: 10px; display: flex; align-items: center; gap: 12px;">    
+                
+                <!-- [!!! NEW: Bulk Actions (Hidden by default) !!!] -->
+                <div id="bulk-actions" style="display: none; align-items: center; gap: 8px; margin-right: 12px; padding-right: 12px; border-right: 1px solid #d2d2d7;">
+                    <span class="inv-text-sub">Selected: <span id="selected-count" style="color: #1d1d1f; font-weight: 700;">0</span></span>
+                    
+                    <button class="inv-btn-secondary">
+                        <i class="fa-solid fa-barcode"></i> Print
+                    </button>
+                    
+                    <button class="inv-btn-secondary" style="color: #ff3b30; background-color: #fff1f0;">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                </div>
+
+                <!-- Standard Actions (Filter) -->
                 <button class="sr-icon-button" title="Filter">
                     <i class="fa-solid fa-filter"></i>
                 </button>
-                {{-- [!!! ADJUSTED !!!] เปลี่ยน div/span เป็น <button> 
-                และใช้คลาสใหม่ sr-button-primary --}}
-                <button class="sr-button-primary">
+                
+                <!-- Add Button -->
+                <button class="sr-button-primary" id="open-gr-modal">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add new Receive</span>
                 </button>
@@ -45,10 +59,28 @@
 
             <div class="po-awaiting-list">
                 <h3><i class="fa-solid fa-list-check"></i> POs Awaiting Reception (สถานะ: Sent)</h3>
-                <ul>
-                    <li><a href="#" class="po-link" data-po="PO-2025-002">PO-2025-002</a> (from Pharma Distribution)</li>
-                    <li><a href="#" class="po-link" data-po="PO-2025-004">PO-2025-004</a> (from MedSupply (Thailand)) - <em>Partial</em></li>
-                    <!-- List generated dynamically -->
+                <ul style="list-style: none; padding: 0;">
+                    <!-- [!!! NEW: Added Checkboxes to List Items !!!] -->
+                    <li style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px dashed #d2d2d7;">
+                        <div class="inv-checkbox" data-id="PO-2025-002"></div>
+                        <div>
+                            <a href="#" class="po-link" data-po="PO-2025-002">PO-2025-002</a> (from Pharma Distribution)
+                        </div>
+                    </li>
+                    
+                    <li style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px dashed #d2d2d7;">
+                        <div class="inv-checkbox" data-id="PO-2025-004"></div>
+                        <div>
+                            <a href="#" class="po-link" data-po="PO-2025-004">PO-2025-004</a> (from MedSupply (Thailand)) - <em style="color: #faad14; font-style: normal;">Partial</em>
+                        </div>
+                    </li>
+                    
+                    <li style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px dashed #d2d2d7;">
+                        <div class="inv-checkbox" data-id="PO-2025-005"></div>
+                        <div>
+                             <a href="#" class="po-link" data-po="PO-2025-005">PO-2025-005</a> (from Bangkok Drugs)
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -67,7 +99,7 @@
                 </button>
             </div>
 
-            <!-- Receiving Table (Kept as table for data entry, re-styled by CSS) -->
+            <!-- Receiving Table -->
             <table class="data-table receiving-table">
                 <thead>
                     <tr>
@@ -79,7 +111,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Example from user's request -->
                     <tr>
                         <td data-label="Product">Paracetamol 500mg</td>
                         <td data-label="Ordered">100 กล่อง</td>
@@ -114,6 +145,55 @@
                 </button>
             </div>
 
+        </div>
+
+        <!-- Create Receive Modal -->
+        <div class="modal-backdrop" id="gr-modal-backdrop" style="display: none;">
+            <div class="modal-content" id="gr-modal-content">
+                <form id="create-gr-form">
+                    <div class="modal-header">
+                        <h2>New Goods Received</h2>
+                        <button type="button" class="purchasing-icon-button btn-close-modal" id="close-gr-modal-btn">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div class="form-grid">
+                            <div class="form-group span-2">
+                                <label for="gr_po_select">Select Purchase Order <span class="required">*</span></label>
+                                <select id="gr_po_select" name="po_id" class="purchasing-input-lg" required>
+                                    <option value="" disabled selected>-- Select Pending PO --</option>
+                                    <option value="PO-2025-002">PO-2025-002 (Pharma Dist.)</option>
+                                    <option value="PO-2025-004">PO-2025-004 (MedSupply) - Partial</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gr_date">Received Date <span class="required">*</span></label>
+                                <input type="date" id="gr_date" name="received_date" class="purchasing-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="gr_ref_no">Invoice / DO Ref. No.</label>
+                                <input type="text" id="gr_ref_no" name="ref_no" class="purchasing-input" placeholder="e.g. INV-998877">
+                            </div>
+
+                            <div class="form-group span-2">
+                                <div style="background-color: #f0f8ff; padding: 12px; border-radius: 12px; color: #0056b3; font-size: 0.9rem; display: flex; gap: 8px; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle-info" style="margin-top: 3px;"></i>
+                                    <span>Selecting a PO will verify the item list. You can adjust quantities in the next step.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="purchasing-button-secondary" id="cancel-gr-modal-btn">Cancel</button>
+                        <button type="submit" class="purchasing-button-primary">Proceed to Items</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
     </div>

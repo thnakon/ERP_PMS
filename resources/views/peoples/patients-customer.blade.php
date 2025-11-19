@@ -1,14 +1,11 @@
 <x-app-layout>
     <head>
-        {{-- (... head content ... ) --}}
-        {{-- (CSS/JS ถูกโหลดมาจาก app-layout แล้ว) --}}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="{{ asset('css/people.css') }}">
     </head>
     
     <div class="sr-container">
 
-        
-        {{-- [!!! REFACTORED HEADER !!!] --}}
         <div class="sr-header">
             <div class="sr-header-left">
                 <p class="sr-breadcrumb">Dashboard / People / Patients-Customers > <a href="{{ route('peoples.staff-user') }}" style="color: #017aff">Staff-Users</a> </p>
@@ -30,8 +27,6 @@
                 <button class="sr-icon-button" title="Filter">
                     <i class="fa-solid fa-filter"></i>
                 </button>
-                {{-- [!!! ADJUSTED !!!] เปลี่ยน div/span เป็น <button> 
-                และใช้คลาสใหม่ sr-button-primary --}}
                 <button class="sr-button-primary">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add new customer</span>
@@ -42,12 +37,69 @@
         <div class="people-content-area">
 
             {{-- [!!! VIEW 1: LIST VIEW !!!] --}}
-            {{-- [!!! ID UPDATED !!!] --}}
             <div id="patient-list-view" class="people-view-wrapper">
-                
+                <!-- Controls Row -->
+            <div class="inv-filters-wrapper">
+                {{-- Bulk Actions --}}
+<div id="bulk-actions" 
+    style="
+        display: none;
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    ">
+
+    <!-- Selected Counter -->
+    <span style="font-weight: 600; color: #6e6e73; font-size: 0.9rem;">
+        Selected: <span id="selected-count">0</span>
+    </span>
+
+    <!-- Print Barcode -->
+    <button 
+        style="
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 32px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1d1d1f;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+        ">
+        <i class="fa-solid fa-barcode"></i> Print Barcode
+    </button>
+
+    <!-- Delete -->
+    <button 
+        style="
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 32px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #ff3b30;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+        ">
+        <i class="fa-solid fa-trash"></i> Delete
+    </button>
+
+</div>
+
+
+            </div>
+
                 <div class="people-list-container">
                     {{-- ส่วนหัวตาราง --}}
                     <div class="people-list-row header-row">
+                        <div class="people-checkbox" id="select-all"></div>
                         <div class="col-name">Name</div>
                         <div class="col-phone">Phone</div>
                         <div class="col-gender">Gender</div>
@@ -57,8 +109,9 @@
                         <div class="col-actions"></div>
                     </div>
 
-                    {{-- Data Row 1 (มีแพ้ยา) --}}
+                    {{-- Data Row 1 --}}
                     <div class="people-list-row">
+                        <div class="people-checkbox item-checkbox"></div>
                         <div class="col-name" data-label="Name">
                             <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=SS" alt="Avatar" class="sr-avatar">
                             <div class="sr-user-info">
@@ -79,8 +132,9 @@
                             <button class="sr-action-btn" title="View/Edit"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                         </div>
                     </div>
-                    {{-- Data Row 2 (ไม่มีแพ้ยา) --}}
+                    {{-- Data Row 2 --}}
                     <div class="people-list-row">
+                        <div class="people-checkbox item-checkbox"></div>
                         <div class="col-name" data-label="Name">
                             <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=AR" alt="Avatar" class="sr-avatar">
                             <div class="sr-user-info">
@@ -99,8 +153,9 @@
                             <button class="sr-action-btn" title="View/Edit"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                         </div>
                     </div>
-                    {{-- Data Row 3 (ไม่มีแพ้ยา) --}}
+                    {{-- Data Row 3 --}}
                     <div class="people-list-row">
+                        <div class="people-checkbox item-checkbox"></div>
                         <div class="col-name" data-label="Name">
                             <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=WP" alt="Avatar" class="sr-avatar">
                             <div class="sr-user-info">
@@ -119,8 +174,9 @@
                             <button class="sr-action-btn" title="View/Edit"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                         </div>
                     </div>
-                    {{-- Data Row 4 (มีแพ้ยา) --}}
+                    {{-- Data Row 4 --}}
                     <div class="people-list-row">
+                        <div class="people-checkbox item-checkbox"></div>
                         <div class="col-name" data-label="Name">
                             <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=KT" alt="Avatar" class="sr-avatar">
                             <div class="sr-user-info">
@@ -141,8 +197,9 @@
                             <button class="sr-action-btn" title="View/Edit"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                         </div>
                     </div>
-                     {{-- Data Row 5 (ไม่มีแพ้ยา) --}}
+                     {{-- Data Row 5 --}}
                     <div class="people-list-row">
+                        <div class="people-checkbox item-checkbox"></div>
                         <div class="col-name" data-label="Name">
                             <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=PP" alt="Avatar" class="sr-avatar">
                             <div class="sr-user-info">
@@ -163,15 +220,11 @@
                     </div>
 
                 </div>
-            </div> {{-- end #patient-list-view --}}
-
+            </div>
 
             {{-- [!!! VIEW 2: ACTIVITY VIEW !!!] --}}
-            {{-- [!!! ID UPDATED !!!] --}}
             <div id="patient-activity-view" class="people-view-wrapper">
                 <div class="people-grid-view">
-                    
-                    {{-- Card 1 (Active) --}}
                     <div class="people-activity-card">
                         <img src="https://placehold.co/80x80/E2E8F0/4A5568?text=SS" alt="Avatar" class="activity-avatar">
                         <h4 class="activity-name">สมชาย ใจดี</h4>
@@ -183,73 +236,20 @@
                             <div class="stat-item"><span class="stat-number">2</span><span class="stat-label">Notes</span></div>
                         </div>
                     </div>
-                    {{-- Card 2 (Active) --}}
-                    <div class="people-activity-card">
-                        <img src="https://placehold.co/80x80/E2E8F0/4A5568?text=AR" alt="Avatar" class="activity-avatar">
-                        <h4 class="activity-name">อารยา รักสงบ</h4>
-                        <p class="activity-title">Customer</p>
-                        <span class="people-badge New">New</span>
-                        <div class="people-card-stats">
-                            <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">Orders</span></div>
-                            <div class="stat-item"><span class="stat-number">0</span><span class="stat-label">Pending</span></div>
-                            <div class="stat-item"><span class="stat-number">0</span><span class="stat-label">Notes</span></div>
-                        </div>
-                    </div>
-                    {{-- Card 3 (Inactive) --}}
-                    <div class="people-activity-card is-inactive">
-                        <div class="inactive-overlay"><span>Z</span><span>z</span><span>z</span></div>
-                        <img src="https://placehold.co/80x80/E2E8F0/4A5568?text=WP" alt="Avatar" class="activity-avatar">
-                        <h4 class="activity-name">วิชัย ประเสริฐ</h4>
-                        <p class="activity-title">Customer</p>
-                        <span class="people-badge inactive">Inactive</span>
-                        <div class="people-card-stats">
-                            <div class="stat-item"><span class="stat-number">5</span><span class="stat-label">Orders</span></div>
-                            <div class="stat-item"><span class="stat-number">0</span><span class="stat-label">Pending</span></div>
-                            <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">Notes</span></div>
-                        </div>
-                    </div>
-                    {{-- Card 4 (Active) --}}
-                    <div class="people-activity-card">
-                        <img src="https://placehold.co/80x80/E2E8F0/4A5568?text=KT" alt="Avatar" class="activity-avatar">
-                        <h4 class="activity-name">กานดา งามตา</h4>
-                        <p class="activity-title">Customer</p>
-                        <span class="people-badge Member">Member</span>
-                        <div class="people-card-stats">
-                            <div class="stat-item"><span class="stat-number">8</span><span class="stat-label">Orders</span></div>
-                            <div class="stat-item"><span class="stat-number">0</span><span class="stat-label">Pending</span></div>
-                            <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">Notes</span></div>
-                        </div>
-                    </div>
-                     {{-- Card 5 (Active) --}}
-                    <div class="people-activity-card">
-                        <img src="https://placehold.co/80x80/E2E8F0/4A5568?text=PP" alt="Avatar" class="activity-avatar">
-                        <h4 class="activity-name">ประวิทย์ สุขใจ</h4>
-                        <p class="activity-title">Customer</p>
-                        <span class="people-badge New">New</span>
-                        <div class="people-card-stats">
-                            <div class="stat-item"><span class="stat-number">2</span><span class="stat-label">Orders</span></div>
-                            <div class="stat-item"><span class="stat-number">1</span><span class="stat-label">Pending</span></div>
-                            <div class="stat-item"><span class="stat-number">0</span><span class="stat-label">Notes</span></div>
-                        </div>
-                    </div>
-
+                     <!-- More activity cards... -->
                 </div>
-            </div> {{-- end #patient-activity-view --}}
+            </div>
 
-        </div> {{-- end .people-content-area --}}
+        </div>
 
-        {{-- [!!! PAGINATION !!!] --}}
         <div class="people-pagination">
             <span class="pagination-text">1-8 of 28</span>
             <div class="pagination-controls">
-                <button class="pagination-btn disabled" aria-label="Previous Page">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button class="pagination-btn" aria-label="Next Page">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
+                <button class="pagination-btn disabled"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="pagination-btn"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
         </div>
     
-    </div> {{-- end .sr-container --}}
+    </div>
+    <script src="{{ asset('js/people.js') }}"></script>
 </x-app-layout>
