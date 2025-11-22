@@ -9,6 +9,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
+
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link
@@ -21,11 +22,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/main.css', 'resources/js/main.js', 'resources/css/app.css', 'resources/js/app.js', 'resources/css/sidebar.css','resources/js/dashboard.js' , 'resources/js/sidebar.js', 'resources/css/header.css', 'resources/js/header.js', 'resources/css/settings.css', 'resources/js/setting.js', 'resources/css/modal.css', 'resources/js/modal.js',
-         'resources/css/dashboard.css' , 'resources/css/sale-report.css', 'resources/js/sale-report.js', 'resources/css/footer.css', 'resources/js/footer.js',
-         'resources/css/people.css', 'resources/js/people.js', 'resources/css/purchasing.css', 'resources/js/purchasing.js', 'resources/css/orders-sales.css', 'resources/js/orders-sales.js',
-         'resources/css/inventorys.css', 'resources/js/inventorys.js', 'resources/css/pos.css', 'resources/js/pos.js',
-          ])
+        @vite(['resources/css/main.css', 'resources/js/main.js', 'resources/css/app.css', 'resources/js/app.js', 'resources/css/sidebar.css', 'resources/js/dashboard.js', 'resources/js/sidebar.js', 'resources/css/header.css', 'resources/js/header.js', 'resources/css/settings.css', 'resources/js/setting.js', 'resources/css/modal.css', 'resources/js/modal.js', 'resources/css/dashboard.css', 'resources/css/sale-report.css', 'resources/js/sale-report.js', 'resources/css/footer.css', 'resources/js/footer.js', 'resources/css/people.css', 'resources/js/people.js', 'resources/css/purchasing.css', 'resources/js/purchasing.js', 'resources/css/orders-sales.css', 'resources/js/orders-sales.js', 'resources/css/inventorys.css', 'resources/js/inventorys.js', 'resources/css/pos.css', 'resources/js/pos.js'])
     @else
         {{-- (โค้ด fallback) --}}
         <style>
@@ -123,7 +120,7 @@
         </div>
     </div>
 
-    
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script>
         // ตรวจสอบว่า Laravel ส่งข้อความ 'success' มาหรือไม่

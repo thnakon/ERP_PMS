@@ -4,7 +4,7 @@ services:
         ports:
             - "8081:80"
         environment:
-            PMA_HOST: mysql # ชื่อ service ฐานข้อมูลของเราคือ mysql
+            PMA_HOST: mysql 
             PMA_PORT: 3306
         networks:
             - sail

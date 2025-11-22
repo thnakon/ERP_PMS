@@ -16,9 +16,9 @@
         <div class="dashboard-page-header">
             <div class="header-left">
                 <p class="breadcrumb">
-    <span style="color: #3a3a3c; font-weight: 600;">Dashboard</span>
-    / Welcome back, {{ Auth::user()->name ?? 'Pharmacist' }} !
-</p>
+                    <span style="color: #3a3a3c; font-weight: 600;">Dashboard </span>
+                    / Welcome back, {{ Auth::user()->name ?? 'Pharmacist' }} !
+                </p>
 
 
                 <h2 class="dashboard-page-title">Overview</h2>
@@ -90,7 +90,7 @@
                 <div class="card-header">
                     <!-- [!!! CHANGED !!!] เปลี่ยน Title ให้อยู่กลางๆ -->
                     <h3>Performance Trend</h3>
-                    
+
                     <!-- [!!! CHANGED !!!] แทนที่ Legend เดิมด้วยปุ่ม Toggle -->
                     <div class="chart-toggle-buttons">
                         <button class="toggle-btn active" data-metric="sales">Sales</button>
@@ -107,9 +107,9 @@
                 <div class="card-header">
                     <h3>Stock Notifications</h3>
                 </div>
-                
+
                 <ul class="an-notification-list">
-                    
+
                     {{-- Item 1: Critical (สีแดง) --}}
                     <li class="an-notification-item an-critical">
                         <div class="an-content">
@@ -148,297 +148,308 @@
                             <i class="fa-solid fa-arrow-down an-arrow an-negative"></i>
                         </div>
                     </li>
-                    
+
                 </ul>
-                
+
                 {{-- ลิงก์ View more ด้านล่าง --}}
                 <a href="{{ route('inventorys.stock-adjustments') }}" class="an-view-more">
                     View more
                     <i class="fa-solid fa-chevron-down"></i>
                 </a>
             </div>
-            </div>
+        </div>
 
         <div class="dashboard-grid list-grid">
 
             <!-- Card 1: Top 10 Expiring Drugs (New Design) -->
-    <div class="dashboard-card ed-card"> <!-- ed = Expiring Drugs -->
-        <div class="card-header">
-            <h3>Top 5 Expiring Drugs</h3>
-            <a href="{{ route('inventorys.expiry-management') }}" class="view-all">View all <i class="fa-solid fa-chevron-right"></i></a>
-        </div>
+            <div class="dashboard-card ed-card"> <!-- ed = Expiring Drugs -->
+                <div class="card-header">
+                    <h3>Top 5 Expiring Drugs</h3>
+                    <a href="{{ route('inventorys.expiry-management') }}" class="view-all">View all <i
+                            class="fa-solid fa-chevron-right"></i></a>
+                </div>
 
-        <ul class="ed-list">
-            <!-- Item 1 -->
-            <li class="ed-list-item">
-                <div class="ed-item-main">
-                    <div class="ed-item-header">
-                        <div class="ed-item-icon" style="background-color: #fdf0e6;">
-                            <!-- -->
-                            <img src="https://placehold.co/100x100/fdf0e6/f2994a?text=P&font=roboto" alt="drug-icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-                        </div>
-                        <div class="ed-item-title-block">
-                            <span class="ed-item-sku">PN0001265</span>
-                            <span class="ed-item-name">Paracetamol Batch A</span>
-                        </div>
-                    </div>
-                    <div class="ed-item-meta">
-                        <div class="ed-item-meta-date">
-                            <i class="fa-regular fa-calendar-days"></i>
-                            <span>Created Sep 12, 2020</span>
-                        </div>
-                        <div class="ed-item-meta-priority medium">
-                            <i class="fa-solid fa-arrow-up"></i>
-                            <span>Medium</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="ed-item-info">
-                    <span class="ed-info-header">Information</span>
-                    <div class="ed-info-details">
-                        <div class="ed-info-grid">
-                            <div class="ed-info-block">
-                                <span class="ed-info-label">Quantity</span>
-                                <span class="ed-info-value">100</span>
+                <ul class="ed-list">
+                    <!-- Item 1 -->
+                    <li class="ed-list-item">
+                        <div class="ed-item-main">
+                            <div class="ed-item-header">
+                                <div class="ed-item-icon" style="background-color: #fdf0e6;">
+                                    <!-- -->
+                                    <img src="https://placehold.co/100x100/fdf0e6/f2994a?text=P&font=roboto"
+                                        alt="drug-icon"
+                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                                </div>
+                                <div class="ed-item-title-block">
+                                    <span class="ed-item-sku">PN0001265</span>
+                                    <span class="ed-item-name">Paracetamol Batch A</span>
+                                </div>
                             </div>
-                            <div class="ed-info-block">
-                                <span class="ed-info-label">Expiry Date</span>
-                                <span class="ed-info-value">10 <span class="days">days</span></span>
+                            <div class="ed-item-meta">
+                                <div class="ed-item-meta-date">
+                                    <i class="fa-regular fa-calendar-days"></i>
+                                    <span>Created Sep 12, 2020</span>
+                                </div>
+                                <div class="ed-item-meta-priority medium">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    <span>Medium</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="ed-info-action">
-                            <i class="fa-regular fa-eye"></i>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            
-            <!-- Item 2 -->
-            <li class="ed-list-item">
-                <div class="ed-item-main">
-                    <div class="ed-item-header">
-                        <div class="ed-item-icon" style="background-color: #e6f7f4;">
-                            <!-- -->
-                            <img src="https://placehold.co/100x100/e6f7f4/27ae60?text=A&font=roboto" alt="drug-icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-                        </div>
-                        <div class="ed-item-title-block">
-                            <span class="ed-item-sku">PN0001221</span>
-                            <span class="ed-item-name">Amoxicillin Batch B</span>
-                        </div>
-                    </div>
-                    <div class="ed-item-meta">
-                        <div class="ed-item-meta-date">
-                            <i class="fa-regular fa-calendar-days"></i>
-                            <span>Created Sep 10, 2020</span>
-                        </div>
-                        <div class="ed-item-meta-priority medium">
-                            <i class="fa-solid fa-arrow-up"></i>
-                            <span>Medium</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="ed-item-info">
-                    <span class="ed-info-header">Information</span>
-                    <div class="ed-info-details">
-                        <div class="ed-info-grid">
-                            <div class="ed-info-block">
-                                <span class="ed-info-label">Quantity</span>
-                                <span class="ed-info-value">75</span>
-                            </div>
-                            <div class="ed-info-block">
-                                <span class="ed-info-label">Expiry Date</span>
-                                <span class="ed-info-value">15 <span class="days">days</span></span>
+                        <div class="ed-item-info">
+                            <span class="ed-info-header">Information</span>
+                            <div class="ed-info-details">
+                                <div class="ed-info-grid">
+                                    <div class="ed-info-block">
+                                        <span class="ed-info-label">Quantity</span>
+                                        <span class="ed-info-value">100</span>
+                                    </div>
+                                    <div class="ed-info-block">
+                                        <span class="ed-info-label">Expiry Date</span>
+                                        <span class="ed-info-value">10 <span class="days">days</span></span>
+                                    </div>
+                                </div>
+                                <div class="ed-info-action">
+                                    <i class="fa-regular fa-eye"></i>
+                                </div>
                             </div>
                         </div>
-                        <div class="ed-info-action">
-                            <i class="fa-regular fa-eye"></i>
-                        </div>
-                    </div>
-                </div>
-            </li>
+                    </li>
 
-            <!-- Item 3 -->
-            <li class="ed-list-item">
-                <div class="ed-item-main">
-                    <div class="ed-item-header">
-                        <div class="ed-item-icon" style="background-color: #f0eefe;">
-                            <!-- -->
-                            <img src="https://placehold.co/100x100/f0eefe/9b51e0?text=I&font=roboto" alt="drug-icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-                        </div>
-                        <div class="ed-item-title-block">
-                            <span class="ed-item-sku">PN0001290</span>
-                            <span class="ed-item-name">Ibuprofen Batch C</span>
-                        </div>
-                    </div>
-                    <div class="ed-item-meta">
-                        <div class="ed-item-meta-date">
-                            <i class="fa-regular fa-calendar-days"></i>
-                            <span>Created May 28, 2020</span>
-                        </div>
-                        <div class="ed-item-meta-priority low">
-                            <i class="fa-solid fa-arrow-down"></i>
-                            <span>Low</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="ed-item-info">
-                    <span class="ed-info-header">Information</span>
-                    <div class="ed-info-details">
-                        <div class="ed-info-grid">
-                            <div class="ed-info-block">
-                                <span class="ed-info-label">Quantity</span>
-                                <span class="ed-info-value">60</span>
+                    <!-- Item 2 -->
+                    <li class="ed-list-item">
+                        <div class="ed-item-main">
+                            <div class="ed-item-header">
+                                <div class="ed-item-icon" style="background-color: #e6f7f4;">
+                                    <!-- -->
+                                    <img src="https://placehold.co/100x100/e6f7f4/27ae60?text=A&font=roboto"
+                                        alt="drug-icon"
+                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                                </div>
+                                <div class="ed-item-title-block">
+                                    <span class="ed-item-sku">PN0001221</span>
+                                    <span class="ed-item-name">Amoxicillin Batch B</span>
+                                </div>
                             </div>
-                            <div class="ed-info-block">
-                                <span class="ed-info-label">Expiry Date</span>
-                                <span class="ed-info-value">20 <span class="days">days</span></span>
+                            <div class="ed-item-meta">
+                                <div class="ed-item-meta-date">
+                                    <i class="fa-regular fa-calendar-days"></i>
+                                    <span>Created Sep 10, 2020</span>
+                                </div>
+                                <div class="ed-item-meta-priority medium">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    <span>Medium</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="ed-info-action">
-                            <i class="fa-regular fa-eye"></i>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            
-             <!-- Item 3 -->
-            <li class="ed-list-item">
-                <div class="ed-item-main">
-                    <div class="ed-item-header">
-                        <div class="ed-item-icon" style="background-color: #f0eefe;">
-                            <!-- -->
-                            <img src="https://placehold.co/100x100/f0eefe/9b51e0?text=I&font=roboto" alt="drug-icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-                        </div>
-                        <div class="ed-item-title-block">
-                            <span class="ed-item-sku">PN0001290</span>
-                            <span class="ed-item-name">Ibuprofen Batch C</span>
-                        </div>
-                    </div>
-                    <div class="ed-item-meta">
-                        <div class="ed-item-meta-date">
-                            <i class="fa-regular fa-calendar-days"></i>
-                            <span>Created May 28, 2020</span>
-                        </div>
-                        <div class="ed-item-meta-priority low">
-                            <i class="fa-solid fa-arrow-down"></i>
-                            <span>Low</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="ed-item-info">
-                    <span class="ed-info-header">Information</span>
-                    <div class="ed-info-details">
-                        <div class="ed-info-grid">
-                            <div class="ed-info-block">
-                                <span class="ed-info-label">Quantity</span>
-                                <span class="ed-info-value">60</span>
-                            </div>
-                            <div class="ed-info-block">
-                                <span class="ed-info-label">Expiry Date</span>
-                                <span class="ed-info-value">20 <span class="days">days</span></span>
+                        <div class="ed-item-info">
+                            <span class="ed-info-header">Information</span>
+                            <div class="ed-info-details">
+                                <div class="ed-info-grid">
+                                    <div class="ed-info-block">
+                                        <span class="ed-info-label">Quantity</span>
+                                        <span class="ed-info-value">75</span>
+                                    </div>
+                                    <div class="ed-info-block">
+                                        <span class="ed-info-label">Expiry Date</span>
+                                        <span class="ed-info-value">15 <span class="days">days</span></span>
+                                    </div>
+                                </div>
+                                <div class="ed-info-action">
+                                    <i class="fa-regular fa-eye"></i>
+                                </div>
                             </div>
                         </div>
-                        <div class="ed-info-action">
-                            <i class="fa-regular fa-eye"></i>
-                        </div>
-                    </div>
-                </div>
-            </li>
+                    </li>
 
-             <!-- Item 3 -->
-            <li class="ed-list-item">
-                <div class="ed-item-main">
-                    <div class="ed-item-header">
-                        <div class="ed-item-icon" style="background-color: #f0eefe;">
-                            <!-- -->
-                            <img src="https://placehold.co/100x100/f0eefe/9b51e0?text=I&font=roboto" alt="drug-icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-                        </div>
-                        <div class="ed-item-title-block">
-                            <span class="ed-item-sku">PN0001290</span>
-                            <span class="ed-item-name">Ibuprofen Batch C</span>
-                        </div>
-                    </div>
-                    <div class="ed-item-meta">
-                        <div class="ed-item-meta-date">
-                            <i class="fa-regular fa-calendar-days"></i>
-                            <span>Created May 28, 2020</span>
-                        </div>
-                        <div class="ed-item-meta-priority low">
-                            <i class="fa-solid fa-arrow-down"></i>
-                            <span>Low</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="ed-item-info">
-                    <span class="ed-info-header">Information</span>
-                    <div class="ed-info-details">
-                        <div class="ed-info-grid">
-                            <div class="ed-info-block">
-                                <span class="ed-info-label">Quantity</span>
-                                <span class="ed-info-value">60</span>
+                    <!-- Item 3 -->
+                    <li class="ed-list-item">
+                        <div class="ed-item-main">
+                            <div class="ed-item-header">
+                                <div class="ed-item-icon" style="background-color: #f0eefe;">
+                                    <!-- -->
+                                    <img src="https://placehold.co/100x100/f0eefe/9b51e0?text=I&font=roboto"
+                                        alt="drug-icon"
+                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                                </div>
+                                <div class="ed-item-title-block">
+                                    <span class="ed-item-sku">PN0001290</span>
+                                    <span class="ed-item-name">Ibuprofen Batch C</span>
+                                </div>
                             </div>
-                            <div class="ed-info-block">
-                                <span class="ed-info-label">Expiry Date</span>
-                                <span class="ed-info-value">20 <span class="days">days</span></span>
+                            <div class="ed-item-meta">
+                                <div class="ed-item-meta-date">
+                                    <i class="fa-regular fa-calendar-days"></i>
+                                    <span>Created May 28, 2020</span>
+                                </div>
+                                <div class="ed-item-meta-priority low">
+                                    <i class="fa-solid fa-arrow-down"></i>
+                                    <span>Low</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="ed-info-action">
-                            <i class="fa-regular fa-eye"></i>
+                        <div class="ed-item-info">
+                            <span class="ed-info-header">Information</span>
+                            <div class="ed-info-details">
+                                <div class="ed-info-grid">
+                                    <div class="ed-info-block">
+                                        <span class="ed-info-label">Quantity</span>
+                                        <span class="ed-info-value">60</span>
+                                    </div>
+                                    <div class="ed-info-block">
+                                        <span class="ed-info-label">Expiry Date</span>
+                                        <span class="ed-info-value">20 <span class="days">days</span></span>
+                                    </div>
+                                </div>
+                                <div class="ed-info-action">
+                                    <i class="fa-regular fa-eye"></i>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </li>
+                    </li>
 
-        </ul>
-    </div>
+                    <!-- Item 3 -->
+                    <li class="ed-list-item">
+                        <div class="ed-item-main">
+                            <div class="ed-item-header">
+                                <div class="ed-item-icon" style="background-color: #f0eefe;">
+                                    <!-- -->
+                                    <img src="https://placehold.co/100x100/f0eefe/9b51e0?text=I&font=roboto"
+                                        alt="drug-icon"
+                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                                </div>
+                                <div class="ed-item-title-block">
+                                    <span class="ed-item-sku">PN0001290</span>
+                                    <span class="ed-item-name">Ibuprofen Batch C</span>
+                                </div>
+                            </div>
+                            <div class="ed-item-meta">
+                                <div class="ed-item-meta-date">
+                                    <i class="fa-regular fa-calendar-days"></i>
+                                    <span>Created May 28, 2020</span>
+                                </div>
+                                <div class="ed-item-meta-priority low">
+                                    <i class="fa-solid fa-arrow-down"></i>
+                                    <span>Low</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ed-item-info">
+                            <span class="ed-info-header">Information</span>
+                            <div class="ed-info-details">
+                                <div class="ed-info-grid">
+                                    <div class="ed-info-block">
+                                        <span class="ed-info-label">Quantity</span>
+                                        <span class="ed-info-value">60</span>
+                                    </div>
+                                    <div class="ed-info-block">
+                                        <span class="ed-info-label">Expiry Date</span>
+                                        <span class="ed-info-value">20 <span class="days">days</span></span>
+                                    </div>
+                                </div>
+                                <div class="ed-info-action">
+                                    <i class="fa-regular fa-eye"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
 
-    <!-- Card 2: Activity Stream (New Design) -->
-    <div class="dashboard-card as-card"> <!-- as = Activity Stream -->
-        <div class="card-header">
-            <h3>Activity Stream</h3>
-        </div>
-        
-        <div class="as-user-block">
-            <img class="as-avatar" src="https://placehold.co/100x100/E0E0E0/757575?text=O" alt="User Avatar">
-            <div class="as-user-info">
-                <span class="name">Oscar Holloway</span>
-                <span class="role">Pharmacist | Staff</span>
+                    <!-- Item 3 -->
+                    <li class="ed-list-item">
+                        <div class="ed-item-main">
+                            <div class="ed-item-header">
+                                <div class="ed-item-icon" style="background-color: #f0eefe;">
+                                    <!-- -->
+                                    <img src="https://placehold.co/100x100/f0eefe/9b51e0?text=I&font=roboto"
+                                        alt="drug-icon"
+                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                                </div>
+                                <div class="ed-item-title-block">
+                                    <span class="ed-item-sku">PN0001290</span>
+                                    <span class="ed-item-name">Ibuprofen Batch C</span>
+                                </div>
+                            </div>
+                            <div class="ed-item-meta">
+                                <div class="ed-item-meta-date">
+                                    <i class="fa-regular fa-calendar-days"></i>
+                                    <span>Created May 28, 2020</span>
+                                </div>
+                                <div class="ed-item-meta-priority low">
+                                    <i class="fa-solid fa-arrow-down"></i>
+                                    <span>Low</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ed-item-info">
+                            <span class="ed-info-header">Information</span>
+                            <div class="ed-info-details">
+                                <div class="ed-info-grid">
+                                    <div class="ed-info-block">
+                                        <span class="ed-info-label">Quantity</span>
+                                        <span class="ed-info-value">60</span>
+                                    </div>
+                                    <div class="ed-info-block">
+                                        <span class="ed-info-label">Expiry Date</span>
+                                        <span class="ed-info-value">20 <span class="days">days</span></span>
+                                    </div>
+                                </div>
+                                <div class="ed-info-action">
+                                    <i class="fa-regular fa-eye"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
             </div>
+
+            <!-- Card 2: Activity Stream (New Design) -->
+            <div class="dashboard-card as-card"> <!-- as = Activity Stream -->
+                <div class="card-header">
+                    <h3>Activity Stream</h3>
+                </div>
+
+                <div class="as-user-block">
+                    <img class="as-avatar" src="https://placehold.co/100x100/E0E0E0/757575?text=O" alt="User Avatar">
+                    <div class="as-user-info">
+                        <span class="name">Oscar Holloway</span>
+                        <span class="role">Pharmacist | Staff</span>
+                    </div>
+                </div>
+
+                <ul class="as-action-list">
+                    <li class="as-action-item">
+                        <i class="fa-solid fa-cloud-arrow-up as-action-icon" style="color: #2F80ED;"></i>
+                        <span class="as-action-text">Updated the status of Mind Map task to In Progress</span>
+                    </li>
+                    <li class="as-action-item">
+                        <i class="fa-solid fa-paperclip as-action-icon" style="color: #9B51E0;"></i>
+                        <span class="as-action-text">Attached files to the task</span>
+                    </li>
+                    <li class="as-action-item">
+                        <i class="fa-solid fa-paperclip as-action-icon" style="color: #9B51E0;"></i>
+                        <span class="as-action-text">Attached files to the task</span>
+                    </li>
+                    <li class="as-action-item">
+                        <i class="fa-solid fa-paperclip as-action-icon" style="color: #9B51E0;"></i>
+                        <span class="as-action-text">Attached files to the task</span>
+                    </li>
+                </ul>
+
+                <a href="{{ route('peoples.recent') }}" class="as-view-more">
+                    View more
+                    <i class="fa-solid fa-chevron-down"></i>
+                </a>
+            </div>
+
+
+
+
         </div>
 
-        <ul class="as-action-list">
-            <li class="as-action-item">
-                <i class="fa-solid fa-cloud-arrow-up as-action-icon" style="color: #2F80ED;"></i>
-                <span class="as-action-text">Updated the status of Mind Map task to In Progress</span>
-            </li>
-            <li class="as-action-item">
-                <i class="fa-solid fa-paperclip as-action-icon" style="color: #9B51E0;"></i>
-                <span class="as-action-text">Attached files to the task</span>
-            </li>
-            <li class="as-action-item">
-                <i class="fa-solid fa-paperclip as-action-icon" style="color: #9B51E0;"></i>
-                <span class="as-action-text">Attached files to the task</span>
-            </li>
-            <li class="as-action-item">
-                <i class="fa-solid fa-paperclip as-action-icon" style="color: #9B51E0;"></i>
-                <span class="as-action-text">Attached files to the task</span>
-            </li>
-        </ul>
-
-        <a href="{{ route('peoples.recent') }}" class="as-view-more">
-            View more
-            <i class="fa-solid fa-chevron-down"></i>
-        </a>
-    </div>
-
-            
-
-        
-    </div>
-
-    @push('scripts')
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        @vite(['resources/js/dashboard.js'])
-    @endpush
+        @push('scripts')
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            @vite(['resources/js/dashboard.js'])
+        @endpush
 
 </x-app-layout>
