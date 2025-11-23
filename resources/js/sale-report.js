@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (profitCogsCtx) {
         // Mockup Data
         const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May'];
-        
+
         new Chart(profitCogsCtx, {
             type: 'line',
             data: {
@@ -214,13 +214,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 2. (Content)
             const targetContentId = targetButton.dataset.target; // (เช่น "#expiryReportContent")
-            
+
             // ซ่อน content ทั้งหมด
             tabPanes.forEach(pane => {
                 pane.style.display = 'none';
                 pane.classList.remove('active');
             });
-            
+
             // แสดง content ที่ต้องการ
             const targetPane = document.querySelector(targetContentId);
             if (targetPane) {
@@ -303,5 +303,64 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // --- [!!! NEW: Modal Logic for All Reports !!!] ---
+
+    // Helper: Open Modal
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('active');
+            setTimeout(() => {
+                modal.classList.add('visible');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    // Helper: Close Modal
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('visible');
+            setTimeout(() => {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }, 400);
+        }
+    }
+
+    // Event Listeners for "Add New Report" Buttons
+    const btnSale = document.getElementById('btn-add-sale-report');
+    const btnInventory = document.getElementById('btn-add-inventory-report');
+    const btnFinance = document.getElementById('btn-add-finance-report');
+
+    if (btnSale) {
+        btnSale.addEventListener('click', () => openModal('modal-add-sale-report'));
+    }
+    if (btnInventory) {
+        btnInventory.addEventListener('click', () => openModal('modal-add-inventory-report'));
+    }
+    if (btnFinance) {
+        btnFinance.addEventListener('click', () => openModal('modal-add-finance-report'));
+    }
+
+    // Close Buttons (x)
+    document.querySelectorAll('[data-close]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const modalId = btn.dataset.close;
+            closeModal(modalId);
+        });
+    });
+
+    // Close on Click Outside
+    document.querySelectorAll('.sr-modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                const modalId = overlay.id;
+                closeModal(modalId);
+            }
+        });
+    });
 
 });

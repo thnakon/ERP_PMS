@@ -37,10 +37,18 @@ Route::middleware('auth')->group(function () {
     // และเปลี่ยน 'index' (ของเดิม) ให้ชี้ไปที่ 'sales' เพื่อความชัดเจน
 
     // Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index'); // <-- ของเดิม
-    
+
     //Inventory
     Route::get('/inventorys/manage-products', [InventoryController::class, 'manageProducts'])->name('inventorys.manage-products');
+    Route::post('/inventorys/products', [InventoryController::class, 'storeProduct'])->name('inventorys.products.store');
+    Route::put('/inventorys/products/{id}', [InventoryController::class, 'updateProduct'])->name('inventorys.products.update');
+    Route::delete('/inventorys/products/{id}', [InventoryController::class, 'destroyProduct'])->name('inventorys.products.destroy');
+    Route::post('/inventorys/products/bulk-delete', [InventoryController::class, 'bulkDestroyProducts'])->name('inventorys.products.bulk-delete');
     Route::get('/inventorys/categories', [InventoryController::class, 'categories'])->name('inventorys.categories');
+    Route::post('/inventorys/categories', [InventoryController::class, 'storeCategory'])->name('inventorys.categories.store');
+    Route::put('/inventorys/categories/{id}', [InventoryController::class, 'updateCategory'])->name('inventorys.categories.update');
+    Route::delete('/inventorys/categories/{id}', [InventoryController::class, 'destroyCategory'])->name('inventorys.categories.destroy');
+    Route::post('/inventorys/categories/bulk-delete', [InventoryController::class, 'bulkDestroyCategories'])->name('inventorys.categories.bulk-delete');
     Route::get('/inventorys/expiry-management', [InventoryController::class, 'expiryManagement'])->name('inventorys.expiry-management');
     Route::get('/inventorys/stock-adjustments', [InventoryController::class, 'stockAdjustments'])->name('inventorys.stock-adjustments');
 
@@ -69,4 +77,4 @@ Route::get('/search', [SearchController::class, 'fullSearch'])->name('search.ful
 // Route สำหรับ AI Search (กด Atom)
 Route::get('/ai-search', [SearchController::class, 'aiSearch'])->name('search.ai');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

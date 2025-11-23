@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.getElementById('close-modal-btn');
     const cancelModalBtn = document.getElementById('cancel-modal-btn');
     const modalForm = document.getElementById('supplier-form');
-    
+
     // Get input elements and buttons
     const modalTitle = document.getElementById('modal-title');
     const saveBtn = document.getElementById('save-modal-btn');
@@ -70,13 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 1.2 Helper: Fill Form ---
     const fillForm = (data) => {
         if (data) {
-            if(document.getElementById('company_name')) document.getElementById('company_name').value = data.company_name || '';
-            if(document.getElementById('tax_id')) document.getElementById('tax_id').value = data.tax_id || '';
-            if(document.getElementById('contact_person')) document.getElementById('contact_person').value = data.contact_person || '';
-            if(document.getElementById('phone')) document.getElementById('phone').value = data.phone || '';
-            if(document.getElementById('email')) document.getElementById('email').value = data.email || '';
-            if(document.getElementById('address')) document.getElementById('address').value = data.address || '';
-            if(document.getElementById('notes')) document.getElementById('notes').value = data.notes || '';
+            if (document.getElementById('company_name')) document.getElementById('company_name').value = data.company_name || '';
+            if (document.getElementById('tax_id')) document.getElementById('tax_id').value = data.tax_id || '';
+            if (document.getElementById('contact_person')) document.getElementById('contact_person').value = data.contact_person || '';
+            if (document.getElementById('phone')) document.getElementById('phone').value = data.phone || '';
+            if (document.getElementById('email')) document.getElementById('email').value = data.email || '';
+            if (document.getElementById('address')) document.getElementById('address').value = data.address || '';
+            if (document.getElementById('notes')) document.getElementById('notes').value = data.notes || '';
         }
     }
 
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
     if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
-    
+
     if (backdrop) {
         backdrop.addEventListener('click', (e) => {
             if (e.target === backdrop) closeModal();
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle Form Submit
     if (modalForm) {
-        modalForm.addEventListener('submit', function(e) {
+        modalForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
             if (saveBtn && saveBtn.style.display === 'none') {
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const title = document.getElementById('modal-title').textContent;
             console.log(`${title} data submitted (Mock)`);
-            
+
             // Mock Success Alert
             alert(`Success: ${title}`);
             closeModal();
@@ -189,100 +189,104 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================================
     // PART 2: CHECKBOX & BULK ACTIONS (FIXED LOGIC)
     // ============================================================
-    
-    // 1. เลือกเฉพาะ Checkbox ที่เป็น "รายการลูก" (ไม่เอา Select All)
-    const itemCheckboxes = document.querySelectorAll('.inv-checkbox:not(#select-all-checkbox)');
-    // 2. เลือกตัว Select All แยกต่างหาก
-    const selectAllBox = document.getElementById('select-all-checkbox');
-    
-    const bulkActionsPanel = document.getElementById('bulk-actions');
-    const selectedCountSpan = document.getElementById('selected-count');
-    
-    // ฟังก์ชันอัปเดตสถานะ Bulk Actions
-    const updateBulkActions = () => {
-        const selectedBoxes = Array.from(itemCheckboxes).filter(box => box.classList.contains('active'));
-        const count = selectedBoxes.length;
 
-        if (selectedCountSpan) selectedCountSpan.textContent = count;
+    // Only run this logic if we are on a purchasing page (check for specific elements)
+    if (document.querySelector('.purchasing-list-row') || document.querySelector('.po-item')) {
 
-        if (bulkActionsPanel) {
-            bulkActionsPanel.style.display = (count > 0) ? 'flex' : 'none';
-        }
+        // 1. เลือกเฉพาะ Checkbox ที่เป็น "รายการลูก" (ไม่เอา Select All)
+        const itemCheckboxes = document.querySelectorAll('.inv-checkbox:not(#select-all-checkbox)');
+        // 2. เลือกตัว Select All แยกต่างหาก
+        const selectAllBox = document.getElementById('select-all-checkbox');
 
-        // อัปเดต Select All ว่าควรติ๊กหรือไม่
-        if (selectAllBox) {
-            const allSelected = (count === itemCheckboxes.length) && (count > 0);
-            if (allSelected) {
-                selectAllBox.classList.add('active');
-            } else {
-                selectAllBox.classList.remove('active');
-            }
-        }
-    };
+        const bulkActionsPanel = document.getElementById('bulk-actions');
+        const selectedCountSpan = document.getElementById('selected-count');
 
-    // Event Listeners ให้ "Checkbox ลูก"
-    itemCheckboxes.forEach(box => {
-        box.addEventListener('click', function() {
-            this.classList.toggle('active');
-            
-            const parentRow = this.closest('.purchasing-list-row');
-            if (parentRow) parentRow.classList.toggle('selected-row');
+        // ฟังก์ชันอัปเดตสถานะ Bulk Actions
+        const updateBulkActions = () => {
+            const selectedBoxes = Array.from(itemCheckboxes).filter(box => box.classList.contains('active'));
+            const count = selectedBoxes.length;
 
-            updateBulkActions();
-        });
-    });
+            if (selectedCountSpan) selectedCountSpan.textContent = count;
 
-    // Event Listener ให้ "Select All"
-    if (selectAllBox) {
-        selectAllBox.addEventListener('click', function() {
-            const isChecking = !this.classList.contains('active');
-            
-            if (isChecking) {
-                this.classList.add('active');
-            } else {
-                this.classList.remove('active');
+            if (bulkActionsPanel) {
+                bulkActionsPanel.style.display = (count > 0) ? 'flex' : 'none';
             }
 
-            itemCheckboxes.forEach(box => {
-                const parentRow = box.closest('.purchasing-list-row');
-                if (isChecking) {
-                    box.classList.add('active');
-                    if(parentRow) parentRow.classList.add('selected-row');
+            // อัปเดต Select All ว่าควรติ๊กหรือไม่
+            if (selectAllBox) {
+                const allSelected = (count === itemCheckboxes.length) && (count > 0);
+                if (allSelected) {
+                    selectAllBox.classList.add('active');
                 } else {
-                    box.classList.remove('active');
-                    if(parentRow) parentRow.classList.remove('selected-row');
+                    selectAllBox.classList.remove('active');
+                }
+            }
+        };
+
+        // Event Listeners ให้ "Checkbox ลูก"
+        itemCheckboxes.forEach(box => {
+            box.addEventListener('click', function () {
+                this.classList.toggle('active');
+
+                const parentRow = this.closest('.purchasing-list-row');
+                if (parentRow) parentRow.classList.toggle('selected-row');
+
+                updateBulkActions();
+            });
+        });
+
+        // Event Listener ให้ "Select All"
+        if (selectAllBox) {
+            selectAllBox.addEventListener('click', function () {
+                const isChecking = !this.classList.contains('active');
+
+                if (isChecking) {
+                    this.classList.add('active');
+                } else {
+                    this.classList.remove('active');
+                }
+
+                itemCheckboxes.forEach(box => {
+                    const parentRow = box.closest('.purchasing-list-row');
+                    if (isChecking) {
+                        box.classList.add('active');
+                        if (parentRow) parentRow.classList.add('selected-row');
+                    } else {
+                        box.classList.remove('active');
+                        if (parentRow) parentRow.classList.remove('selected-row');
+                    }
+                });
+
+                const count = isChecking ? itemCheckboxes.length : 0;
+                if (selectedCountSpan) selectedCountSpan.textContent = count;
+                if (bulkActionsPanel) bulkActionsPanel.style.display = (count > 0) ? 'flex' : 'none';
+            });
+        }
+
+        // Delete Logic (Mock)
+        const bulkDeleteBtn = bulkActionsPanel ? bulkActionsPanel.querySelector('.fa-trash')?.closest('button') : null;
+        if (bulkDeleteBtn) {
+            bulkDeleteBtn.addEventListener('click', () => {
+                const selectedIds = Array.from(itemCheckboxes)
+                    .filter(box => box.classList.contains('active'))
+                    .map(box => box.dataset.id);
+
+                if (selectedIds.length > 0) {
+                    if (confirm(`Are you sure you want to delete ${selectedIds.length} items?`)) {
+                        console.log('Deleting IDs:', selectedIds);
+                        alert('Mock delete success!');
+
+                        // Reset UI
+                        if (selectAllBox) selectAllBox.classList.remove('active');
+                        itemCheckboxes.forEach(box => {
+                            box.classList.remove('active');
+                            box.closest('.purchasing-list-row')?.classList.remove('selected-row');
+                        });
+                        updateBulkActions();
+                    }
                 }
             });
-
-            const count = isChecking ? itemCheckboxes.length : 0;
-            if (selectedCountSpan) selectedCountSpan.textContent = count;
-            if (bulkActionsPanel) bulkActionsPanel.style.display = (count > 0) ? 'flex' : 'none';
-        });
-    }
-
-    // Delete Logic (Mock)
-    const bulkDeleteBtn = bulkActionsPanel ? bulkActionsPanel.querySelector('.fa-trash')?.closest('button') : null;
-    if (bulkDeleteBtn) {
-        bulkDeleteBtn.addEventListener('click', () => {
-            const selectedIds = Array.from(itemCheckboxes)
-                                     .filter(box => box.classList.contains('active'))
-                                     .map(box => box.dataset.id);
-            
-            if (selectedIds.length > 0) {
-                if(confirm(`Are you sure you want to delete ${selectedIds.length} items?`)) {
-                    console.log('Deleting IDs:', selectedIds);
-                    alert('Mock delete success!');
-                    
-                    // Reset UI
-                    if (selectAllBox) selectAllBox.classList.remove('active');
-                    itemCheckboxes.forEach(box => {
-                        box.classList.remove('active');
-                        box.closest('.purchasing-list-row')?.classList.remove('selected-row');
-                    });
-                    updateBulkActions();
-                }
-            }
-        });
+        }
     }
 
 
@@ -342,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (poBackdrop) {
             poBackdrop.style.display = 'flex';
             const dateInput = document.getElementById('po_date');
-            if(dateInput && !dateInput.value) dateInput.valueAsDate = new Date();
+            if (dateInput && !dateInput.value) dateInput.valueAsDate = new Date();
             setTimeout(() => poBackdrop.classList.add('is-open'), 10);
         }
     };
@@ -352,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
             poBackdrop.classList.remove('is-open');
             setTimeout(() => {
                 poBackdrop.style.display = 'none';
-                if(poForm) poForm.reset();
+                if (poForm) poForm.reset();
             }, 350);
         }
     };
@@ -380,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const poNum = row.querySelector('.col-po-number')?.textContent.toLowerCase() || '';
                 const supplier = row.querySelector('.col-supplier')?.textContent.toLowerCase() || '';
                 if (poNum.includes(searchTerm) || supplier.includes(searchTerm)) {
-                     row.style.display = 'grid';
+                    row.style.display = 'grid';
                 } else {
                     row.style.display = 'none';
                 }
@@ -404,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (grBackdrop) {
             grBackdrop.style.display = 'flex';
             const grDate = document.getElementById('gr_date');
-            if(grDate && !grDate.value) grDate.valueAsDate = new Date();
+            if (grDate && !grDate.value) grDate.valueAsDate = new Date();
             setTimeout(() => grBackdrop.classList.add('is-open'), 10);
         }
     };
@@ -414,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
             grBackdrop.classList.remove('is-open');
             setTimeout(() => {
                 grBackdrop.style.display = 'none';
-                if(grForm) grForm.reset();
+                if (grForm) grForm.reset();
             }, 350);
         }
     };
@@ -430,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(grForm);
             const selectedPO = formData.get('po_id');
             closeGrModal();
-            
+
             // Switch view to Receive View
             const poReceiveView = document.getElementById('po-receive-view');
             const poSearchView = document.getElementById('po-search-view');
@@ -438,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 poSearchView.style.display = 'none';
                 poReceiveView.style.display = 'block';
                 const title = poReceiveView.querySelector('h2');
-                if(title) title.textContent = `Receiving Items for ${selectedPO}`;
+                if (title) title.textContent = `Receiving Items for ${selectedPO}`;
             }
         });
     }
@@ -451,18 +455,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (searchPoBtn) {
         searchPoBtn.addEventListener('click', () => {
-             if (poReceiveView && poSearchView) {
+            if (poReceiveView && poSearchView) {
                 poSearchView.style.display = 'none';
                 poReceiveView.style.display = 'block';
-             }
+            }
         });
     }
     if (backToSearchBtn) {
         backToSearchBtn.addEventListener('click', () => {
-             if (poReceiveView && poSearchView) {
+            if (poReceiveView && poSearchView) {
                 poSearchView.style.display = 'block';
                 poReceiveView.style.display = 'none';
-             }
+            }
         });
     }
 

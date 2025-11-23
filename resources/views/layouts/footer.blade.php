@@ -20,7 +20,7 @@
                 Copyright © {{ date('Y') }} Your Pharmacy Name. All rights reserved.
             </span>
             <span class="footer-powered-by">
-                Powered by <strong>Oboun</strong>
+                Powered by <strong>Oboun ERP</strong>
             </span>
         </div>
 

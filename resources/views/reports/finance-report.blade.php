@@ -20,9 +20,9 @@
                 <div class="sr-header-right">
                     {{-- [!!! ADJUSTED !!!] เปลี่ยน div/span เป็น <button> 
              และใช้คลาสใหม่ sr-button-primary --}}
-                    <button class="sr-button-primary">
+                    <button class="sr-button-primary" id="btn-add-finance-report">
                         <i class="fa-solid fa-plus"></i>
-                        <span>เพิ่มรายงานใหม่</span>
+                        <span>Add New Report</span>
                     </button>
                 </div>
             </div>
@@ -116,16 +116,6 @@
                             <span
                                 style="font-weight: 700; font-size: 1.1rem; color: var(--positive-delta);">฿50,000.00</span>
                         </li>
-                        {{-- (Optional) Operating Expenses
-                            <li style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-top: 16px;">
-                                <span style="color: var(--text-secondary);">3. Operating Expenses</span>
-                                <span style="font-weight: 600; font-size: 1rem; color: var(--negative-delta);">(฿15,000.00)</span>
-                            </li>
-                            <li style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px;">
-                                <span style="font-weight: 600;">Net Profit</span>
-                                <span style="font-weight: 700; font-size: 1.1rem; color: var(--positive-delta);">฿35,000.00</span>
-                            </li>
-                            --}}
                     </ul>
                 </div>
 
@@ -230,6 +220,56 @@
         </div>
     </div>
 
+    {{-- [!!! NEW: Add Finance Report Modal !!!] --}}
+    <div id="modal-add-finance-report" class="sr-modal-overlay">
+        <div class="sr-modal">
+            <div class="sr-modal-header">
+                <h3 class="sr-modal-title">Create Financial Report</h3>
+                <button class="sr-modal-close" data-close="modal-add-finance-report"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="sr-modal-body">
+                <form id="form-add-finance-report">
+                    <div class="sr-form-group">
+                        <label class="sr-form-label">Report Period</label>
+                        <select class="sr-form-select">
+                            <option value="this_month">This Month</option>
+                            <option value="last_month">Last Month</option>
+                            <option value="q1">Q1 (Jan-Mar)</option>
+                            <option value="q2">Q2 (Apr-Jun)</option>
+                            <option value="ytd">Year to Date</option>
+                        </select>
+                    </div>
+                    <div class="sr-form-group">
+                        <label class="sr-form-label">Report Type</label>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <label style="display: flex; gap: 8px; align-items: center; font-size: 0.95rem;">
+                                <input type="radio" name="finance_type" value="pnl" checked> Profit & Loss (P&L)
+                            </label>
+                            <label style="display: flex; gap: 8px; align-items: center; font-size: 0.95rem;">
+                                <input type="radio" name="finance_type" value="tax"> Tax Report (VAT ภ.พ. 30)
+                            </label>
+                            <label style="display: flex; gap: 8px; align-items: center; font-size: 0.95rem;">
+                                <input type="radio" name="finance_type" value="expense"> Expense Report
+                            </label>
+                        </div>
+                    </div>
+                    <div class="sr-form-group">
+                        <label class="sr-form-label">Export Format</label>
+                        <select class="sr-form-select">
+                            <option value="pdf">PDF (Official)</option>
+                            <option value="excel">Excel (.xlsx)</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="sr-modal-footer">
+                <button class="sr-btn-secondary" data-close="modal-add-finance-report">Cancel</button>
+                <button class="sr-button-primary">Generate Report</button>
+            </div>
+        </div>
+    </div>
+
     {{-- [!!!] 3. โหลด CSS และ JS --}}
     @push('styles')
         {{-- [สำคัญ] เราใช้ CSS เดิมจาก Sale Report --}}
@@ -241,6 +281,8 @@
     @push('scripts')
         {{-- โหลด Chart.js (ต้องมีใน app.blade.php หรือที่นี่) --}}
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        {{-- [สำคัญ] โหลด JS หลักสำหรับ Modal และ Logic รวม --}}
+        <script src="{{ asset('resources/js/sale-report.js') }}"></script>
         {{-- [สำคัญ] โหลด JS ของหน้านี้โดยเฉพาะ --}}
         <script src="{{ asset('js/finance-report.js') }}"></script>
     @endpush

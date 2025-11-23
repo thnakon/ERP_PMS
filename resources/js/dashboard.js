@@ -60,8 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 label += ': ';
             }
             if (context.parsed.y !== null) {
-                const metric = context.dataset.metric; 
-                
+                const metric = context.dataset.metric;
+
                 if (metric === 'sales' || metric === 'profit') {
                     label += new Intl.NumberFormat('th-TH', {
                         style: 'currency',
@@ -96,17 +96,17 @@ document.addEventListener('DOMContentLoaded', () => {
             salesChartInstance.data.datasets[0].borderColor = metricConfig.borderColor;
             salesChartInstance.data.datasets[0].backgroundColor = newGradient;
             salesChartInstance.data.datasets[0].pointBorderColor = metricConfig.borderColor;
-            salesChartInstance.data.datasets[0].metric = metric; 
+            salesChartInstance.data.datasets[0].metric = metric;
 
             salesChartInstance.options.scales.y.ticks.callback = metricConfig.yAxisFormatter;
-            
+
             salesChartInstance.update();
         }
 
         // --- 4. Chart Initialization ---
 
         function initChart() {
-            const initialMetric = 'sales'; 
+            const initialMetric = 'sales';
             const initialConfig = metricsData[initialMetric];
 
             salesChartInstance = new Chart(ctx, {
@@ -191,9 +191,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (toggleButtonsContainer) {
             toggleButtonsContainer.addEventListener('click', (e) => {
                 const clickedButton = e.target.closest('.toggle-btn');
-                if (!clickedButton) return; 
+                if (!clickedButton) return;
 
-                if (clickedButton.classList.contains('active')) return; 
+                if (clickedButton.classList.contains('active')) return;
 
                 const metric = clickedButton.dataset.metric;
                 if (!metric) return;
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- KICK-OFF ---
         initChart(); // สร้างกราฟครั้งแรก
-        
+
         // [!!! NEW !!!] ตั้งค่าสไลเดอร์ไปที่ปุ่ม active ตัวแรกเมื่อโหลดหน้า
         const initialActiveButton = document.querySelector('.chart-toggle-buttons .toggle-btn.active');
         if (initialActiveButton) {
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 50);
         } else if (toggleButtons.length > 0) {
             toggleButtons[0].classList.add('active');
-             setTimeout(() => {
+            setTimeout(() => {
                 moveSlider(toggleButtons[0]);
                 toggleButtonsContainer.classList.add('slider-ready');
             }, 50);

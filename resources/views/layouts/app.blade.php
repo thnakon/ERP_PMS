@@ -123,8 +123,8 @@
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script>
-        // ตรวจสอบว่า Laravel ส่งข้อความ 'success' มาหรือไม่
-        @if (session('success'))
+        // ตรวจสอบว่า Laravel ส่งข้อความ 'success' มาหรือไม่ และต้องไม่มีการระงับ (suppress)
+        @if (session('success') && !session('suppress_global_toast'))
             Toastify({
                 // [!!! 1. แก้ไข text !!!]
                 // เราจะใส่โค้ด SVG และห่อด้วย Wrapper ที่เราสร้างใน CSS
