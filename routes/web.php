@@ -64,7 +64,15 @@ Route::middleware('auth')->group(function () {
 
     //Purchasing subpages
     Route::get('/purchasing/suppliers', [PurchaseController::class, 'suppliers'])->name('purchasing.suppliers');
+    Route::post('/purchasing/suppliers', [PurchaseController::class, 'storeSupplier'])->name('purchasing.suppliers.store');
+    Route::put('/purchasing/suppliers/{id}', [PurchaseController::class, 'updateSupplier'])->name('purchasing.suppliers.update');
+    Route::delete('/purchasing/suppliers/{id}', [PurchaseController::class, 'destroySupplier'])->name('purchasing.suppliers.destroy');
+    Route::post('/purchasing/suppliers/bulk-delete', [PurchaseController::class, 'bulkDestroySupplier'])->name('purchasing.suppliers.bulk_destroy');
     Route::get('/purchasing/purchase-orders', [PurchaseController::class, 'purchaseOrders'])->name('purchasing.purchaseOrders');
+    Route::post('/purchasing/purchase-orders', [PurchaseController::class, 'storePurchaseOrder'])->name('purchasing.purchaseOrders.store');
+    Route::put('/purchasing/purchase-orders/{id}', [PurchaseController::class, 'updatePurchaseOrder'])->name('purchasing.purchaseOrders.update');
+    Route::delete('/purchasing/purchase-orders/{id}', [PurchaseController::class, 'destroyPurchaseOrder'])->name('purchasing.purchaseOrders.destroy');
+    Route::post('/purchasing/purchase-orders/bulk-delete', [PurchaseController::class, 'bulkDestroyPurchaseOrder'])->name('purchasing.purchaseOrders.bulk_destroy');
     Route::get('/purchasing/goods-received', [PurchaseController::class, 'goodsReceived'])->name('purchasing.goodsReceived');
 });
 

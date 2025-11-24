@@ -141,15 +141,16 @@ body {
 }
 
 
-/* --- [!!! MOD: Sliding Toggle Filter (New Style) !!!] --- */
+/* --- Sliding Toggle Filter (Apple Style) --- */
 .sliding-toggle-filter {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    background-color: var(--card-bg-color); /* [MOD] White background */
+    background-color: #ffffff; /* White background */
     border-radius: 30px;
     padding: 4px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Subtle shadow */
 }
 
 .sliding-toggle-filter::before {
@@ -159,46 +160,36 @@ body {
     bottom: 4px;
     left: var(--slider-left, 4px);
     width: var(--slider-width, 80px);
-    background-color: var(--text-primary); /* [MOD] Black slider */
+    background-color: #1d1d1f; /* Black slider */
     border-radius: 30px;
     z-index: 0;
-    box-shadow: none; /* [MOD] */
-}
-
-.sliding-toggle-filter.slider-ready::before {
     transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
                 width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .sliding-toggle-filter .toggle-btn {
     font-family: var(--font-family-apple);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 500;
-    color: var(--text-secondary);
+    color: #86868b; /* Gray text for inactive */
     background-color: transparent;
     border: none;
     border-radius: 30px;
-    padding: 6px 14px;
+    padding: 10px 20px;
     cursor: pointer;
     white-space: nowrap;
     position: relative;
     z-index: 1;
-    transition: color 0.3s ease-in-out;
+    transition: color 0.2s ease;
 }
 
 .sliding-toggle-filter .toggle-btn:hover {
-    color: var(--text-primary);
+    color: #1d1d1f;
 }
 
 .sliding-toggle-filter .toggle-btn.active {
-    background-color: transparent;
-    color: #ffffff; /* [MOD] White text on black slider */
+    color: #ffffff; /* White text for active */
     font-weight: 600;
-    box-shadow: none;
-}
-
-.sliding-toggle-filter .toggle-btn.active:hover {
-    color: #ffffff;
 }
 /* --- End Sliding Toggle Filter --- */
 
@@ -314,11 +305,11 @@ body {
 
 /* Grid columns for Suppliers */
 #supplier-list .purchasing-list-row {
-    grid-template-columns: 2.5fr 1.5fr 1.5fr 1fr 1fr 0.5fr;
+    grid-template-columns: 50px 2.5fr 1.5fr 1.5fr 1fr 1fr 0.5fr;
 }
 /* Grid columns for Purchase Orders */
 #po-list .purchasing-list-row {
-    grid-template-columns: 1fr 2fr 1.5fr 1.5fr 1fr 1fr 0.5fr;
+    grid-template-columns: 50px 1fr 2fr 1.5fr 1.5fr 1fr 1fr 0.5fr;
 }
 
 [class*="col-"] {
@@ -350,247 +341,141 @@ body {
 .status-cancelled { background-color: var(--status-cancelled-bg); color: var(--status-cancelled-text); }
 
 
-/* --- Modal (Pop-up) Styles --- */
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
+/* --- [!!! COPIED FROM INVENTORYS.CSS FOR EXACT MATCH !!!] --- */
+
+/* --- Modal Styles --- */
+.inv-modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+}
+.inv-modal-overlay.show { opacity: 1; visibility: visible; }
+
+.inv-modal {
+    background-color: #ffffff;
+    width: 100%; max-width: 600px;
+    max-height: 90vh;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    transform: scale(0.9);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+}
+.inv-modal-overlay.show .inv-modal { transform: scale(1); }
+
+.inv-modal-body {
+    flex-grow: 1; 
+    overflow-y: auto; 
+    padding-right: 12px;
+    max-height: calc(90vh - 140px); /* Ensure space for header/footer */
+}
+
+.inv-modal-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 24px; 
+    flex-shrink: 0; 
+}
+.inv-modal-title { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
+.inv-modal-close { background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer; }
+
+.inv-modal-footer { 
+    display: flex; 
+    justify-content: flex-end; 
+    gap: 12px; 
+    margin-top: 32px; 
+    flex-shrink: 0; 
+}
+
+/* Form Styles for Modal */
+.inv-form-group { margin-bottom: 16px; }
+.inv-form-label { display: block; font-size: 0.9rem; font-weight: 500; margin-bottom: 8px; color: var(--text-primary); }
+.inv-form-input {
+    width: 100%; padding: 12px; border-radius: 22px; border: 1px solid #e5e5ea;
+    font-family: var(--font-family-apple); font-size: 0.95rem; box-sizing: border-box;
+}
+
+/* Buttons for Modal */
+/* Buttons for Modal */
+.inv-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 20px 10px 20px; /* Unequal padding to lift text */
+    min-height: 40px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: var(--font-family-apple);
+    color: #ffffff;
+    background-color: var(--accent-color-blue);
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,122,255,0.25);
+    line-height: 1.2;
+}
+.inv-btn-primary:hover { background-color: var(--accent-color-blue-hover); transform: translateY(-1px); }
+
+.inv-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px 10px 16px; /* Unequal padding to lift text */
+    min-height: 40px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: var(--font-family-apple);
+    color: var(--text-primary);
+    background-color: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    line-height: 1.2;
+}
+.inv-btn-secondary:hover { background-color: var(--hover-bg-color); color: var(--accent-color-blue); }
+
+
+/* --- Checkbox --- */
+.inv-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d2d2d7;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
-    
-    /* MOD: Animation Prep (Initial State) */
-    opacity: 0;
-    visibility: hidden;
-    /* [NEW] ตั้งค่าเริ่มต้นและเพิ่ม transition สำหรับ backdrop-filter */
-    backdrop-filter: blur(0px); 
-    transition: opacity 0.3s ease, visibility 0.3s ease, backdrop-filter 0.3s ease;
+    transition: all 0.2s;
 }
-
-/* MOD: Backdrop Open State */
-.modal-backdrop.is-open {
-    opacity: 1;
-    visibility: visible;
-    /* [NEW] เปิดใช้ blur เมื่อ modal เปิด */
-    backdrop-filter: blur(5px);
-}
-
-.modal-content {
-    background-color: var(--card-bg-color);
-    border-radius: var(--border-radius-card);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-
-    /* MOD: Slide-up Animation (Initial State) */
-    transform: translateY(30px);
-    opacity: 0;
-    /* [MODIFIED] ใช้ ease-out เพื่อให้เคลื่อนไหวราบรื่น ไม่มีเด้ง */
-    transition: transform 0.35s ease-out, opacity 0.35s ease; 
-}
-
-/* MOD: Content Final State (when backdrop is open) */
-.modal-backdrop.is-open .modal-content {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-.modal-header {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.modal-header h2 { margin: 0; font-size: 1.25rem; }
-.btn-close-modal { margin: -8px; } /* Uses .purchasing-icon-button */
-
-.modal-body {
-    padding: 24px;
-    overflow-y: auto;
-}
-.modal-footer {
-    padding: 16px 24px;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
-/* --- [!!! NEW: Form Styles !!!] --- */
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-}
-.form-group.span-2 {
-    grid-column: span 2;
-}
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-.form-group label {
-    font-weight: 500;
-    font-size: 13px;
-    color: var(--text-secondary);
-}
-.form-group .required {
-    color: var(--required-star);
-    font-weight: 700;
-    margin-left: 2px;
-}
-
-.purchasing-input,
-.purchasing-input-lg {
-    font-family: var(--font-family-apple);
-    font-size: 14px;
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 22px; /* [MOD] */
-    background-color: var(--bg-color); /* [MOD] */
-    box-shadow: none; /* [MOD] */
-    transition: all 0.2s ease;
-    box-sizing: border-box;
-    height: 44px;
-}
-.purchasing-input:focus,
-.purchasing-input-lg:focus {
-    outline: none;
+.inv-checkbox.active, .inv-checkbox.checked { /* Support both active and checked classes */
+    background-color: var(--accent-color-blue);
     border-color: var(--accent-color-blue);
-    background-color: var(--card-bg-color);
-    box-shadow: 0 0 0 3px rgba(0,122,255,0.2);
 }
-.purchasing-input-lg {
-    font-size: 16px;
-    padding: 14px 16px;
-    border-radius: 22px;
-    height: 48px;
-}
-
-textarea.purchasing-input {
-    resize: vertical;
-    min-height: 80px;
-    height: auto;
-}
-
-/* --- Goods Received (GR) Workflow --- */
-.gr-workflow-container {
-    padding: 24px;
-    background-color: var(--card-bg-color);
-    border-radius: var(--border-radius-card);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-.po-search-box {
-    display: flex;
-    gap: 12px;
-    margin: 18px 0 32px 0;
-}
-.po-search-box .purchasing-input-lg {
-    flex-grow: 1;
-}
-
-.po-awaiting-list h3 {
-    font-size: 16px;
-    color: var(--text-secondary);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.po-awaiting-list ul {
-    list-style: none;
-    padding: 0;
-    margin: 16px 0 0 0;
-}
-.po-awaiting-list li {
-    padding: 10px 0;
-    border-bottom: 1px dashed var(--border-color);
-}
-.po-awaiting-list li:last-child { border-bottom: none; }
-.po-awaiting-list .po-link { font-weight: 500; }
-.po-awaiting-list .po-link em {
-    font-style: normal;
-    color: var(--status-partially-text);
-    margin-left: 8px;
-}
-
-/* GR View 2 */
-.receive-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 24px;
-}
-.receive-header p {
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin: 4px 0 0 0;
-}
-
-/* This table is for DATA ENTRY, so we keep it as a table */
-.data-table.receiving-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-}
-.data-table.receiving-table th,
-.data-table.receiving-table td {
-    text-align: left;
-    padding: 12px 8px;
-    border-bottom: 1px solid var(--border-color);
-}
-.data-table.receiving-table th {
-    font-weight: 600;
-    color: var(--text-secondary);
+.inv-checkbox.active::after, .inv-checkbox.checked::after {
+     content: '✔';
     font-size: 12px;
-    text-transform: uppercase;
-}
-.data-table.receiving-table tr:last-child td {
-    border-bottom: 1px solid var(--border-color);
+    color: white;
 }
 
-.receiving-table .purchasing-input {
-    padding: 8px;
-    font-size: 14px;
-    min-width: 80px;
-    height: 40px;
-}
-.receiving-table .rcv-input { width: 100px; }
-.receiving-table .batch-input { width: 150px; }
-.receiving-table .expiry-input { width: 150px; }
-
-.receive-footer {
-    margin-top: 24px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 16px;
-}
-.receive-footer .form-group {
-    flex-grow: 1;
-}
-.btn-confirm-receive {
-    min-width: 250px;
+/* (Optional) Highlight row */
+.purchasing-list-row.selected-row {
+    background-color: #f5f5f7;
 }
 
-
-/* --- Responsive (for new List View) --- */
+/* --- Responsive --- */
 @media (max-width: 900px) {
     .purchasing-list-row {
         grid-template-columns: 1fr;
@@ -621,48 +506,6 @@ textarea.purchasing-input {
         justify-content: flex-start;
         padding-top: 8px;
     }
-
-    /* Responsive GR Table */
-    .data-table.receiving-table {
-        display: block;
-        width: 100%;
-    }
-    .data-table.receiving-table thead,
-    .data-table.receiving-table tbody,
-    .data-table.receiving-table th,
-    .data-table.receiving-table td,
-    .data-table.receiving-table tr {
-        display: block;
-    }
-    .data-table.receiving-table thead {
-        display: none; /* Hide headers */
-    }
-    .data-table.receiving-table tr {
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        margin-bottom: 16px;
-        padding: 12px;
-    }
-    .data-table.receiving-table td {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 0;
-        border-bottom: 1px dashed var(--border-color);
-    }
-    .data-table.receiving-table td:last-child {
-        border-bottom: none;
-    }
-    .data-table.receiving-table td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-right: 16px;
-    }
-    .receiving-table .purchasing-input {
-        width: 150px; /* Fix width for inputs */
-    }
-
 }
 
 @media (max-width: 768px) {
@@ -677,94 +520,4 @@ textarea.purchasing-input {
         width: 100%;
         overflow-x: auto;
     }
-}
-
-
-/* 1. ทำให้ Form ยึดเต็มพื้นที่ Modal และจัดการลูกๆ แบบ Flex */
-#supplier-form {
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* สำคัญ: ให้สูงเต็ม modal-content */
-    overflow: hidden; /* ป้องกันการล้น */
-}
-
-/* 2. ปรับ modal-body ให้ยืดหยุ่น (Grow) เพื่อกินพื้นที่ว่างที่เหลือ */
-.modal-body {
-    flex-grow: 1;  /* สำคัญ: ให้ขยายจนดัน Footer ไปล่างสุด */
-    overflow-y: auto; /* ให้ Scroll เฉพาะส่วนนี้ */
-    padding: 24px; /* (ค่าเดิม) */
-}
-
-/* 3. modal-footer ไม่ต้องแก้ (มันจะถูกดันไปล่างสุดโดยอัตโนมัติ) */
-/* ... (Existing CSS) ... */
-
-/* Make form a flex container to manage its children (header, body, footer) */
-/* เพิ่ม #create-po-form ตรงนี้ */
-#supplier-form,
-#create-po-form { 
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* Important: Takes full height of modal-content */
-}
-
-/* ... (Rest of CSS) ... */
-
-/* ... (Existing CSS) ... */
-
-/* Make form a flex container to manage its children (header, body, footer) */
-/* [!!! ADDED #create-gr-form HERE !!!] */
-#supplier-form,
-#create-po-form,
-#create-gr-form { 
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* Important: Takes full height of modal-content */
-    overflow: hidden; /* ป้องกันการล้น */
-}
-
-/* ... (Rest of CSS) ... *//* ... Existing CSS ... */
-
-/* Grid columns for Suppliers (Added 50px for Checkbox) */
-#supplier-list .purchasing-list-row {
-    /* Old: 2.5fr 1.5fr 1.5fr 1fr 1fr 0.5fr */
-    grid-template-columns: 50px 2.5fr 1.5fr 1.5fr 1fr 1fr 0.5fr;
-}
-
-/* Grid columns for Purchase Orders (Added 50px for Checkbox) */
-#po-list .purchasing-list-row {
-    /* Old: 1fr 2fr 1.5fr 1.5fr 1fr 1fr 0.5fr */
-    grid-template-columns: 50px 1fr 2fr 1.5fr 1.5fr 1fr 1fr 0.5fr;
-}
-
-
-/* ... Rest of CSS ... */
-
-/* สไตล์ปกติ (ยังไม่ติ๊ก) */
-.inv-checkbox {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #d2d2d7;
-    border-radius: 4px; /* หรือ 50% ถ้าอยากได้วงกลม */
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-    background-color: #fff;
-}
-
-/* สไตล์ตอนติ๊กถูก (JS จะเติม class นี้ให้) */
-.inv-checkbox.active {
-    background-color: #0071e3; /* สีฟ้า Apple */
-    border-color: #0071e3;
-}
-
-/* สร้างเครื่องหมายถูกด้วย CSS pseudo-element */
-.inv-checkbox.active::after {
-     content: '✔';
-    font-size: 12px;
-    color: white;
-}
-
-/* (Optional) ไฮไลท์ทั้งแถวเมื่อเลือก */
-.purchasing-list-row.selected-row {
-    background-color: #f5f5f7;
 }

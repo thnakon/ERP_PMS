@@ -1,245 +1,273 @@
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suppliers - Pharmacy ERP</title>
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Main Purchasing CSS -->
-    <link rel="stylesheet" href="{{ asset('resources/css/purchasing.css') }}">
-</head>
-
 <x-app-layout>
-    <!-- Main Page Container -->
-    <div class="purchasing-page-container">
 
-        {{-- [!!! REFACTORED HEADER !!!] --}}
-        <div class="sr-header">
-            <div class="sr-header-left">
-                <p class="sr-breadcrumb">Dashboard / Purchasing / Suppliers > <a href="{{ route('purchasing.purchaseOrders') }}" style="color: #017aff">Purchase-Orders</a> </p>
-                <h2 class="sr-page-title">Suppliers</h2>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Suppliers - Pharmacy ERP</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="{{ asset('resources/css/purchasing.css') }}">
+        <style>
+            /* Apple-style Flash Message (Copied from categories.blade.php) */
+            .flash-message {
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                padding: 12px 24px;
+                border-radius: 99px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                z-index: 9999;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                color: #333;
+                opacity: 0;
+                transition: opacity 0.3s ease, transform 0.3s ease;
+                pointer-events: none;
+            }
+
+            .flash-message.show {
+                opacity: 1;
+                transform: translateX(-50%) translateY(10px);
+            }
+
+            .flash-message.success i {
+                color: #34c759;
+            }
+
+            .flash-message.error i {
+                color: #ff3b30;
+            }
+        </style>
+    </head>
+
+    <!-- Flash Message Container -->
+    <div id="flash-message" class="flash-message">
+        <i class="fa-solid fa-check-circle"></i>
+        <span id="flash-text">Operation successful</span>
+    </div>
+
+    <div class="purchasing-page-container">
+        <!-- Header -->
+        <div class="purchasing-header">
+            <div class="purchasing-header-left">
+                <p class="sr-breadcrumb">Dashboard / Purchasing / Suppliers</p>
+                <h2 class="sr-page-title">Suppliers <span
+                        style="font-size: 0.6em; color: #8e8e93; font-weight: 500;">({{ $suppliers->total() }})</span>
+                </h2>
             </div>
-            <div class="sr-header-right" style="display: flex; align-items: center; gap: 12px;">
-                
-                <!-- [!!! NEW: Bulk Actions (Hidden by default) !!!] -->
-                <div id="bulk-actions" style="display: none; align-items: center; gap: 8px; margin-right: 12px; padding-right: 12px; border-right: 1px solid #d2d2d7;">
-                    <span class="inv-text-sub">Selected: <span id="selected-count" style="color: #1d1d1f; font-weight: 700;">0</span></span>
-                    
-                    <button class="inv-btn-secondary">
-                        <i class="fa-solid fa-file-export"></i> Export
-                    </button>
-                    
-                    <button class="inv-btn-secondary" style="color: #ff3b30; background-color: #fff1f0;">
+            <div class="purchasing-header-right">
+                <!-- Bulk Actions Panel -->
+                <div id="bulk-actions" style="display: none; align-items: center; gap: 12px; margin-right: 16px;">
+                    <span style="color: var(--text-secondary); font-size: 0.9rem;">Selected: <span id="selected-count"
+                            style="font-weight: 600; color: var(--text-primary);">0</span></span>
+                    <button class="purchasing-button-secondary" id="btn-bulk-delete"
+                        style="color: #ff3b30; background-color: #fff1f0; border-color: transparent; height: 36px; font-size: 0.85rem;">
                         <i class="fa-solid fa-trash"></i> Delete
                     </button>
                 </div>
 
-                <button class="sr-button-primary" id="open-supplier-modal">
+                <button class="purchasing-button-primary" id="open-supplier-modal">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add New Supplier</span>
                 </button>
             </div>
         </div>
 
-        {{-- <!-- [!!! NEW: Action Bar with Search !!!] --> --}}
+        <!-- Action Bar -->
         <div class="purchasing-action-bar">
-            <div class="purchasing-search-bar">
+            <form action="{{ route('purchasing.suppliers') }}" method="GET" class="purchasing-search-bar">
                 <i class="fa-solid fa-search"></i>
-                <input type="text" placeholder="ค้นหาจากชื่อบริษัท หรือ เบอร์โทรศัพท์...">
-            </div>
-            <!-- Add filters here if needed -->
+                <input type="text" name="search" value="{{ request('search') }}"
+                    placeholder="Search by Company, Contact, or Phone...">
+            </form>
         </div>
 
-        <!-- [!!! NEW: List View (Replaces Table) !!!] -->
-        <main class="purchasing-content-area" id="supplier-list">
-            <div class="purchasing-list-container">
-                <!-- Header Row (Added empty column for checkbox) -->
-                <div class="purchasing-list-row header-row">
-                    <div class="col-header"><div class="inv-checkbox" id="select-all-checkbox"></div></div> <!-- Checkbox Spacer -->
-                    <div class="col-header">Company Name</div>
-                    <div class="col-header">Contact Person</div>
-                    <div class="col-header">Phone</div>
-                    <div class="col-header">Email</div>
-                    <div class="col-header">Total POs</div>
-                    <div class="col-header">Actions</div>
+        <!-- List View -->
+        <div class="purchasing-list-container" id="supplier-list">
+            <!-- Header Row -->
+            <div class="purchasing-list-row header-row">
+                <div class="col-checkbox">
+                    <div class="inv-checkbox" id="select-all-checkbox"></div>
                 </div>
-
-                <!-- Example Row 1 -->
-                <div class="purchasing-list-row">
-                    <!-- [!!! Checkbox !!!] -->
-                    <div class="col-checkbox">
-                        <div class="inv-checkbox" data-id="1"></div>
-                    </div>
-                    <div class="col-company-name" data-label="Company Name">บริษัท ยาดี จำกัด</div>
-                    <div class="col-contact" data-label="Contact Person">คุณสมชาย</div>
-                    <div class="col-phone" data-label="Phone">081-234-5678</div>
-                    <div class="col-email" data-label="Email">contact@yad.co.th</div>
-                    <div class="col-pos" data-label="Total POs">125</div>
-                    <div class="col-actions" data-label="Actions">
-                        <button class="purchasing-icon-button btn-view" title="View" data-supplier-id="1">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                        <button class="purchasing-icon-button btn-edit" title="Edit" data-supplier-id="1">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button class="purchasing-icon-button btn-delete" title="Delete" data-supplier-id="1">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Example Row 2 -->
-                <div class="purchasing-list-row">
-                     <!-- [!!! Checkbox !!!] -->
-                     <div class="col-checkbox">
-                        <div class="inv-checkbox" data-id="2"></div>
-                    </div>
-                    <div class="col-company-name" data-label="Company Name">Pharma Distribution Co., Ltd.</div>
-                    <div class="col-contact" data-label="Contact Person">คุณสุนีย์</div>
-                    <div class="col-phone" data-label="Phone">02-999-8888</div>
-                    <div class="col-email" data-label="Email">sunee@pharma-dist.com</div>
-                    <div class="col-pos" data-label="Total POs">88</div>
-                    <div class="col-actions" data-label="Actions">
-                        <button class="purchasing-icon-button btn-view" title="View" data-supplier-id="2">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                        <button class="purchasing-icon-button btn-edit" title="Edit" data-supplier-id="2">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button class="purchasing-icon-button btn-delete" title="Delete" data-supplier-id="2">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- Example Row 3 -->
-                <div class="purchasing-list-row">
-                     <!-- [!!! Checkbox !!!] -->
-                     <div class="col-checkbox">
-                        <div class="inv-checkbox" data-id="3"></div>
-                    </div>
-                    <div class="col-company-name" data-label="Company Name">MedSupply Thailand</div>
-                    <div class="col-contact" data-label="Contact Person">คุณวสันต์</div>
-                    <div class="col-phone" data-label="Phone">090-123-4567</div>
-                    <div class="col-email" data-label="Email">contact@medsupply.th</div>
-                    <div class="col-pos" data-label="Total POs">45</div>
-                    <div class="col-actions" data-label="Actions">
-                        <button class="purchasing-icon-button btn-view" title="View" data-supplier-id="3">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                        <button class="purchasing-icon-button btn-edit" title="Edit" data-supplier-id="3">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button class="purchasing-icon-button btn-delete" title="Delete" data-supplier-id="3">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- Example Row 4 -->
-                <div class="purchasing-list-row">
-                     <!-- [!!! Checkbox !!!] -->
-                     <div class="col-checkbox">
-                        <div class="inv-checkbox" data-id="4"></div>
-                    </div>
-                    <div class="col-company-name" data-label="Company Name">Bangkok Drugs Import</div>
-                    <div class="col-contact" data-label="Contact Person">Dr. Aree</div>
-                    <div class="col-phone" data-label="Phone">02-100-2000</div>
-                    <div class="col-email" data-label="Email">aree@bdi.co.th</div>
-                    <div class="col-pos" data-label="Total POs">210</div>
-                    <div class="col-actions" data-label="Actions">
-                        <button class="purchasing-icon-button btn-view" title="View" data-supplier-id="4">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                        <button class="purchasing-icon-button btn-edit" title="Edit" data-supplier-id="4">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button class="purchasing-icon-button btn-delete" title="Delete" data-supplier-id="4">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- Example Row 5 -->
-                <div class="purchasing-list-row">
-                     <!-- [!!! Checkbox !!!] -->
-                     <div class="col-checkbox">
-                        <div class="inv-checkbox" data-id="5"></div>
-                    </div>
-                    <div class="col-company-name" data-label="Company Name">Pure Health Corp.</div>
-                    <div class="col-contact" data-label="Contact Person">Ms. Joy</div>
-                    <div class="col-phone" data-label="Phone">089-000-1111</div>
-                    <div class="col-email" data-label="Email">joy@purehealth.net</div>
-                    <div class="col-pos" data-label="Total POs">15</div>
-                    <div class="col-actions" data-label="Actions">
-                        <button class="purchasing-icon-button btn-view" title="View" data-supplier-id="5">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                        <button class="purchasing-icon-button btn-edit" title="Edit" data-supplier-id="5">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button class="purchasing-icon-button btn-delete" title="Delete" data-supplier-id="5">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                </div>
+                <div class="col-company-name">Company Name</div>
+                <div class="col-contact">Contact Person</div>
+                <div class="col-phone">Phone</div>
+                <div class="col-email">Email</div>
+                <div class="col-pos">Total POs</div>
+                <div class="col-actions" style="text-align: center;">Actions</div>
             </div>
-        </main>
 
+            <!-- Data Rows -->
+            @forelse($suppliers as $supplier)
+                <div class="purchasing-list-row">
+                    <div class="col-checkbox">
+                        <div class="inv-checkbox item-checkbox" data-id="{{ $supplier->id }}"></div>
+                    </div>
+                    <div class="col-company-name" data-label="Company Name">{{ $supplier->name }}</div>
+                    <div class="col-contact" data-label="Contact Person">{{ $supplier->contact_person ?? '-' }}</div>
+                    <div class="col-phone" data-label="Phone">{{ $supplier->phone ?? '-' }}</div>
+                    <div class="col-email" data-label="Email">{{ $supplier->email ?? '-' }}</div>
+                    <div class="col-pos" data-label="Total POs" style="text-align: center">
+                        {{ $supplier->purchases_count ?? 0 }}</div>
+                    <div class="col-actions" data-label="Actions"
+                        style="display: flex; justify-content: center; gap: 8px;">
+                        <button class="purchasing-icon-button btn-view" title="View"
+                            data-supplier='@json($supplier)'>
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button class="purchasing-icon-button btn-edit" title="Edit"
+                            data-supplier='@json($supplier)'>
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button class="purchasing-icon-button btn-delete" title="Delete" data-id="{{ $supplier->id }}">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+            @empty
+                <div class="purchasing-list-row"
+                    style="display: flex; justify-content: center; align-items: center; padding: 40px;">
+                    <div style="text-align: center; color: var(--text-secondary);">
+                        <i class="fa-solid fa-box-open" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <p>No suppliers found.</p>
+                    </div>
+                </div>
+            @endforelse
+        </div>
+
+        <!-- Pagination -->
+        <div style="margin-top: 20px;">
+            {{ $suppliers->links('vendor.pagination.apple') }}
+        </div>
     </div>
 
-    <!-- Supplier Modal HTML (Same as before) -->
-    <div class="modal-backdrop" id="supplier-modal-backdrop" style="display: none;">
-        <div class="modal-content" id="supplier-modal-content">
-            <form id="supplier-form">
+    <!-- Add/Edit/View Modal -->
+    <div class="inv-modal-overlay" id="supplier-modal-overlay">
+        <div class="inv-modal">
+            <form id="supplier-form" method="POST" action="{{ route('purchasing.suppliers.store') }}">
                 @csrf
-                <div class="modal-header">
-                    <h2 id="modal-title">Add New Supplier</h2>
-                    <button type="button" class="purchasing-icon-button btn-close-modal" id="close-modal-btn"><i
-                            class="fa-solid fa-times"></i></button>
+                <div id="method-spoof"></div>
+
+                <div class="inv-modal-header">
+                    <div class="inv-modal-title" id="modal-title">Add New Supplier</div>
+                    <button type="button" class="inv-modal-close" id="close-modal-btn">&times;</button>
                 </div>
-                <div class="modal-body">
-                    <div class="form-grid">
-                        <div class="form-group span-2">
-                            <label for="company_name">ชื่อบริษัท (Company Name) <span
-                                    class="required">*</span></label>
-                            <input type="text" id="company_name" name="company_name" class="purchasing-input"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="tax_id">เลขประจำตัวผู้เสียภาษี (Tax ID)</label>
-                            <input type="text" id="tax_id" name="tax_id" class="purchasing-input">
-                        </div>
-                        <div class="form-group">
-                            <label for="contact_person">ชื่อผู้ติดต่อ (Contact Person)</label>
-                            <input type="text" id="contact_person" name="contact_person"
-                                class="purchasing-input">
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">เบอร์โทร (Phone) <span class="required">*</span></label>
-                            <input type="tel" id="phone" name="phone" class="purchasing-input"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">อีเมล (Email)</label>
-                            <input type="email" id="email" name="email" class="purchasing-input">
-                        </div>
-                        <div class="form-group span-2">
-                            <label for="address">ที่อยู่ (Address)</label>
-                            <textarea id="address" name="address" class="purchasing-input" rows="3"></textarea>
-                        </div>
-                        <div class="form-group span-2">
-                            <label for="notes">Notes (หมายเหตุ)</label>
-                            <textarea id="notes" name="notes" class="purchasing-input" rows="3"
-                                placeholder="เช่น: ส่งของทุกวันอังคาร, ขั้นต่ำ 5,000 บาท"></textarea>
-                        </div>
+
+                <div class="inv-modal-body">
+                    <div class="inv-form-group">
+                        <label class="inv-form-label">Company Name <span
+                                style="color: var(--required-star);">*</span></label>
+                        <input type="text" id="company_name" name="name" class="inv-form-input" required
+                            placeholder="e.g. Siam Pharma Supply">
+                    </div>
+                    <div class="inv-form-group">
+                        <label class="inv-form-label">Contact Person</label>
+                        <input type="text" id="contact_person" name="contact_person" class="inv-form-input"
+                            placeholder="e.g. John Doe">
+                    </div>
+                    <div class="inv-form-group">
+                        <label class="inv-form-label">Phone</label>
+                        <input type="tel" id="phone" name="phone" class="inv-form-input"
+                            placeholder="e.g. 02-123-4567">
+                    </div>
+                    <div class="inv-form-group">
+                        <label class="inv-form-label">Email</label>
+                        <input type="email" id="email" name="email" class="inv-form-input"
+                            placeholder="e.g. contact@example.com">
+                    </div>
+                    <div class="inv-form-group">
+                        <label class="inv-form-label">Address</label>
+                        <textarea id="address" name="address" class="inv-form-input" rows="3" placeholder="Enter full address"></textarea>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="purchasing-button-secondary"
-                        id="cancel-modal-btn">Cancel</button>
-                    <button type="submit" class="purchasing-button-primary" id="save-modal-btn">Save Supplier</button>
+
+                <div class="inv-modal-footers"
+                    style="padding: 24px 0 24px 32px; border-top: 1px solid #e5e5ea; 
+            display: flex; justify-content: flex-end; align-items: center; gap: 12px;">
+                    <button type="button" class="inv-btn-secondary" id="cancel-modal-btn">Cancel</button>
+                    <button type="submit" class="inv-btn-primary" id="save-modal-btn">Save Supplier</button>
                 </div>
+
             </form>
         </div>
     </div>
 
-    <!-- Main Purchasing JS -->
-    <script src="{{ asset('resources/js/purchasing.js') }}" defer></script>
+    <!-- Delete Confirmation Modal -->
+    <div class="inv-modal-overlay" id="delete-modal-overlay">
+        <div class="inv-modal" style="max-width: 400px;">
+            <div class="inv-modal-header">
+                <div class="inv-modal-title" style="color: #ff3b30;">Delete Supplier</div>
+                <button type="button" class="inv-modal-close" id="close-delete-modal-btn">&times;</button>
+            </div>
+            <div class="inv-modal-body">
+                <p id="delete-confirm-text" style="color: var(--text-secondary); margin: 0;">Are you sure you want to
+                    delete this
+                    supplier? This action cannot be undone.</p>
+            </div>
+            <div class="inv-modal-footer">
+                <button type="button" class="inv-btn-secondary" id="cancel-delete-btn">Cancel</button>
+                <form id="delete-form" method="POST" action="" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="inv-btn-primary"
+                        style="background-color: #ff3b30; border-color: #ff3b30; box-shadow: none;">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('resources/js/purchasing.js') }}"></script>
+
+    <!-- Flash Message Script -->
+    <script>
+        function showFlash(message, type = 'success') {
+            const flash = document.getElementById('flash-message');
+            const text = document.getElementById('flash-text');
+            const icon = flash.querySelector('i');
+
+            text.textContent = message;
+            flash.className = 'flash-message show ' + type;
+
+            if (type === 'success') {
+                icon.className = 'fa-solid fa-check-circle';
+            } else {
+                icon.className = 'fa-solid fa-circle-exclamation';
+            }
+
+            setTimeout(() => {
+                flash.classList.remove('show');
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('success'))
+                showFlash("{{ session('success') }}", 'success');
+            @endif
+
+            @if ($errors->any())
+                showFlash("{{ $errors->first() }}", 'error');
+            @endif
+
+            // Close delete modal button handler (since we changed the HTML structure)
+            const closeDeleteBtn = document.getElementById('close-delete-modal-btn');
+            if (closeDeleteBtn) {
+                closeDeleteBtn.addEventListener('click', function() {
+                    const deleteBackdrop = document.getElementById('delete-modal-backdrop');
+                    if (deleteBackdrop) {
+                        deleteBackdrop.classList.remove('is-open');
+                        setTimeout(() => {
+                            deleteBackdrop.style.display = 'none';
+                        }, 350);
+                    }
+                });
+            }
+        });
+    </script>
 </x-app-layout>
