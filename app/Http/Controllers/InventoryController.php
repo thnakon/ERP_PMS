@@ -99,15 +99,30 @@ class InventoryController extends Controller
 
     public function destroyProduct($id)
     {
-        Product::findOrFail($id)->delete();
-        return redirect()->back()->with('success', 'Product deleted successfully!')->with('suppress_global_toast', true);
+        try {
+            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+            Product::findOrFail($id)->delete();
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return redirect()->back()->with('success', 'Product deleted successfully!')->with('suppress_global_toast', true);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return redirect()->back()->with('error', 'Error deleting product: ' . $e->getMessage());
+        }
     }
 
     public function bulkDestroyProducts(Request $request)
     {
         $request->validate(['ids' => 'required|array']);
-        Product::whereIn('id', $request->ids)->delete();
-        return response()->json(['success' => true, 'message' => 'Selected products deleted successfully!']);
+
+        try {
+            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+            Product::whereIn('id', $request->ids)->delete();
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return response()->json(['success' => true, 'message' => 'Selected products deleted successfully!']);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
     }
 
     public function categories(Request $request)

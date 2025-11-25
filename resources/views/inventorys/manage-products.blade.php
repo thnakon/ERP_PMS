@@ -805,25 +805,52 @@
                 const checked = document.querySelectorAll('.item-checkbox:checked');
                 const ids = Array.from(checked).map(cb => cb.dataset.id);
 
-                fetch("{{ route('inventorys.products.bulk-delete') }}", {
+                if (ids.length === 0) return;
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                // Disable button to prevent double submit
+                const btn = document.getElementById('btn-bulk-delete');
+                const originalText = btn.textContent;
+                btn.disabled = true;
+                btn.textContent = 'Deleting...';
+
+                fetch('{{ route('inventorys.products.bulk-delete') }}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            'X-CSRF-TOKEN': csrfToken
                         },
                         body: JSON.stringify({
                             ids: ids
                         })
                     })
-                    .then(response => response.json())
+                    .then(async res => {
+                        if (!res.ok) {
+                            const text = await res.text();
+                            throw new Error(text || res.statusText);
+                        }
+                        return res.json();
+                    })
                     .then(data => {
                         closeModal('modal-delete');
                         if (data.success) {
                             showFlash(data.message, 'success');
-                            setTimeout(() => location.reload(), 1000);
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
                         } else {
-                            showFlash('Something went wrong', 'error');
+                            showFlash(data.message || 'Error deleting products', 'error');
+                            btn.disabled = false;
+                            btn.textContent = originalText;
                         }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        closeModal('modal-delete');
+                        showFlash('An error occurred: ' + err.message, 'error');
+                        btn.disabled = false;
+                        btn.textContent = originalText;
                     });
             }
         </script>
