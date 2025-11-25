@@ -52,8 +52,8 @@
         {{-- Header --}}
         <div class="sr-header">
             <div class="sr-header-left">
-                <p class="sr-breadcrumb">Dashboard / Purchasing / <a href="{{ route('purchasing.suppliers') }}"
-                        style="color: #017aff">Suppliers</a> / Purchase Orders > <a
+                <p class="sr-breadcrumb">Dashboard / Purchasing / <span
+                        style="color: #3a3a3c; font-weight: 600;">Purchase Orders</span> > <a
                         href="{{ route('purchasing.goodsReceived') }}" style="color: #017aff">Goods Received</a></p>
                 <h2 class="sr-page-title">Purchase Orders <span
                         style="font-size: 0.6em; color: #8e8e93; font-weight: 500;">({{ $purchaseOrders->total() }})</span>
@@ -67,13 +67,13 @@
                     <span class="inv-text-sub">Selected: <span id="selected-count"
                             style="color: #1d1d1f; font-weight: 700;">0</span></span>
 
-                    <button class="inv-btn-secondary" id="bulk-delete-btn"
+                    <button class="inv-btn-secondary" id="btn-bulk-delete-po-trigger"
                         style="color: #ff3b30; background-color: #fff1f0;">
                         <i class="fa-solid fa-trash"></i> Delete
                     </button>
                 </div>
 
-                <button class="purchasing-button-primary" id="open-po-modal">
+                <button class="purchasing-button-primary" id="open-po-modal" style="margin-top: 20px">
                     <i class="fa-solid fa-plus"></i>
                     <span>Create New PO</span>
                 </button>
@@ -272,20 +272,23 @@
                     <button type="button" class="inv-modal-close" id="close-delete-po-modal-btn">&times;</button>
                 </div>
                 <div class="inv-modal-body">
-                    <p style="color: var(--text-secondary); margin: 0;">Are you sure you want to delete this PO? This
-                        action cannot be undone.</p>
+                    <p id="delete-po-confirm-text" style="color: var(--text-secondary); margin: 0;">Are you sure you
+                        want to delete this PO? This action cannot be undone.</p>
                 </div>
-                <div class="inv-modal-footer"
-                    style="display: flex; align-items: center; justify-content: flex-end; gap: 12px;">
-                    <button type="button" class="inv-btn-secondary" id="cancel-delete-po-btn"
-                        style="height: 40px; margin-top:14px ">Cancel</button>
-                    <form id="delete-po-form" method="POST" action=""
-                        style="display: flex; align-items: center;">
+                <div class="inv-modal-footer">
+                    <button type="button" class="inv-btn-secondary" id="cancel-delete-po-btn">Cancel</button>
+
+                    {{-- Single Delete Form --}}
+                    <form id="delete-po-form" method="POST" action="" style="display: inline;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="inv-btn-primary"
-                            style="background-color: #ff3b30; border-color: #ff3b30; box-shadow: none; height: 40px; margin-top:30px">Delete</button>
+                            style="background-color: #ff3b30; border-color: #ff3b30; box-shadow: none;">Delete</button>
                     </form>
+
+                    {{-- Bulk Delete Button (Hidden by default) --}}
+                    <button id="btn-confirm-bulk-delete-po" type="button" class="inv-btn-primary"
+                        style="background-color: #ff3b30; border-color: #ff3b30; box-shadow: none; display: none;">Delete</button>
                 </div>
             </div>
         </div>
@@ -354,6 +357,121 @@
             @if (session('error'))
                 showNotification("{{ session('error') }}", 'error');
             @endif
+
+            // --- PO Delete Modal Logic ---
+            const deletePoModal = document.getElementById('delete-po-modal-overlay');
+            const closeDeletePoBtn = document.getElementById('close-delete-po-modal-btn');
+            const cancelDeletePoBtn = document.getElementById('cancel-delete-po-btn');
+            const deletePoForm = document.getElementById('delete-po-form');
+            const deletePoConfirmText = document.getElementById('delete-po-confirm-text');
+            const btnConfirmBulkDeletePo = document.getElementById('btn-confirm-bulk-delete-po');
+
+            const openDeletePoModal = () => {
+                if (deletePoModal) deletePoModal.classList.add('show');
+            };
+
+            const closeDeletePoModal = () => {
+                if (deletePoModal) deletePoModal.classList.remove('show');
+            };
+
+            if (closeDeletePoBtn) closeDeletePoBtn.addEventListener('click', closeDeletePoModal);
+            if (cancelDeletePoBtn) cancelDeletePoBtn.addEventListener('click', closeDeletePoModal);
+            if (deletePoModal) {
+                deletePoModal.addEventListener('click', (e) => {
+                    if (e.target === deletePoModal) closeDeletePoModal();
+                });
+            }
+
+            // Single Delete
+            document.querySelectorAll('.btn-delete-po').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const id = this.dataset.id;
+
+                    if (deletePoForm) {
+                        deletePoForm.style.display = 'inline';
+                        deletePoForm.action = `/purchasing/purchase-orders/${id}`;
+                    }
+                    if (btnConfirmBulkDeletePo) btnConfirmBulkDeletePo.style.display = 'none';
+                    if (deletePoConfirmText) deletePoConfirmText.textContent =
+                        'Are you sure you want to delete this PO? This action cannot be undone.';
+
+                    openDeletePoModal();
+                });
+            });
+
+            // Bulk Delete Trigger
+            const bulkDeleteTrigger = document.getElementById('btn-bulk-delete-po-trigger');
+
+            if (bulkDeleteTrigger) {
+                bulkDeleteTrigger.addEventListener('click', function() {
+                    const checked = document.querySelectorAll('.item-checkbox.active');
+                    const count = checked.length;
+
+                    if (count === 0) return;
+
+                    if (deletePoForm) deletePoForm.style.display = 'none';
+                    if (btnConfirmBulkDeletePo) btnConfirmBulkDeletePo.style.display = 'inline-block';
+                    if (deletePoConfirmText) deletePoConfirmText.textContent =
+                        `Are you sure you want to delete ${count} selected orders? This action cannot be undone.`;
+
+                    openDeletePoModal();
+                });
+            }
+
+            // Execute Bulk Delete
+            if (btnConfirmBulkDeletePo) {
+                btnConfirmBulkDeletePo.addEventListener('click', function() {
+                    const checked = document.querySelectorAll('.item-checkbox.active');
+                    const ids = Array.from(checked).map(cb => cb.dataset.id);
+
+                    if (ids.length === 0) return;
+
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute(
+                        'content');
+                    const originalText = this.textContent;
+                    this.disabled = true;
+                    this.textContent = 'Deleting...';
+
+                    fetch('{{ route('purchasing.purchaseOrders.bulk_destroy') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            body: JSON.stringify({
+                                ids: ids
+                            })
+                        })
+                        .then(async res => {
+                            if (!res.ok) {
+                                const text = await res.text();
+                                throw new Error(text || res.statusText);
+                            }
+                            return res.json();
+                        })
+                        .then(data => {
+                            closeDeletePoModal();
+                            if (data.success) {
+                                showNotification(data.message, 'success');
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1500);
+                            } else {
+                                showNotification(data.message || 'Error deleting orders', 'error');
+                                this.disabled = false;
+                                this.textContent = originalText;
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            closeDeletePoModal();
+                            showNotification('An error occurred', 'error');
+                            this.disabled = false;
+                            this.textContent = originalText;
+                        });
+                });
+            }
         });
     </script>
     <!-- Main Purchasing JS -->

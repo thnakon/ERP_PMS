@@ -197,95 +197,80 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // --- Bulk Actions Logic ---
-        const selectAll = document.getElementById('select-all-checkbox');
-        const checkboxes = document.querySelectorAll('.item-checkbox');
-        const bulkActions = document.getElementById('bulk-actions');
-        const selectedCount = document.getElementById('selected-count');
-        const bulkDeleteBtn = document.getElementById('btn-bulk-delete');
+    }
 
-        const updateBulkUI = () => {
-            const checked = document.querySelectorAll('.item-checkbox.active');
-            const count = checked.length;
-            if (selectedCount) selectedCount.textContent = count;
-            if (bulkActions) bulkActions.style.display = count > 0 ? 'flex' : 'none';
+    // ============================================================
+    // GLOBAL BULK ACTIONS LOGIC (Suppliers & POs)
+    // ============================================================
+    const selectAll = document.getElementById('select-all-checkbox');
+    const checkboxes = document.querySelectorAll('.item-checkbox');
+    const bulkActions = document.getElementById('bulk-actions');
+    const selectedCount = document.getElementById('selected-count');
 
-            if (selectAll) {
-                if (count === checkboxes.length && count > 0) selectAll.classList.add('active');
-                else selectAll.classList.remove('active');
-            }
-        };
+    // Note: We might have different bulk delete buttons for different pages
+    // The supplier page uses 'btn-bulk-delete' (or 'btn-bulk-delete-trigger' now)
+    // The PO page uses 'bulk-delete-btn'
+    // We will let specific page scripts handle the CLICK event for the delete button if needed,
+    // or we can add a generic handler here if IDs match. 
+    // For now, we focus on the UI updates (checking boxes, showing count).
 
-        // Custom Checkbox Handling
-        const toggleCheckbox = (el) => {
-            el.classList.toggle('active');
-            // Toggle row selection style
-            const row = el.closest('.purchasing-list-row');
-            if (row) {
-                if (el.classList.contains('active')) row.classList.add('selected-row');
-                else row.classList.remove('selected-row');
-            }
-        };
+    const updateBulkUI = () => {
+        const checked = document.querySelectorAll('.item-checkbox.active');
+        const count = checked.length;
+        if (selectedCount) selectedCount.textContent = count;
 
+        // Show/Hide bulk actions panel
+        if (bulkActions) {
+            bulkActions.style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        if (selectAll) {
+            if (count === checkboxes.length && count > 0) selectAll.classList.add('active');
+            else selectAll.classList.remove('active');
+        }
+    };
+
+    // Custom Checkbox Handling
+    const toggleCheckbox = (el) => {
+        el.classList.toggle('active');
+        // Toggle row selection style
+        const row = el.closest('.purchasing-list-row');
+        if (row) {
+            if (el.classList.contains('active')) row.classList.add('selected-row');
+            else row.classList.remove('selected-row');
+        }
+    };
+
+    if (checkboxes.length > 0) {
         checkboxes.forEach(cb => {
             cb.addEventListener('click', () => {
                 toggleCheckbox(cb);
                 updateBulkUI();
             });
         });
+    }
 
-        if (selectAll) {
-            selectAll.addEventListener('click', () => {
-                const isActive = selectAll.classList.contains('active');
-                // Toggle all
-                if (isActive) {
-                    // Uncheck all
-                    selectAll.classList.remove('active');
-                    checkboxes.forEach(cb => {
-                        cb.classList.remove('active');
-                        cb.closest('.purchasing-list-row')?.classList.remove('selected-row');
-                    });
-                } else {
-                    // Check all
-                    selectAll.classList.add('active');
-                    checkboxes.forEach(cb => {
-                        cb.classList.add('active');
-                        cb.closest('.purchasing-list-row')?.classList.add('selected-row');
-                    });
-                }
-                updateBulkUI();
-            });
-        }
-
-        // Bulk Delete Action
-        if (bulkDeleteBtn) {
-            bulkDeleteBtn.addEventListener('click', () => {
-                const checked = document.querySelectorAll('.item-checkbox.active');
-                const ids = Array.from(checked).map(cb => cb.dataset.id);
-
-                if (ids.length === 0) return;
-
-                if (confirm(`Are you sure you want to delete ${ids.length} suppliers?`)) {
-                    fetch('/purchasing/suppliers/bulk-delete', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                        },
-                        body: JSON.stringify({ ids: ids })
-                    })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                window.location.reload();
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        })
-                        .catch(err => console.error(err));
-                }
-            });
-        }
+    if (selectAll) {
+        selectAll.addEventListener('click', () => {
+            const isActive = selectAll.classList.contains('active');
+            // Toggle all
+            if (isActive) {
+                // Uncheck all
+                selectAll.classList.remove('active');
+                checkboxes.forEach(cb => {
+                    cb.classList.remove('active');
+                    cb.closest('.purchasing-list-row')?.classList.remove('selected-row');
+                });
+            } else {
+                // Check all
+                selectAll.classList.add('active');
+                checkboxes.forEach(cb => {
+                    cb.classList.add('active');
+                    cb.closest('.purchasing-list-row')?.classList.add('selected-row');
+                });
+            }
+            updateBulkUI();
+        });
     }
 
     // ============================================================

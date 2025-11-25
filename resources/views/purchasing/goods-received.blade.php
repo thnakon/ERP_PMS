@@ -15,7 +15,7 @@
         {{-- [!!! REFACTORED HEADER !!!] --}}
         <div class="sr-header">
             <div class="sr-header-left">
-                <p class="sr-breadcrumb">Dashboard / Purchasing / Goods Received < <a
+                <p class="sr-breadcrumb">Dashboard / Purchasing / <span style="color: #3a3a3c; font-weight: 600;">Goods Received</span> < <a
                         href="{{ route('purchasing.purchaseOrders') }}" style="color: #017aff">Purchase Orders</a></p>
                 <h2 class="sr-page-title">Goods Received (4)</h2>
             </div>

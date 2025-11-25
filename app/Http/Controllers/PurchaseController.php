@@ -123,12 +123,19 @@ class PurchaseController extends Controller
 
     public function destroySupplier($id)
     {
-        $supplier = \App\Models\Supplier::findOrFail($id);
-        $supplier->delete();
+        try {
+            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+            $supplier = \App\Models\Supplier::findOrFail($id);
+            $supplier->delete();
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
-        return redirect()->route('purchasing.suppliers')
-            ->with('success', 'Supplier deleted successfully!')
-            ->with('suppress_global_toast', true);
+            return redirect()->route('purchasing.suppliers')
+                ->with('success', 'Supplier deleted successfully!')
+                ->with('suppress_global_toast', true);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return redirect()->back()->with('error', 'Error deleting supplier: ' . $e->getMessage());
+        }
     }
 
     public function bulkDestroySupplier(Request $request)
@@ -138,9 +145,16 @@ class PurchaseController extends Controller
             'ids.*' => 'exists:suppliers,id',
         ]);
 
-        \App\Models\Supplier::whereIn('id', $request->ids)->delete();
+        try {
+            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+            $count = \App\Models\Supplier::whereIn('id', $request->ids)->delete();
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
-        return response()->json(['success' => true, 'message' => 'Selected suppliers deleted successfully!']);
+            return response()->json(['success' => true, 'message' => "Deleted {$count} suppliers successfully!"]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
     }
 
     // --- Page Views ---
@@ -268,13 +282,21 @@ class PurchaseController extends Controller
 
     public function destroyPurchaseOrder($id)
     {
-        $po = Purchase::findOrFail($id);
-        $po->items()->delete();
-        $po->delete();
+        try {
+            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+            $po = Purchase::findOrFail($id);
+            // Items are usually deleted via cascade, but we force it here just in case
+            $po->items()->delete();
+            $po->delete();
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
-        return redirect()->route('purchasing.purchaseOrders')
-            ->with('success', 'Purchase Order deleted successfully!')
-            ->with('suppress_global_toast', true);
+            return redirect()->route('purchasing.purchaseOrders')
+                ->with('success', 'Purchase Order deleted successfully!')
+                ->with('suppress_global_toast', true);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return redirect()->back()->with('error', 'Error deleting PO: ' . $e->getMessage());
+        }
     }
 
     public function bulkDestroyPurchaseOrder(Request $request)
@@ -284,12 +306,18 @@ class PurchaseController extends Controller
             'ids.*' => 'exists:purchases,id',
         ]);
 
-        Purchase::whereIn('id', $request->ids)->delete();
-        // Also delete items if cascading isn't set up in DB, but usually handled by DB or model events.
-        // For safety:
-        PurchaseItem::whereIn('purchase_id', $request->ids)->delete();
+        try {
+            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+            // Delete items first for safety, though cascade might handle it
+            PurchaseItem::whereIn('purchase_id', $request->ids)->delete();
+            $count = Purchase::whereIn('id', $request->ids)->delete();
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
-        return response()->json(['success' => true, 'message' => 'Selected POs deleted successfully!']);
+            return response()->json(['success' => true, 'message' => "Deleted {$count} purchase orders successfully!"]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
     }
 
     public function goodsReceived()

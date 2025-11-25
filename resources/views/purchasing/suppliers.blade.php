@@ -57,21 +57,14 @@
         <!-- Header -->
         <div class="purchasing-header">
             <div class="purchasing-header-left">
-                <p class="sr-breadcrumb">Dashboard / Purchasing / Suppliers</p>
+                <p class="sr-breadcrumb">Dashboard / Purchasing / <span style="color: #3a3a3c; font-weight: 600;">Suppliers</span> > <a
+                    href="{{ route('purchasing.purchaseOrders') }}" style="color: #017aff"> Purchase-Orders </a></p>
                 <h2 class="sr-page-title">Suppliers <span
                         style="font-size: 0.6em; color: #8e8e93; font-weight: 500;">({{ $suppliers->total() }})</span>
                 </h2>
             </div>
             <div class="purchasing-header-right">
-                <!-- Bulk Actions Panel -->
-                <div id="bulk-actions" style="display: none; align-items: center; gap: 12px; margin-right: 16px;">
-                    <span style="color: var(--text-secondary); font-size: 0.9rem;">Selected: <span id="selected-count"
-                            style="font-weight: 600; color: var(--text-primary);">0</span></span>
-                    <button class="purchasing-button-secondary" id="btn-bulk-delete"
-                        style="color: #ff3b30; background-color: #fff1f0; border-color: transparent; height: 36px; font-size: 0.85rem;">
-                        <i class="fa-solid fa-trash"></i> Delete
-                    </button>
-                </div>
+
 
                 <button class="purchasing-button-primary" id="open-supplier-modal">
                     <i class="fa-solid fa-plus"></i>
@@ -81,12 +74,22 @@
         </div>
 
         <!-- Action Bar -->
-        <div class="purchasing-action-bar">
+        <div class="purchasing-action-bar" style="display: flex; justify-content: space-between; align-items: center;">
             <form action="{{ route('purchasing.suppliers') }}" method="GET" class="purchasing-search-bar">
                 <i class="fa-solid fa-search"></i>
                 <input type="text" name="search" value="{{ request('search') }}"
                     placeholder="Search by Company, Contact, or Phone...">
             </form>
+
+            <!-- Bulk Actions Panel -->
+            <div id="bulk-actions" style="display: none; align-items: center; gap: 12px;">
+                <span style="color: var(--text-secondary); font-size: 0.9rem;">Selected: <span id="selected-count"
+                        style="font-weight: 600; color: var(--text-primary);">0</span></span>
+                <button class="purchasing-button-secondary" id="btn-bulk-delete-trigger"
+                    style="color: #ff3b30; background-color: #fff1f0; border-color: transparent; height: 36px; font-size: 0.85rem;">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>
+            </div>
         </div>
 
         <!-- List View -->
@@ -213,12 +216,18 @@
             </div>
             <div class="inv-modal-footer">
                 <button type="button" class="inv-btn-secondary" id="cancel-delete-btn">Cancel</button>
+
+                {{-- Single Delete Form --}}
                 <form id="delete-form" method="POST" action="" style="display: inline;">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="inv-btn-primary"
                         style="background-color: #ff3b30; border-color: #ff3b30; box-shadow: none;">Delete</button>
                 </form>
+
+                {{-- Bulk Delete Button (Hidden by default) --}}
+                <button id="btn-confirm-bulk-delete" type="button" class="inv-btn-primary"
+                    style="background-color: #ff3b30; border-color: #ff3b30; box-shadow: none; display: none;">Delete</button>
             </div>
         </div>
     </div>
@@ -255,17 +264,132 @@
                 showFlash("{{ $errors->first() }}", 'error');
             @endif
 
-            // Close delete modal button handler (since we changed the HTML structure)
+            // --- Modal Elements ---
+            const deleteModal = document.getElementById('delete-modal-overlay');
             const closeDeleteBtn = document.getElementById('close-delete-modal-btn');
-            if (closeDeleteBtn) {
-                closeDeleteBtn.addEventListener('click', function() {
-                    const deleteBackdrop = document.getElementById('delete-modal-backdrop');
-                    if (deleteBackdrop) {
-                        deleteBackdrop.classList.remove('is-open');
-                        setTimeout(() => {
-                            deleteBackdrop.style.display = 'none';
-                        }, 350);
+            const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+            const deleteForm = document.getElementById('delete-form');
+            const deleteConfirmText = document.getElementById('delete-confirm-text');
+            const btnConfirmBulkDelete = document.getElementById('btn-confirm-bulk-delete');
+
+            // --- Open Modal Function ---
+            const openDeleteModal = () => {
+                if (deleteModal) deleteModal.classList.add('show');
+            };
+
+            const closeDeleteModal = () => {
+                if (deleteModal) deleteModal.classList.remove('show');
+            };
+
+            // --- Event Listeners for Closing ---
+            if (closeDeleteBtn) closeDeleteBtn.addEventListener('click', closeDeleteModal);
+            if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+            if (deleteModal) {
+                deleteModal.addEventListener('click', (e) => {
+                    if (e.target === deleteModal) closeDeleteModal();
+                });
+            }
+
+            // --- Single Delete Logic ---
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault(); // Prevent default if it's a link/submit
+                    const id = this.dataset.id;
+
+                    // Reset to Single Delete Mode
+                    if (deleteForm) {
+                        deleteForm.style.display = 'inline';
+                        deleteForm.action = `/purchasing/suppliers/${id}`;
                     }
+                    if (btnConfirmBulkDelete) btnConfirmBulkDelete.style.display = 'none';
+                    if (deleteConfirmText) deleteConfirmText.textContent =
+                        'Are you sure you want to delete this supplier? This action cannot be undone.';
+
+                    openDeleteModal();
+                });
+            });
+
+            // --- Bulk Delete Logic ---
+            const bulkDeleteTrigger = document.getElementById(
+            'btn-bulk-delete-trigger'); // Changed ID to avoid conflict
+
+            if (bulkDeleteTrigger) {
+                bulkDeleteTrigger.addEventListener('click', function() {
+                    const checked = document.querySelectorAll('.item-checkbox.active');
+                    const count = checked.length;
+
+                    if (count === 0) return;
+
+                    // Switch to Bulk Delete Mode
+                    if (deleteForm) deleteForm.style.display = 'none';
+                    if (btnConfirmBulkDelete) btnConfirmBulkDelete.style.display = 'inline-block';
+                    if (deleteConfirmText) deleteConfirmText.textContent =
+                        `Are you sure you want to delete ${count} selected suppliers? This action cannot be undone.`;
+
+                    openDeleteModal();
+                });
+            }
+
+            // --- Execute Bulk Delete ---
+            if (btnConfirmBulkDelete) {
+                btnConfirmBulkDelete.addEventListener('click', function() {
+                    const checked = document.querySelectorAll('.item-checkbox.active');
+                    const ids = Array.from(checked).map(cb => cb.dataset.id);
+
+                    if (ids.length === 0) return;
+
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute(
+                        'content');
+                    const originalText = this.textContent;
+                    this.disabled = true;
+                    this.textContent = 'Deleting...';
+
+                    fetch('{{ route('purchasing.suppliers.bulk_destroy') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            body: JSON.stringify({
+                                ids: ids
+                            })
+                        })
+                        .then(async res => {
+                            if (!res.ok) {
+                                const text = await res.text();
+                                throw new Error(text || res.statusText);
+                            }
+                            return res.json();
+                        })
+                        .then(data => {
+                            closeDeleteModal();
+                            if (data.success) {
+                                showFlash(data.message, 'success');
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1500);
+                            } else {
+                                showFlash(data.message || 'Error deleting suppliers', 'error');
+                                this.disabled = false;
+                                this.textContent = originalText;
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            closeDeleteModal();
+                            let msg = 'An error occurred';
+                            try {
+                                const errorObj = JSON.parse(err.message);
+                                msg = errorObj.message || errorObj.error || msg;
+                            } catch (e) {
+                                msg = err.message;
+                            }
+                            if (msg.length > 100) msg = 'Server Error (Check Console)';
+                            showFlash(msg, 'error');
+
+                            this.disabled = false;
+                            this.textContent = originalText;
+                        });
                 });
             }
         });
