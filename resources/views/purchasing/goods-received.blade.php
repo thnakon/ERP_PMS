@@ -1,228 +1,496 @@
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goods Received - Pharmacy ERP</title>
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Main Purchasing CSS -->
-    <link rel="stylesheet" href="{{ asset('resources/css/purchasing.css') }}">
-</head>
 <x-app-layout>
-
     <!-- Main Page Container -->
     <div class="purchasing-page-container">
 
-        {{-- [!!! REFACTORED HEADER !!!] --}}
+        {{-- Header --}}
         <div class="sr-header">
             <div class="sr-header-left">
-                <p class="sr-breadcrumb">Dashboard / Purchasing / <span style="color: #3a3a3c; font-weight: 600;">Goods Received</span> < <a
-                        href="{{ route('purchasing.purchaseOrders') }}" style="color: #017aff">Purchase Orders</a></p>
-                <h2 class="sr-page-title">Goods Received (4)</h2>
+                <p class="sr-breadcrumb">Dashboard / Purchasing / <span style="color: #3a3a3c; font-weight: 600;">Goods
+                        Received</span>
+                    < <a href="{{ route('purchasing.purchaseOrders') }}" style="color: #017aff">Purchase Orders</a>
+                </p>
+                <h2 class="sr-page-title">Goods Received</h2>
             </div>
 
             <div class="sr-header-right" style="margin-right: 10px; display: flex; align-items: center; gap: 12px;">
 
-                <!-- [!!! NEW: Bulk Actions (Hidden by default) !!!] -->
+                <!-- Bulk Actions (For History Table) -->
                 <div id="bulk-actions"
                     style="display: none; align-items: center; gap: 8px; margin-right: 12px; padding-right: 12px; border-right: 1px solid #d2d2d7;">
                     <span class="inv-text-sub">Selected: <span id="selected-count"
                             style="color: #1d1d1f; font-weight: 700;">0</span></span>
 
-                    <button class="inv-btn-secondary">
-                        <i class="fa-solid fa-barcode"></i> Print
-                    </button>
-
-                    <button class="inv-btn-secondary" style="color: #ff3b30; background-color: #fff1f0;">
+                    <button class="inv-btn-secondary" id="btn-bulk-delete-gr-trigger"
+                        style="color: #ff3b30; background-color: #fff1f0;">
                         <i class="fa-solid fa-trash"></i> Delete
                     </button>
                 </div>
 
-                <!-- Standard Actions (Filter) -->
-                <button class="sr-icon-button" title="Filter">
-                    <i class="fa-solid fa-filter"></i>
-                </button>
-
-                <!-- Add Button -->
-                <button class="sr-button-primary" id="open-gr-modal">
-                    <i class="fa-solid fa-plus"></i>
-                    <span>Add new Receive</span>
-                </button>
+                <!-- Toggle View Button (Optional, maybe just scroll) -->
             </div>
         </div>
 
-        <!-- Workflow View 1: Search for PO -->
-        <div id="po-search-view" class="gr-workflow-container">
-            <label for="po-search-input">
-                <h2>Search by PO Number</h2>
-            </label>
-            <div class="po-search-box">
-                <input type="text" id="po-search-input" class="purchasing-input-lg" placeholder="e.g., PO-2025-002">
-                <button class="purchasing-button-primary purchasing-button-lg" id="search-po-btn">
-                    <i class="fa-solid fa-search"></i> Receive
-                </button>
+        <!-- Notification Container -->
+        <div id="notification-container"
+            style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; align-items: center;">
+        </div>
+
+        <!-- VIEW 1: Main Dashboard (Awaiting & History) -->
+        <div id="gr-main-view">
+
+            <!-- Section A: Awaiting Reception -->
+            <div class="gr-section" style="margin-bottom: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; color: #1d1d1f;">
+                        <i class="fa-solid fa-box-open" style="color: #007aff; margin-right: 8px;"></i> Awaiting
+                        Reception
+                    </h3>
+
+                    <!-- Search -->
+                    <form action="{{ route('purchasing.goodsReceived') }}" method="GET" class="purchasing-search-bar"
+                        style="width: 300px; margin-left: 15px;">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            placeholder="Search PO Number...">
+                    </form>
+                </div>
+
+                <div class="po-awaiting-list"
+                    style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    @if ($awaitingPos->count() > 0)
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            @foreach ($awaitingPos as $po)
+                                <li
+                                    style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #f5f5f7;">
+                                    <div style="display: flex; align-items: center; gap: 16px;">
+                                        <div
+                                            style="background: #e8f2ff; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #007aff;">
+                                            <i class="fa-solid fa-file-invoice"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 600; color: #1d1d1f; font-size: 1rem;">
+                                                {{ $po->reference_number }}</div>
+                                            <div style="color: #86868b; font-size: 0.9rem;">
+                                                {{ $po->supplier->name }} • {{ $po->items->count() }} Items • Ordered:
+                                                {{ $po->purchase_date->format('d/m/Y') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="purchasing-button-primary btn-receive-trigger"
+                                        data-id="{{ $po->id }}" data-ref="{{ $po->reference_number }}">
+                                        Receive Goods
+                                    </button>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <div style="text-align: center; padding: 30px; color: #86868b;">
+                            <i class="fa-solid fa-check-circle"
+                                style="font-size: 32px; margin-bottom: 10px; opacity: 0.5;"></i>
+                            <p>No pending orders found.</p>
+                        </div>
+                    @endif
+                </div>
             </div>
 
-            <div class="po-awaiting-list">
-                <h3><i class="fa-solid fa-list-check"></i> POs Awaiting Reception (สถานะ: Sent)</h3>
-                <ul style="list-style: none; padding: 0;">
-                    <!-- [!!! NEW: Added Checkboxes to List Items !!!] -->
-                    <li
-                        style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px dashed #d2d2d7;">
-                        <div class="inv-checkbox" data-id="PO-2025-002"></div>
-                        <div>
-                            <a href="#" class="po-link" data-po="PO-2025-002">PO-2025-002</a> (from Pharma
-                            Distribution)
-                        </div>
-                    </li>
+            <!-- Section B: Received History -->
+            <div class="gr-section">
+                <h3 style="font-size: 1.1rem; font-weight: 600; color: #1d1d1f; margin-bottom: 15px;">
+                    <i class="fa-solid fa-clock-rotate-left" style="color: #34c759; margin-right: 8px;"></i> Received
+                    History
+                </h3>
 
-                    <li
-                        style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px dashed #d2d2d7;">
-                        <div class="inv-checkbox" data-id="PO-2025-004"></div>
-                        <div>
-                            <a href="#" class="po-link" data-po="PO-2025-004">PO-2025-004</a> (from MedSupply
-                            (Thailand)) - <em style="color: #faad14; font-style: normal;">Partial</em>
+                <div class="purchasing-list-container" id="gr-list">
+                    <div class="purchasing-list-row header-row">
+                        <div class="col-header">
+                            <div class="inv-checkbox" id="select-all-checkbox"></div>
                         </div>
-                    </li>
+                        <div class="col-header">PO Number</div>
+                        <div class="col-header">Supplier</div>
+                        <div class="col-header">Received Date</div>
+                        <div class="col-header">Total Amount</div>
+                        <div class="col-header" style="text-align: center;">Actions</div>
+                    </div>
 
-                    <li
-                        style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px dashed #d2d2d7;">
-                        <div class="inv-checkbox" data-id="PO-2025-005"></div>
-                        <div>
-                            <a href="#" class="po-link" data-po="PO-2025-005">PO-2025-005</a> (from Bangkok Drugs)
+                    @forelse($receivedPos as $po)
+                        <div class="purchasing-list-row">
+                            <div class="col-checkbox">
+                                <div class="inv-checkbox item-checkbox" data-id="{{ $po->id }}"></div>
+                            </div>
+                            <div class="col-po-number">{{ $po->reference_number }}</div>
+                            <div class="col-supplier">{{ $po->supplier->name }}</div>
+                            <div class="col-date">{{ $po->updated_at->format('d/m/Y') }}</div>
+                            <!-- Using updated_at as received date for now -->
+                            <div class="col-cost">฿{{ number_format($po->total_amount, 2) }}</div>
+                            <div class="col-actions" style="display: flex; justify-content: center; gap: 8px;">
+                                <button class="purchasing-icon-button btn-delete-gr" data-id="{{ $po->id }}">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
                         </div>
-                    </li>
-                </ul>
+                    @empty
+                        <div class="purchasing-list-row"
+                            style="justify-content: center; padding: 20px; color: #86868b;">
+                            No received history.
+                        </div>
+                    @endforelse
+                </div>
+
+                <div class="mt-4">
+                    {{ $receivedPos->links() }}
+                </div>
             </div>
         </div>
 
-        <!-- Workflow View 2: Receive Items (Hidden by default) -->
-        <div id="po-receive-view" class="gr-workflow-container" style="display: none;">
-
-            <div class="receive-header">
+        <!-- VIEW 2: Receiving Interface (Hidden initially) -->
+        <div id="gr-receive-view" class="gr-workflow-container" style="display: none;">
+            <div class="receive-header"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <div>
-                    <h2>Receiving Items for PO-2025-002</h2>
-                    <p><strong>Supplier:</strong> Pharma Distribution<br>
-                        <strong>Ordered:</strong> 16/10/2025 | <strong>Expected:</strong> 20/10/2025
-                    </p>
+                    <h2 id="receive-po-title" style="margin: 0; font-size: 1.5rem;">Receiving Items</h2>
+                    <p id="receive-po-subtitle" style="color: #86868b; margin-top: 4px;">Loading details...</p>
                 </div>
-                <button class="purchasing-button-secondary" id="back-to-search-btn">
-                    <i class="fa-solid fa-arrow-left"></i> Back to Search
+                <button class="purchasing-button-secondary" id="back-to-main-btn">
+                    <i class="fa-solid fa-arrow-left"></i> Cancel
                 </button>
             </div>
 
-            <!-- Receiving Table -->
-            <table class="data-table receiving-table">
-                <thead>
-                    <tr>
-                        <th>สินค้า (Product)</th>
-                        <th>สั่ง (Ordered)</th>
-                        <th>ได้รับ (Received) <span class="required">*</span></th>
-                        <th>Batch / Lot No. <span class="required">*</span></th>
-                        <th>วันหมดอายุ (Expiry) <span class="required">*</span></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td data-label="Product">Paracetamol 500mg</td>
-                        <td data-label="Ordered">100 กล่อง</td>
-                        <td data-label="Received"><input type="number" class="purchasing-input rcv-input"
-                                value="100"></td>
-                        <td data-label="Batch / Lot"><input type="text" class="purchasing-input batch-input"
-                                placeholder="e.g., AB1234"></td>
-                        <td data-label="Expiry"><input type="date" class="purchasing-input expiry-input"></td>
-                    </tr>
-                    <tr>
-                        <td data-label="Product">Vitamin C 1000mg</td>
-                        <td data-label="Ordered">50 ขวด</td>
-                        <td data-label="Received"><input type="number" class="purchasing-input rcv-input"
-                                value="50"></td>
-                        <td data-label="Batch / Lot"><input type="text" class="purchasing-input batch-input"
-                                placeholder="e.g., VC5566"></td>
-                        <td data-label="Expiry"><input type="date" class="purchasing-input expiry-input"></td>
-                    </tr>
-                    <tr>
-                        <td data-label="Product">Alcohol 70% (30ml)</td>
-                        <td data-label="Ordered">30 ขวด</td>
-                        <td data-label="Received"><input type="number" class="purchasing-input rcv-input"
-                                value="30"></td>
-                        <td data-label="Batch / Lot"><input type="text" class="purchasing-input batch-input"
-                                placeholder="e.g., ALC7788"></td>
-                        <td data-label="Expiry"><input type="date" class="purchasing-input expiry-input"></td>
-                    </tr>
-                </tbody>
-            </table>
+            <form id="receive-form">
+                <input type="hidden" id="receive_po_id" name="po_id">
 
-            <div class="receive-footer">
-                <div class="form-group">
-                    <label for="gr-notes">หมายเหตุการรับของ (Optional)</label>
-                    <input type="text" id="gr-notes" class="purchasing-input"
-                        placeholder="เช่น: Alcohol แตก 1 ขวด, รับจริง 29">
+                <div
+                    style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <div class="form-group" style="max-width: 300px;">
+                        <label class="inv-form-label">Received Date <span
+                                style="color: var(--required-star);">*</span></label>
+                        <input type="date" id="receive_date" name="received_date" class="inv-form-input" required
+                            value="{{ date('Y-m-d') }}">
+                    </div>
                 </div>
-                <button class="purchasing-button-primary purchasing-button-lg btn-confirm-receive">
-                    <i class="fa-solid fa-check-double"></i> Confirm & Receive Stock
-                </button>
-            </div>
 
+                <!-- Receiving Table -->
+                <div
+                    style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <table class="data-table receiving-table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <th style="text-align: left; padding: 12px;">Product</th>
+                                <th style="text-align: left; padding: 12px; width: 100px;">Ordered</th>
+                                <th style="text-align: left; padding: 12px; width: 120px;">Received <span
+                                        style="color:red">*</span></th>
+                                <th style="text-align: left; padding: 12px;">Batch / Lot No. <span
+                                        style="color:red">*</span></th>
+                                <th style="text-align: left; padding: 12px;">Expiry Date <span
+                                        style="color:red">*</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="receive-items-body">
+                            <!-- Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="receive-footer" style="margin-top: 30px; display: flex; justify-content: flex-end;">
+                    <button type="submit" class="purchasing-button-primary purchasing-button-lg btn-confirm-receive"
+                        style="padding: 12px 32px; font-size: 1rem;">
+                        <i class="fa-solid fa-check"></i> Confirm & Receive Stock
+                    </button>
+                </div>
+            </form>
         </div>
 
-        <!-- Create Receive Modal -->
-        <div class="modal-backdrop" id="gr-modal-backdrop" style="display: none;">
-            <div class="modal-content" id="gr-modal-content">
-                <form id="create-gr-form">
-                    <div class="modal-header">
-                        <h2>New Goods Received</h2>
-                        <button type="button" class="purchasing-icon-button btn-close-modal"
-                            id="close-gr-modal-btn">
-                            <i class="fa-solid fa-times"></i>
-                        </button>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="form-grid">
-                            <div class="form-group span-2">
-                                <label for="gr_po_select">Select Purchase Order <span
-                                        class="required">*</span></label>
-                                <select id="gr_po_select" name="po_id" class="purchasing-input-lg" required>
-                                    <option value="" disabled selected>-- Select Pending PO --</option>
-                                    <option value="PO-2025-002">PO-2025-002 (Pharma Dist.)</option>
-                                    <option value="PO-2025-004">PO-2025-004 (MedSupply) - Partial</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="gr_date">Received Date <span class="required">*</span></label>
-                                <input type="date" id="gr_date" name="received_date" class="purchasing-input"
-                                    required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="gr_ref_no">Invoice / DO Ref. No.</label>
-                                <input type="text" id="gr_ref_no" name="ref_no" class="purchasing-input"
-                                    placeholder="e.g. INV-998877">
-                            </div>
-
-                            <div class="form-group span-2">
-                                <div
-                                    style="background-color: #f0f8ff; padding: 12px; border-radius: 12px; color: #0056b3; font-size: 0.9rem; display: flex; gap: 8px; align-items: flex-start;">
-                                    <i class="fa-solid fa-circle-info" style="margin-top: 3px;"></i>
-                                    <span>Selecting a PO will verify the item list. You can adjust quantities in the
-                                        next step.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="purchasing-button-secondary"
-                            id="cancel-gr-modal-btn">Cancel</button>
-                        <button type="submit" class="purchasing-button-primary">Proceed to Items</button>
-                    </div>
-                </form>
+        <!-- Delete Confirmation Modal -->
+        <div class="inv-modal-overlay" id="delete-gr-modal-overlay">
+            <div class="inv-modal" style="max-width: 400px;">
+                <div class="inv-modal-header">
+                    <div class="inv-modal-title" style="color: #ff3b30;">Delete Received Record</div>
+                    <button type="button" class="inv-modal-close" id="close-delete-gr-modal-btn">&times;</button>
+                </div>
+                <div class="inv-modal-body">
+                    <p id="delete-gr-confirm-text" style="color: var(--text-secondary); margin: 0;">Are you sure? This
+                        will revert the PO status and remove the record.</p>
+                </div>
+                <div class="inv-modal-footer">
+                    <button type="button" class="inv-btn-secondary" id="cancel-delete-gr-btn">Cancel</button>
+                    <button id="btn-confirm-delete-gr" type="button" class="inv-btn-primary"
+                        style="background-color: #ff3b30; border-color: #ff3b30; box-shadow: none;">Delete</button>
+                </div>
             </div>
         </div>
 
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Notification Logic ---
+            const showNotification = (message, type = 'success') => {
+                const container = document.getElementById('notification-container');
+                const notification = document.createElement('div');
+                notification.className = `inv-notification ${type}`;
+                notification.style.cssText = `
+                    background: white;
+                    color: #1d1d1f;
+                    padding: 12px 24px;
+                    border-radius: 14px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                    margin-bottom: 10px;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                    font-size: 14px;
+                    font-weight: 500;
+                    opacity: 0;
+                    transform: translateY(-20px);
+                    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                `;
+
+                const icon = type === 'success' ?
+                    '<i class="fa-solid fa-circle-check" style="color: #34c759; font-size: 18px;"></i>' :
+                    '<i class="fa-solid fa-circle-exclamation" style="color: #ff3b30; font-size: 18px;"></i>';
+
+                notification.innerHTML = `${icon}<span>${message}</span>`;
+                container.appendChild(notification);
+
+                requestAnimationFrame(() => {
+                    notification.style.opacity = '1';
+                    notification.style.transform = 'translateY(0)';
+                });
+
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateY(-20px)';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            };
+
+            // --- View Switching ---
+            const mainView = document.getElementById('gr-main-view');
+            const receiveView = document.getElementById('gr-receive-view');
+            const backBtn = document.getElementById('back-to-main-btn');
+
+            const showReceiveView = () => {
+                mainView.style.display = 'none';
+                receiveView.style.display = 'block';
+            };
+
+            const showMainView = () => {
+                receiveView.style.display = 'none';
+                mainView.style.display = 'block';
+            };
+
+            if (backBtn) backBtn.addEventListener('click', showMainView);
+
+            // --- Receive Logic ---
+            const receiveItemsBody = document.getElementById('receive-items-body');
+            const receivePoTitle = document.getElementById('receive-po-title');
+            const receivePoSubtitle = document.getElementById('receive-po-subtitle');
+            const receivePoIdInput = document.getElementById('receive_po_id');
+
+            document.querySelectorAll('.btn-receive-trigger').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const poId = btn.dataset.id;
+                    const poRef = btn.dataset.ref;
+
+                    showReceiveView();
+                    receivePoTitle.textContent = `Receiving Items for ${poRef}`;
+                    receivePoSubtitle.textContent = 'Loading...';
+                    receiveItemsBody.innerHTML =
+                        '<tr><td colspan="5" style="text-align:center; padding:20px;">Loading items...</td></tr>';
+                    receivePoIdInput.value = poId;
+
+                    try {
+                        const res = await fetch(`/purchasing/purchase-orders/${poId}/details`);
+                        const po = await res.json();
+
+                        receivePoSubtitle.innerHTML =
+                            `<strong>Supplier:</strong> ${po.supplier.name} | <strong>Ordered:</strong> ${new Date(po.purchase_date).toLocaleDateString()}`;
+
+                        receiveItemsBody.innerHTML = '';
+                        po.items.forEach((item, index) => {
+                            const tr = document.createElement('tr');
+                            tr.style.borderBottom = '1px solid #eee';
+                            tr.innerHTML = `
+                                <td style="padding: 12px;">
+                                    <div style="font-weight: 500;">${item.product.name}</div>
+                                    <div style="font-size: 0.85rem; color: #86868b;">SKU: ${item.product.sku || '-'}</div>
+                                    <input type="hidden" name="items[${index}][product_id]" value="${item.product_id}">
+                                </td>
+                                <td style="padding: 12px;">${item.quantity}</td>
+                                <td style="padding: 12px;">
+                                    <input type="number" name="items[${index}][quantity]" class="inv-form-input" value="${item.quantity}" min="1" required style="width: 80px;">
+                                </td>
+                                <td style="padding: 12px;">
+                                    <input type="text" name="items[${index}][batch_number]" class="inv-form-input" placeholder="Lot No." required>
+                                </td>
+                                <td style="padding: 12px;">
+                                    <input type="date" name="items[${index}][expiry_date]" class="inv-form-input" required>
+                                </td>
+                            `;
+                            receiveItemsBody.appendChild(tr);
+                        });
+
+                    } catch (err) {
+                        console.error(err);
+                        showNotification('Error loading PO details', 'error');
+                        showMainView();
+                    }
+                });
+            });
+
+            // --- Submit Receive ---
+            const receiveForm = document.getElementById('receive-form');
+            if (receiveForm) {
+                receiveForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const btn = receiveForm.querySelector('button[type="submit"]');
+                    const originalText = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+                    try {
+                        const formData = new FormData(receiveForm);
+                        const data = Object.fromEntries(formData.entries());
+
+                        // Convert complex name attributes to JSON object structure
+                        // Actually, FormData handles array names, but JSON.stringify needs help or we send as JSON
+                        // Let's build the JSON object manually to match the Controller validation
+                        const payload = {
+                            po_id: receivePoIdInput.value,
+                            received_date: document.getElementById('receive_date').value,
+                            items: []
+                        };
+
+                        // Parse rows
+                        const rows = receiveItemsBody.querySelectorAll('tr');
+                        rows.forEach(row => {
+                            payload.items.push({
+                                product_id: row.querySelector(
+                                    'input[name*="[product_id]"]').value,
+                                quantity: row.querySelector('input[name*="[quantity]"]')
+                                    .value,
+                                batch_number: row.querySelector(
+                                    'input[name*="[batch_number]"]').value,
+                                expiry_date: row.querySelector(
+                                    'input[name*="[expiry_date]"]').value,
+                            });
+                        });
+
+                        const res = await fetch('{{ route('purchasing.goodsReceived.store') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const result = await res.json();
+
+                        if (result.success) {
+                            showNotification(result.message, 'success');
+                            setTimeout(() => window.location.reload(), 1500);
+                        } else {
+                            throw new Error(result.message);
+                        }
+
+                    } catch (err) {
+                        showNotification(err.message || 'Error processing receipt', 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    }
+                });
+            }
+
+            // --- Delete Logic (Bulk & Single) ---
+            const deleteModal = document.getElementById('delete-gr-modal-overlay');
+            const closeDeleteBtn = document.getElementById('close-delete-gr-modal-btn');
+            const cancelDeleteBtn = document.getElementById('cancel-delete-gr-btn');
+            const confirmDeleteBtn = document.getElementById('btn-confirm-delete-gr');
+            const deleteConfirmText = document.getElementById('delete-gr-confirm-text');
+            let deleteIds = [];
+
+            const openDeleteModal = () => deleteModal.classList.add('show');
+            const closeDeleteModal = () => {
+                deleteModal.classList.remove('show');
+                deleteIds = [];
+            };
+
+            if (closeDeleteBtn) closeDeleteBtn.addEventListener('click', closeDeleteModal);
+            if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+
+            // Single Delete
+            document.querySelectorAll('.btn-delete-gr').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    deleteIds = [btn.dataset.id];
+                    deleteConfirmText.textContent =
+                        'Are you sure you want to delete this received record? This will revert the PO status.';
+                    openDeleteModal();
+                });
+            });
+
+            // Bulk Delete Trigger
+            const bulkDeleteTrigger = document.getElementById('btn-bulk-delete-gr-trigger');
+            if (bulkDeleteTrigger) {
+                bulkDeleteTrigger.addEventListener('click', () => {
+                    const checked = document.querySelectorAll('.item-checkbox.active');
+                    deleteIds = Array.from(checked).map(cb => cb.dataset.id);
+                    if (deleteIds.length === 0) return;
+
+                    deleteConfirmText.textContent =
+                        `Are you sure you want to delete ${deleteIds.length} records?`;
+                    openDeleteModal();
+                });
+            }
+
+            // Confirm Delete
+            if (confirmDeleteBtn) {
+                confirmDeleteBtn.addEventListener('click', async () => {
+                    if (deleteIds.length === 0) return;
+
+                    confirmDeleteBtn.disabled = true;
+                    confirmDeleteBtn.textContent = 'Deleting...';
+
+                    try {
+                        const res = await fetch(
+                            '{{ route('purchasing.purchaseOrders.bulk_destroy') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]').content
+                                },
+                                body: JSON.stringify({
+                                    ids: deleteIds
+                                })
+                            });
+
+                        const result = await res.json();
+                        if (result.success) {
+                            showNotification(result.message, 'success');
+                            setTimeout(() => window.location.reload(), 1500);
+                        } else {
+                            throw new Error(result.message);
+                        }
+                    } catch (err) {
+                        showNotification(err.message, 'error');
+                        confirmDeleteBtn.disabled = false;
+                        confirmDeleteBtn.textContent = 'Delete';
+                        closeDeleteModal();
+                    }
+                });
+            }
+
+            // --- Bulk Selection Logic (Reusing global logic from purchasing.js but ensuring it binds) ---
+            // We need to re-run the checkbox logic if purchasing.js ran before this content was ready, 
+            // but purchasing.js uses DOMContentLoaded.
+            // Since we are also in DOMContentLoaded, let's manually trigger the update logic or duplicate it slightly for safety if needed.
+            // Actually, purchasing.js logic is global. Let's just ensure we have the right IDs.
+            // IDs used: select-all-checkbox, item-checkbox, bulk-actions, selected-count.
+            // These match.
+        });
+    </script>
     <!-- Main Purchasing JS -->
     <script src="{{ asset('resources/js/purchasing.js') }}" defer></script>
 </x-app-layout>

@@ -311,6 +311,10 @@ body {
 #po-list .purchasing-list-row {
     grid-template-columns: 50px 1fr 2fr 1.5fr 1.5fr 1fr 1fr 0.5fr;
 }
+/* Grid columns for Goods Received */
+#gr-list .purchasing-list-row {
+    grid-template-columns: 50px 1.5fr 2fr 1.5fr 1.5fr 100px;
+}
 
 [class*="col-"] {
     font-size: 0.9rem;

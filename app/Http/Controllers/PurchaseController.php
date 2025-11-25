@@ -320,8 +320,85 @@ class PurchaseController extends Controller
         }
     }
 
-    public function goodsReceived()
+    public function goodsReceived(Request $request)
     {
-        return view('purchasing.goods-received');
+        $query = Purchase::query()->with('supplier');
+
+        // Search
+        if ($request->has('search') && $request->search) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('reference_number', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('supplier', function ($sq) use ($searchTerm) {
+                        $sq->where('name', 'like', "%{$searchTerm}%");
+                    });
+            });
+        }
+
+        // Awaiting: Status 'ordered'
+        $awaitingPos = (clone $query)->where('status', 'ordered')->latest()->get();
+
+        // Received: Status 'completed'
+        $receivedPos = (clone $query)->where('status', 'completed')->latest()->paginate(10);
+
+        return view('purchasing.goods-received', compact('awaitingPos', 'receivedPos'));
+    }
+
+    public function getPoDetails($id)
+    {
+        $po = Purchase::with(['supplier', 'items.product'])->findOrFail($id);
+        return response()->json($po);
+    }
+
+    public function storeGoodsReceipt(Request $request)
+    {
+        $request->validate([
+            'po_id' => 'required|exists:purchases,id',
+            'received_date' => 'required|date',
+            'items' => 'required|array',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.batch_number' => 'required|string',
+            'items.*.expiry_date' => 'required|date',
+        ]);
+
+        try {
+            DB::transaction(function () use ($request) {
+                $po = Purchase::findOrFail($request->po_id);
+
+                // Update PO
+                $po->update([
+                    'status' => 'completed',
+                    // 'received_date' => $request->received_date // If we had this column
+                ]);
+
+                // Create Batches
+                foreach ($request->items as $item) {
+                    // Find original cost from PO Item or Product? 
+                    // Better to take from PO Item to ensure accuracy, but frontend sends it back?
+                    // Let's look up the PO Item to get the cost.
+                    $poItem = $po->items()->where('product_id', $item['product_id'])->first();
+                    $costPrice = $poItem ? $poItem->cost_price : 0;
+
+                    // We also need selling price.
+                    $product = \App\Models\Product::find($item['product_id']);
+                    // Use selling_price from product, or default to 0 if null/missing
+                    $sellingPrice = $product ? ($product->selling_price ?? 0) : 0;
+
+                    Batch::create([
+                        'product_id' => $item['product_id'],
+                        'batch_number' => $item['batch_number'],
+                        'expiry_date' => $item['expiry_date'],
+                        'quantity' => $item['quantity'],
+                        'cost_price' => $costPrice,
+                        'selling_price' => $sellingPrice
+                    ]);
+                }
+            });
+
+            return response()->json(['success' => true, 'message' => 'Goods received and stock updated successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
     }
 }

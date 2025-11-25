@@ -30,40 +30,59 @@ class PurchaseOrderSeeder extends Seeder
 
         $statuses = ['draft', 'ordered', 'completed', 'cancelled'];
 
-        foreach ($statuses as $index => $status) {
-            for ($i = 0; $i < 3; $i++) {
-                $supplier = $suppliers->random();
-                $purchaseDate = Carbon::now()->subDays(rand(1, 30));
+        // 1. Create 'ordered' POs (Pending Reception)
+        for ($i = 0; $i < 5; $i++) {
+            $supplier = $suppliers->random();
+            $purchaseDate = Carbon::now()->subDays(rand(1, 7)); // Recent orders
 
-                $po = Purchase::create([
-                    'supplier_id' => $supplier->id,
-                    'reference_number' => 'PO-' . date('Y') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT),
-                    'purchase_date' => $purchaseDate,
-                    'status' => $status,
-                    'total_amount' => 0, // Will calculate below
-                ]);
+            $po = Purchase::create([
+                'supplier_id' => $supplier->id,
+                'reference_number' => 'PO-' . date('Y') . '-' . str_pad(rand(1000, 9999), 4, '0', STR_PAD_LEFT),
+                'purchase_date' => $purchaseDate,
+                'status' => 'ordered',
+                'total_amount' => 0,
+            ]);
 
-                $totalAmount = 0;
-                $itemCount = rand(1, 5);
-
-                for ($j = 0; $j < $itemCount; $j++) {
-                    $product = $products->random();
-                    $quantity = rand(10, 100);
-                    $costPrice = $product->price * 0.7; // Assume cost is 70% of price
-
-                    PurchaseItem::create([
-                        'purchase_id' => $po->id,
-                        'product_id' => $product->id,
-                        'quantity' => $quantity,
-                        'cost_price' => $costPrice,
-                        // 'expiry_date' => $purchaseDate->addMonths(rand(6, 24)), // Optional for PO
-                    ]);
-
-                    $totalAmount += $quantity * $costPrice;
-                }
-
-                $po->update(['total_amount' => $totalAmount]);
-            }
+            $this->createPoItems($po, $products);
         }
+
+        // 2. Create 'completed' POs (History)
+        for ($i = 0; $i < 10; $i++) {
+            $supplier = $suppliers->random();
+            $purchaseDate = Carbon::now()->subDays(rand(10, 60)); // Older orders
+
+            $po = Purchase::create([
+                'supplier_id' => $supplier->id,
+                'reference_number' => 'PO-' . date('Y') . '-' . str_pad(rand(1000, 9999), 4, '0', STR_PAD_LEFT),
+                'purchase_date' => $purchaseDate,
+                'status' => 'completed',
+                'total_amount' => 0,
+            ]);
+
+            $this->createPoItems($po, $products);
+        }
+    }
+
+    private function createPoItems($po, $products)
+    {
+        $totalAmount = 0;
+        $itemCount = rand(2, 6);
+
+        for ($j = 0; $j < $itemCount; $j++) {
+            $product = $products->random();
+            $quantity = rand(10, 100);
+            $costPrice = $product->price * 0.7;
+
+            PurchaseItem::create([
+                'purchase_id' => $po->id,
+                'product_id' => $product->id,
+                'quantity' => $quantity,
+                'cost_price' => $costPrice,
+            ]);
+
+            $totalAmount += $quantity * $costPrice;
+        }
+
+        $po->update(['total_amount' => $totalAmount]);
     }
 }

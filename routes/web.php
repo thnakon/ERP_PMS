@@ -73,7 +73,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/purchasing/purchase-orders/{id}', [PurchaseController::class, 'updatePurchaseOrder'])->name('purchasing.purchaseOrders.update');
     Route::delete('/purchasing/purchase-orders/{id}', [PurchaseController::class, 'destroyPurchaseOrder'])->name('purchasing.purchaseOrders.destroy');
     Route::post('/purchasing/purchase-orders/bulk-delete', [PurchaseController::class, 'bulkDestroyPurchaseOrder'])->name('purchasing.purchaseOrders.bulk_destroy');
+    Route::get('/purchasing/purchase-orders/{id}/details', [PurchaseController::class, 'getPoDetails'])->name('purchasing.purchaseOrders.details');
     Route::get('/purchasing/goods-received', [PurchaseController::class, 'goodsReceived'])->name('purchasing.goodsReceived');
+    Route::post('/purchasing/goods-received', [PurchaseController::class, 'storeGoodsReceipt'])->name('purchasing.goodsReceived.store');
 });
 
 // Route สำหรับ Live Search (ที่ JavaScript เรียก)
