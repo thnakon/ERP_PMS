@@ -50,6 +50,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/inventorys/categories/{id}', [InventoryController::class, 'destroyCategory'])->name('inventorys.categories.destroy');
     Route::post('/inventorys/categories/bulk-delete', [InventoryController::class, 'bulkDestroyCategories'])->name('inventorys.categories.bulk-delete');
     Route::get('/inventorys/expiry-management', [InventoryController::class, 'expiryManagement'])->name('inventorys.expiry-management');
+    Route::put('/inventorys/batches/{id}', [InventoryController::class, 'updateBatch'])->name('inventorys.batches.update');
+    Route::delete('/inventorys/batches/{id}', [InventoryController::class, 'destroyBatch'])->name('inventorys.batches.destroy');
+    Route::post('/inventorys/batches/bulk-delete', [InventoryController::class, 'bulkDestroyBatches'])->name('inventorys.batches.bulk_destroy');
     Route::get('/inventorys/stock-adjustments', [InventoryController::class, 'stockAdjustments'])->name('inventorys.stock-adjustments');
 
     //report subpages

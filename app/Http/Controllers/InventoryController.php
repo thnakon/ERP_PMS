@@ -27,6 +27,29 @@ class InventoryController extends Controller
             $query->where('category_id', $request->category);
         }
 
+        // Sort Filter
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'latest':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                case 'name_asc':
+                    $query->orderBy('name', 'asc');
+                    break;
+                case 'name_desc':
+                    $query->orderBy('name', 'desc');
+                    break;
+                default:
+                    $query->latest();
+                    break;
+            }
+        } else {
+            $query->latest();
+        }
+
         $products = $query->paginate(10);
         $categories = Category::all(); // For the filter dropdown and modal
 
@@ -37,28 +60,21 @@ class InventoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'generic_name' => 'nullable|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'selling_price' => 'required|numeric',
             'cost_price' => 'required|numeric',
-            'status' => 'required|in:Active,Inactive',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'selling_price' => 'required|numeric',
+            'image' => 'nullable|image|max:2048',
+            'status' => 'required|in:Active,Inactive'
         ]);
 
         $data = $request->all();
         $data['is_active'] = $request->status === 'Active';
 
-        // Handle Image Upload
         if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images/products'), $imageName);
-            $data['image_path'] = 'images/products/' . $imageName;
-        }
-
-        // Assign default unit if not present (Fix for 1364 error)
-        if (!isset($data['unit_id'])) {
-            $defaultUnit = \App\Models\Unit::firstOrCreate(['name' => 'Unit'], ['abbreviation' => 'u']);
-            $data['unit_id'] = $defaultUnit->id;
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/products'), $filename);
+            $data['image_path'] = '/images/products/' . $filename;
         }
 
         Product::create($data);
@@ -71,25 +87,21 @@ class InventoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
+            'cost_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
-            'status' => 'required|in:Active,Inactive',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|max:2048',
+            'status' => 'required|in:Active,Inactive'
         ]);
 
         $product = Product::findOrFail($id);
         $data = $request->all();
         $data['is_active'] = $request->status === 'Active';
 
-        // Handle Image Upload
         if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($product->image_path && file_exists(public_path($product->image_path))) {
-                @unlink(public_path($product->image_path));
-            }
-
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images/products'), $imageName);
-            $data['image_path'] = 'images/products/' . $imageName;
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/products'), $filename);
+            $data['image_path'] = '/images/products/' . $filename;
         }
 
         $product->update($data);
@@ -143,6 +155,29 @@ class InventoryController extends Controller
             $query->where('group', $request->group);
         }
 
+        // Sort Filter
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'latest':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                case 'name_asc':
+                    $query->orderBy('name', 'asc');
+                    break;
+                case 'name_desc':
+                    $query->orderBy('name', 'desc');
+                    break;
+                default:
+                    $query->latest();
+                    break;
+            }
+        } else {
+            $query->latest();
+        }
+
         $categories = $query->paginate(10);
 
         return view('inventorys.categories', compact('categories'));
@@ -177,20 +212,130 @@ class InventoryController extends Controller
 
     public function destroyCategory($id)
     {
-        Category::findOrFail($id)->delete();
-        return redirect()->back()->with('success', 'Category deleted successfully!')->with('suppress_global_toast', true);
+        try {
+            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+            Category::findOrFail($id)->delete();
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return redirect()->back()->with('success', 'Category deleted successfully!')->with('suppress_global_toast', true);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return redirect()->back()->with('error', 'Error deleting category: ' . $e->getMessage());
+        }
     }
 
     public function bulkDestroyCategories(Request $request)
     {
         $request->validate(['ids' => 'required|array']);
-        Category::whereIn('id', $request->ids)->delete();
-        return response()->json(['success' => true, 'message' => 'Selected categories deleted successfully!']);
+
+        try {
+            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+            Category::whereIn('id', $request->ids)->delete();
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return response()->json(['success' => true, 'message' => 'Selected categories deleted successfully!']);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
     }
 
-    public function expiryManagement()
+    public function expiryManagement(Request $request)
     {
-        return view('inventorys.expiry-management');
+        $query = \App\Models\Batch::with('product');
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('batch_number', 'like', "%{$search}%")
+                    ->orWhereHas('product', function ($pq) use ($search) {
+                        $pq->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Filter by Status
+        if ($request->filled('status')) {
+            $today = now()->format('Y-m-d');
+            $nearExpiryDate = now()->addMonths(3)->format('Y-m-d');
+
+            if ($request->status === 'expired') {
+                $query->where('expiry_date', '<', $today);
+            } elseif ($request->status === 'near_expiry') {
+                $query->whereBetween('expiry_date', [$today, $nearExpiryDate]);
+            } elseif ($request->status === 'good') {
+                $query->where('expiry_date', '>', $nearExpiryDate);
+            }
+        }
+
+        // Sort
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'latest':
+                    $query->latest();
+                    break;
+                case 'oldest':
+                    $query->oldest();
+                    break;
+                case 'exp_asc':
+                    $query->orderBy('expiry_date', 'asc');
+                    break;
+                case 'exp_desc':
+                    $query->orderBy('expiry_date', 'desc');
+                    break;
+                default:
+                    $query->orderBy('expiry_date', 'asc'); // FEFO default
+                    break;
+            }
+        } else {
+            $query->orderBy('expiry_date', 'asc'); // FEFO default
+        }
+
+        $batches = $query->paginate(10);
+
+        return view('inventorys.expiry-management', compact('batches'));
+    }
+
+    public function updateBatch(Request $request, $id)
+    {
+        $request->validate([
+            'expiry_date' => 'required|date',
+            'quantity' => 'required|integer|min:0',
+            'cost_price' => 'required|numeric|min:0',
+            'selling_price' => 'required|numeric|min:0',
+        ]);
+
+        $batch = \App\Models\Batch::findOrFail($id);
+        $batch->update($request->all());
+
+        return redirect()->back()->with('success', 'Batch updated successfully!')->with('suppress_global_toast', true);
+    }
+
+    public function destroyBatch($id)
+    {
+        try {
+            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+            \App\Models\Batch::findOrFail($id)->delete();
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return redirect()->back()->with('success', 'Batch deleted successfully!')->with('suppress_global_toast', true);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return redirect()->back()->with('error', 'Error deleting batch: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkDestroyBatches(Request $request)
+    {
+        $request->validate(['ids' => 'required|array']);
+
+        try {
+            \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+            \App\Models\Batch::whereIn('id', $request->ids)->delete();
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return response()->json(['success' => true, 'message' => 'Selected batches deleted successfully!']);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
     }
 
     public function stockAdjustments()

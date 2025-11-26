@@ -141,6 +141,10 @@
             </script>
         @endif
 
+        <script>
+            window.assetUrl = "{{ asset('') }}";
+        </script>
+
         <div class="inv-container">
             <div class="inv-breadcrumb-bar">
                 Dashboard / Inventory /
@@ -166,12 +170,24 @@
                 <form method="GET" action="{{ route('inventorys.manage-products') }}" class="inv-search-form"
                     style="display: flex; gap: 10px; align-items: center;">
 
+                    <!-- Sort Filter -->
+                    <select name="sort" class="inv-form-input" style="width: 180px; height: 44px; cursor: pointer;"
+                        onchange="this.form.submit()">
+                        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest Added</option>
+                        <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest Added</option>
+                        <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Name (A-Z)
+                        </option>
+                        <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Name (Z-A)
+                        </option>
+                    </select>
+
                     <!-- Category Filter -->
                     <select name="category" class="inv-form-input" style="width: 220px; height: 44px; cursor: pointer;"
                         onchange="this.form.submit()">
                         <option value="all">All Categories</option>
                         @foreach ($categories as $cat)
-                            <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>
+                            <option value="{{ $cat->id }}"
+                                {{ request('category') == $cat->id ? 'selected' : '' }}>
                                 {{ $cat->name }}
                             </option>
                         @endforeach
@@ -233,7 +249,7 @@
                 <div class="inv-card-row grid-products product-row"
                     style="grid-template-columns: 40px 50px 60px 3fr 1.5fr 1.5fr 1fr 1fr 1fr 130px; 
                            background: #fff; 
-                           border-radius: 12px; 
+                           border-radius: 22px; 
                            margin-bottom: 8px; 
                            padding: 16px 16px;
                            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
@@ -672,7 +688,7 @@
                 const placeholder = document.getElementById('inv-image-placeholder');
 
                 if (product.image_path) {
-                    preview.src = "{{ asset('') }}" + product.image_path;
+                    preview.src = product.image_path;
                     preview.style.display = 'block';
                     placeholder.style.display = 'none';
                 } else {
@@ -708,7 +724,7 @@
                 const viewImageContainer = document.getElementById('view-prod-image-container');
                 if (product.image_path) {
                     viewImageContainer.innerHTML =
-                        `<img src="{{ asset('') }}${product.image_path}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">`;
+                        `<img src="${product.image_path}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">`;
                     viewImageContainer.style.background = 'transparent';
                 } else {
                     viewImageContainer.innerHTML = `<i class="fa-solid fa-pills"></i>`;

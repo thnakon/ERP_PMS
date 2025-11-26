@@ -82,15 +82,40 @@
 
         <!-- Action Bar with Search & Filter -->
         <div class="purchasing-action-bar">
-            <!-- Search -->
-            <form action="{{ route('purchasing.purchaseOrders') }}" method="GET" class="purchasing-search-bar">
-                <i class="fa-solid fa-search"></i>
-                <input type="text" name="search" value="{{ request('search') }}"
-                    placeholder="Search by PO Number or Supplier...">
-                @if (request('status'))
-                    <input type="hidden" name="status" value="{{ request('status') }}">
-                @endif
-            </form>
+            <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1;">
+                <!-- Sort Filter -->
+                <form action="{{ route('purchasing.purchaseOrders') }}" method="GET">
+                    <select name="sort" class="inv-form-input"
+                        style="width: 160px; height: 44px; cursor: pointer; border-radius: 22px; border: 1px solid transparent; background-color: #fff; padding: 0 12px;"
+                        onchange="this.form.submit()">
+                        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest Added</option>
+                        <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest Added</option>
+                        <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Supplier (A-Z)
+                        </option>
+                        <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Supplier (Z-A)
+                        </option>
+                        @if (request('search'))
+                            <input type="hidden" name="search" value="{{ request('search') }}">
+                        @endif
+                        @if (request('status'))
+                            <input type="hidden" name="status" value="{{ request('status') }}">
+                        @endif
+                    </select>
+                </form>
+
+                <!-- Search -->
+                <form action="{{ route('purchasing.purchaseOrders') }}" method="GET" class="purchasing-search-bar">
+                    @if (request('sort'))
+                        <input type="hidden" name="sort" value="{{ request('sort') }}">
+                    @endif
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" name="search" value="{{ request('search') }}"
+                        placeholder="Search by PO Number or Supplier...">
+                    @if (request('status'))
+                        <input type="hidden" name="status" value="{{ request('status') }}">
+                    @endif
+                </form>
+            </div>
 
             <!-- Sliding Filter -->
             <div class="sliding-toggle-filter" id="po-status-filter" style="margin-bottom: 15px">
@@ -115,6 +140,7 @@
                     <div class="col-header">
                         <div class="inv-checkbox" id="select-all-checkbox"></div>
                     </div>
+                    <div class="col-header" style="width: 50px;">#</div>
                     <div class="col-header">PO Number</div>
                     <div class="col-header">Supplier</div>
                     <div class="col-header">Date Ordered</div>
@@ -129,10 +155,16 @@
                         <div class="col-checkbox">
                             <div class="inv-checkbox item-checkbox" data-id="{{ $po->id }}"></div>
                         </div>
+                        <div class="col-index"
+                            style="width: 50px; font-size: 13px; color: var(--text-secondary); display: flex; align-items: center;">
+                            {{ ($purchaseOrders->currentPage() - 1) * $purchaseOrders->perPage() + $loop->iteration }}
+                        </div>
                         <div class="col-po-number" data-label="PO Number">{{ $po->reference_number }}</div>
                         <div class="col-supplier" data-label="Supplier">{{ $po->supplier->name ?? 'Unknown' }}</div>
-                        <div class="col-date" data-label="Date Ordered">{{ $po->purchase_date->format('d/m/Y') }}</div>
-                        <div class="col-cost" data-label="Total Cost">฿{{ number_format($po->total_amount, 2) }}</div>
+                        <div class="col-date" data-label="Date Ordered">{{ $po->purchase_date->format('d/m/Y') }}
+                        </div>
+                        <div class="col-cost" data-label="Total Cost">฿{{ number_format($po->total_amount, 2) }}
+                        </div>
                         <div class="col-status" data-label="Status">
                             @php
                                 $statusClass = match ($po->status) {

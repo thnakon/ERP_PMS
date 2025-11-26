@@ -57,8 +57,9 @@
         <!-- Header -->
         <div class="purchasing-header">
             <div class="purchasing-header-left">
-                <p class="sr-breadcrumb">Dashboard / Purchasing / <span style="color: #3a3a3c; font-weight: 600;">Suppliers</span> > <a
-                    href="{{ route('purchasing.purchaseOrders') }}" style="color: #017aff"> Purchase-Orders </a></p>
+                <p class="sr-breadcrumb">Dashboard / Purchasing / <span
+                        style="color: #3a3a3c; font-weight: 600;">Suppliers</span> > <a
+                        href="{{ route('purchasing.purchaseOrders') }}" style="color: #017aff"> Purchase-Orders </a></p>
                 <h2 class="sr-page-title">Suppliers <span
                         style="font-size: 0.6em; color: #8e8e93; font-weight: 500;">({{ $suppliers->total() }})</span>
                 </h2>
@@ -75,11 +76,33 @@
 
         <!-- Action Bar -->
         <div class="purchasing-action-bar" style="display: flex; justify-content: space-between; align-items: center;">
-            <form action="{{ route('purchasing.suppliers') }}" method="GET" class="purchasing-search-bar">
-                <i class="fa-solid fa-search"></i>
-                <input type="text" name="search" value="{{ request('search') }}"
-                    placeholder="Search by Company, Contact, or Phone...">
-            </form>
+            <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1;">
+                <!-- Sort Filter -->
+                <form action="{{ route('purchasing.suppliers') }}" method="GET">
+                    <select name="sort" class="inv-form-input"
+                        style="width: 160px; height: 44px; cursor: pointer; border-radius: 22px; border: 1px solid transparent; background-color: #fff; padding: 0 12px;"
+                        onchange="this.form.submit()">
+                        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest Added</option>
+                        <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest Added</option>
+                        <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Name (A-Z)
+                        </option>
+                        <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Name (Z-A)
+                        </option>
+                        @if (request('search'))
+                            <input type="hidden" name="search" value="{{ request('search') }}">
+                        @endif
+                    </select>
+                </form>
+
+                <form action="{{ route('purchasing.suppliers') }}" method="GET" class="purchasing-search-bar">
+                    @if (request('sort'))
+                        <input type="hidden" name="sort" value="{{ request('sort') }}">
+                    @endif
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" name="search" value="{{ request('search') }}"
+                        placeholder="Search by Company, Contact, or Phone...">
+                </form>
+            </div>
 
             <!-- Bulk Actions Panel -->
             <div id="bulk-actions" style="display: none; align-items: center; gap: 12px;">
@@ -99,6 +122,7 @@
                 <div class="col-checkbox">
                     <div class="inv-checkbox" id="select-all-checkbox"></div>
                 </div>
+                <div class="col-index" style="font-weight: 600; color: var(--text-secondary);">#</div>
                 <div class="col-company-name">Company Name</div>
                 <div class="col-contact">Contact Person</div>
                 <div class="col-phone">Phone</div>
@@ -113,6 +137,8 @@
                     <div class="col-checkbox">
                         <div class="inv-checkbox item-checkbox" data-id="{{ $supplier->id }}"></div>
                     </div>
+                    <div class="col-index" style="font-size: 13px; color: var(--text-secondary);">
+                        {{ ($suppliers->currentPage() - 1) * $suppliers->perPage() + $loop->iteration }}</div>
                     <div class="col-company-name" data-label="Company Name">{{ $supplier->name }}</div>
                     <div class="col-contact" data-label="Contact Person">{{ $supplier->contact_person ?? '-' }}</div>
                     <div class="col-phone" data-label="Phone">{{ $supplier->phone ?? '-' }}</div>
@@ -129,7 +155,8 @@
                             data-supplier='@json($supplier)'>
                             <i class="fa-solid fa-pen"></i>
                         </button>
-                        <button class="purchasing-icon-button btn-delete" title="Delete" data-id="{{ $supplier->id }}">
+                        <button class="purchasing-icon-button btn-delete" title="Delete"
+                            data-id="{{ $supplier->id }}">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -138,7 +165,8 @@
                 <div class="purchasing-list-row"
                     style="display: flex; justify-content: center; align-items: center; padding: 40px;">
                     <div style="text-align: center; color: var(--text-secondary);">
-                        <i class="fa-solid fa-box-open" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <i class="fa-solid fa-box-open"
+                            style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
                         <p>No suppliers found.</p>
                     </div>
                 </div>
@@ -184,6 +212,13 @@
                         <label class="inv-form-label">Email</label>
                         <input type="email" id="email" name="email" class="inv-form-input"
                             placeholder="e.g. contact@example.com">
+                    </div>
+                    <div class="inv-form-group">
+                        <label class="inv-form-label">Status</label>
+                        <select id="status" name="status" class="inv-form-input">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
                     </div>
                     <div class="inv-form-group">
                         <label class="inv-form-label">Address</label>
@@ -311,7 +346,7 @@
 
             // --- Bulk Delete Logic ---
             const bulkDeleteTrigger = document.getElementById(
-            'btn-bulk-delete-trigger'); // Changed ID to avoid conflict
+                'btn-bulk-delete-trigger'); // Changed ID to avoid conflict
 
             if (bulkDeleteTrigger) {
                 bulkDeleteTrigger.addEventListener('click', function() {

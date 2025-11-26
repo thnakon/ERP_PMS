@@ -155,6 +155,17 @@
                 <!-- Search & Filter Form -->
                 <form method="GET" action="{{ route('inventorys.categories') }}" class="inv-search-form"
                     style="display: flex; gap: 10px; align-items: center;">
+                    <!-- Sort Filter -->
+                    <select name="sort" class="inv-form-input" style="width: 180px; height: 44px; cursor: pointer;"
+                        onchange="this.form.submit()">
+                        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest Added</option>
+                        <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest Added</option>
+                        <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Name (A-Z)
+                        </option>
+                        <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Name (Z-A)
+                        </option>
+                    </select>
+
                     <!-- Group Filter -->
                     <select name="group" class="inv-form-input" style="width: 220px; height: 44px; cursor: pointer;"
                         onchange="this.form.submit()">
@@ -236,8 +247,8 @@
                                 class="fa-solid fa-eye"></i></button>
                         <button class="inv-icon-action" onclick="openEditModal({{ json_encode($category) }})"><i
                                 class="fa-solid fa-pen"></i></button>
-                        <button class="inv-icon-action btn-delete-row" onclick="confirmDelete({{ $category->id }})"><i
-                                class="fa-solid fa-trash"></i></button>
+                        <button class="inv-icon-action btn-delete-row"
+                            onclick="confirmDelete({{ $category->id }})"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
             @empty

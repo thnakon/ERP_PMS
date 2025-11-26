@@ -85,6 +85,29 @@ class PurchaseController extends Controller
             });
         }
 
+        // Sort Filter
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'latest':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                case 'name_asc':
+                    $query->orderBy('name', 'asc');
+                    break;
+                case 'name_desc':
+                    $query->orderBy('name', 'desc');
+                    break;
+                default:
+                    $query->latest();
+                    break;
+            }
+        } else {
+            $query->latest();
+        }
+
         $suppliers = $query->withCount('purchases')->paginate(10); // Assuming 'purchases' relationship exists
 
         return view('purchasing.suppliers', compact('suppliers'));
@@ -94,44 +117,42 @@ class PurchaseController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
+            'contact_person' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string',
+            'status' => 'required|in:Active,Inactive'
         ]);
 
         \App\Models\Supplier::create($request->all());
 
-        return redirect()->route('purchasing.suppliers')
-            ->with('success', 'Supplier added successfully!')
-            ->with('suppress_global_toast', true);
+        return redirect()->back()->with('success', 'Supplier created successfully!')->with('suppress_global_toast', true);
     }
 
     public function updateSupplier(Request $request, $id)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
+            'contact_person' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string',
+            'status' => 'required|in:Active,Inactive'
         ]);
 
         $supplier = \App\Models\Supplier::findOrFail($id);
         $supplier->update($request->all());
 
-        return redirect()->route('purchasing.suppliers')
-            ->with('success', 'Supplier updated successfully!')
-            ->with('suppress_global_toast', true);
+        return redirect()->back()->with('success', 'Supplier updated successfully!')->with('suppress_global_toast', true);
     }
 
     public function destroySupplier($id)
     {
         try {
             \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
-            $supplier = \App\Models\Supplier::findOrFail($id);
-            $supplier->delete();
+            \App\Models\Supplier::findOrFail($id)->delete();
             \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
-
-            return redirect()->route('purchasing.suppliers')
-                ->with('success', 'Supplier deleted successfully!')
-                ->with('suppress_global_toast', true);
+            return redirect()->back()->with('success', 'Supplier deleted successfully!')->with('suppress_global_toast', true);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
             return redirect()->back()->with('error', 'Error deleting supplier: ' . $e->getMessage());
@@ -140,17 +161,13 @@ class PurchaseController extends Controller
 
     public function bulkDestroySupplier(Request $request)
     {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'exists:suppliers,id',
-        ]);
+        $request->validate(['ids' => 'required|array']);
 
         try {
             \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
-            $count = \App\Models\Supplier::whereIn('id', $request->ids)->delete();
+            \App\Models\Supplier::whereIn('id', $request->ids)->delete();
             \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
-
-            return response()->json(['success' => true, 'message' => "Deleted {$count} suppliers successfully!"]);
+            return response()->json(['success' => true, 'message' => 'Selected suppliers deleted successfully!']);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
             return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
@@ -180,7 +197,36 @@ class PurchaseController extends Controller
             $query->where('status', $request->status);
         }
 
-        $purchaseOrders = $query->latest()->paginate(10);
+        // Sort Filter
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'latest':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                case 'name_asc':
+                    // Sort by Supplier Name
+                    $query->join('suppliers', 'purchases.supplier_id', '=', 'suppliers.id')
+                        ->orderBy('suppliers.name', 'asc')
+                        ->select('purchases.*'); // Avoid column conflicts
+                    break;
+                case 'name_desc':
+                    // Sort by Supplier Name
+                    $query->join('suppliers', 'purchases.supplier_id', '=', 'suppliers.id')
+                        ->orderBy('suppliers.name', 'desc')
+                        ->select('purchases.*');
+                    break;
+                default:
+                    $query->latest();
+                    break;
+            }
+        } else {
+            $query->latest();
+        }
+
+        $purchaseOrders = $query->paginate(10);
         $suppliers = \App\Models\Supplier::all();
         $products = \App\Models\Product::all();
 
@@ -193,42 +239,40 @@ class PurchaseController extends Controller
             'supplier_id' => 'required|exists:suppliers,id',
             'purchase_date' => 'required|date',
             'status' => 'required|in:draft,ordered,completed,cancelled',
-            'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1',
-            'items.*.cost_price' => 'required|numeric|min:0',
+            'items' => 'nullable|array',
         ]);
 
         try {
             DB::transaction(function () use ($request) {
                 $totalAmount = 0;
-                foreach ($request->items as $item) {
-                    $totalAmount += ($item['quantity'] * $item['cost_price']);
+                if ($request->has('items')) {
+                    foreach ($request->items as $item) {
+                        $totalAmount += ($item['quantity'] * $item['cost_price']);
+                    }
                 }
 
                 $po = Purchase::create([
                     'supplier_id' => $request->supplier_id,
-                    'reference_number' => 'PO-' . date('Y') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT), // Simple auto-gen
+                    'reference_number' => 'PO-' . date('Ymd') . '-' . rand(1000, 9999),
                     'purchase_date' => $request->purchase_date,
                     'status' => $request->status,
-                    'total_amount' => $totalAmount,
+                    'total_amount' => $totalAmount
                 ]);
 
-                foreach ($request->items as $item) {
-                    $po->items()->create([
-                        'product_id' => $item['product_id'],
-                        'quantity' => $item['quantity'],
-                        'cost_price' => $item['cost_price'],
-                        // expiry_date is optional for PO
-                    ]);
+                if ($request->has('items')) {
+                    foreach ($request->items as $item) {
+                        $po->items()->create([
+                            'product_id' => $item['product_id'],
+                            'quantity' => $item['quantity'],
+                            'cost_price' => $item['cost_price'],
+                            'expiry_date' => null
+                        ]);
+                    }
                 }
             });
-
-            return redirect()->route('purchasing.purchaseOrders')
-                ->with('success', 'Purchase Order created successfully!')
-                ->with('suppress_global_toast', true);
+            return redirect()->back()->with('success', 'Purchase Order created successfully!')->with('suppress_global_toast', true);
         } catch (\Exception $e) {
-            return back()->with('error', 'Error creating PO: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error creating PO: ' . $e->getMessage());
         }
     }
 
@@ -238,45 +282,42 @@ class PurchaseController extends Controller
             'supplier_id' => 'required|exists:suppliers,id',
             'purchase_date' => 'required|date',
             'status' => 'required|in:draft,ordered,completed,cancelled',
-            'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1',
-            'items.*.cost_price' => 'required|numeric|min:0',
+            'items' => 'nullable|array',
         ]);
 
         try {
             DB::transaction(function () use ($request, $id) {
                 $po = Purchase::findOrFail($id);
 
-                // Recalculate total
                 $totalAmount = 0;
-                foreach ($request->items as $item) {
-                    $totalAmount += ($item['quantity'] * $item['cost_price']);
+                if ($request->has('items')) {
+                    foreach ($request->items as $item) {
+                        $totalAmount += ($item['quantity'] * $item['cost_price']);
+                    }
                 }
 
                 $po->update([
                     'supplier_id' => $request->supplier_id,
                     'purchase_date' => $request->purchase_date,
                     'status' => $request->status,
-                    'total_amount' => $totalAmount,
+                    'total_amount' => $totalAmount
                 ]);
 
-                // Sync items (delete all and recreate for simplicity, or smart sync)
                 $po->items()->delete();
-                foreach ($request->items as $item) {
-                    $po->items()->create([
-                        'product_id' => $item['product_id'],
-                        'quantity' => $item['quantity'],
-                        'cost_price' => $item['cost_price'],
-                    ]);
+
+                if ($request->has('items')) {
+                    foreach ($request->items as $item) {
+                        $po->items()->create([
+                            'product_id' => $item['product_id'],
+                            'quantity' => $item['quantity'],
+                            'cost_price' => $item['cost_price'],
+                        ]);
+                    }
                 }
             });
-
-            return redirect()->route('purchasing.purchaseOrders')
-                ->with('success', 'Purchase Order updated successfully!')
-                ->with('suppress_global_toast', true);
+            return redirect()->back()->with('success', 'Purchase Order updated successfully!')->with('suppress_global_toast', true);
         } catch (\Exception $e) {
-            return back()->with('error', 'Error updating PO: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error updating PO: ' . $e->getMessage());
         }
     }
 
@@ -284,15 +325,9 @@ class PurchaseController extends Controller
     {
         try {
             \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
-            $po = Purchase::findOrFail($id);
-            // Items are usually deleted via cascade, but we force it here just in case
-            $po->items()->delete();
-            $po->delete();
+            Purchase::findOrFail($id)->delete();
             \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
-
-            return redirect()->route('purchasing.purchaseOrders')
-                ->with('success', 'Purchase Order deleted successfully!')
-                ->with('suppress_global_toast', true);
+            return redirect()->back()->with('success', 'Purchase Order deleted successfully!')->with('suppress_global_toast', true);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
             return redirect()->back()->with('error', 'Error deleting PO: ' . $e->getMessage());
@@ -301,19 +336,13 @@ class PurchaseController extends Controller
 
     public function bulkDestroyPurchaseOrder(Request $request)
     {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'exists:purchases,id',
-        ]);
+        $request->validate(['ids' => 'required|array']);
 
         try {
             \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
-            // Delete items first for safety, though cascade might handle it
-            PurchaseItem::whereIn('purchase_id', $request->ids)->delete();
-            $count = Purchase::whereIn('id', $request->ids)->delete();
+            Purchase::whereIn('id', $request->ids)->delete();
             \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
-
-            return response()->json(['success' => true, 'message' => "Deleted {$count} purchase orders successfully!"]);
+            return response()->json(['success' => true, 'message' => 'Selected orders deleted successfully!']);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
             return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
@@ -339,7 +368,38 @@ class PurchaseController extends Controller
         $awaitingPos = (clone $query)->where('status', 'ordered')->latest()->get();
 
         // Received: Status 'completed'
-        $receivedPos = (clone $query)->where('status', 'completed')->latest()->paginate(10);
+        $receivedQuery = (clone $query)->where('status', 'completed');
+
+        // Sort Filter for Received History
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'latest':
+                    $receivedQuery->orderBy('updated_at', 'desc'); // Use updated_at for received date approx
+                    break;
+                case 'oldest':
+                    $receivedQuery->orderBy('updated_at', 'asc');
+                    break;
+                case 'name_asc':
+                    // Sort by Supplier Name
+                    $receivedQuery->join('suppliers', 'purchases.supplier_id', '=', 'suppliers.id')
+                        ->orderBy('suppliers.name', 'asc')
+                        ->select('purchases.*');
+                    break;
+                case 'name_desc':
+                    // Sort by Supplier Name
+                    $receivedQuery->join('suppliers', 'purchases.supplier_id', '=', 'suppliers.id')
+                        ->orderBy('suppliers.name', 'desc')
+                        ->select('purchases.*');
+                    break;
+                default:
+                    $receivedQuery->latest('updated_at');
+                    break;
+            }
+        } else {
+            $receivedQuery->latest('updated_at');
+        }
+
+        $receivedPos = $receivedQuery->paginate(10);
 
         return view('purchasing.goods-received', compact('awaitingPos', 'receivedPos'));
     }

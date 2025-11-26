@@ -9,7 +9,9 @@
                         Received</span>
                     < <a href="{{ route('purchasing.purchaseOrders') }}" style="color: #017aff">Purchase Orders</a>
                 </p>
-                <h2 class="sr-page-title">Goods Received</h2>
+                <h2 class="sr-page-title">Goods Received <span
+                        style="font-size: 0.6em; color: #8e8e93; font-weight: 500;">({{ $receivedPos->total() }})</span>
+                </h2>
             </div>
 
             <div class="sr-header-right" style="margin-right: 10px; display: flex; align-items: center; gap: 12px;">
@@ -56,7 +58,7 @@
                 </div>
 
                 <div class="po-awaiting-list"
-                    style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    style="background: white; border-radius: 22px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
                     @if ($awaitingPos->count() > 0)
                         <ul style="list-style: none; padding: 0; margin: 0;">
                             @foreach ($awaitingPos as $po)
@@ -71,7 +73,8 @@
                                             <div style="font-weight: 600; color: #1d1d1f; font-size: 1rem;">
                                                 {{ $po->reference_number }}</div>
                                             <div style="color: #86868b; font-size: 0.9rem;">
-                                                {{ $po->supplier->name }} • {{ $po->items->count() }} Items • Ordered:
+                                                {{ $po->supplier->name ?? 'Unknown Supplier' }} •
+                                                {{ $po->items->count() }} Items • Ordered:
                                                 {{ $po->purchase_date->format('d/m/Y') }}
                                             </div>
                                         </div>
@@ -95,16 +98,38 @@
 
             <!-- Section B: Received History -->
             <div class="gr-section">
-                <h3 style="font-size: 1.1rem; font-weight: 600; color: #1d1d1f; margin-bottom: 15px;">
-                    <i class="fa-solid fa-clock-rotate-left" style="color: #34c759; margin-right: 8px;"></i> Received
-                    History
-                </h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; color: #1d1d1f; margin: 0;">
+                        <i class="fa-solid fa-clock-rotate-left" style="color: #34c759; margin-right: 8px;"></i>
+                        Received
+                        History
+                    </h3>
+                    <!-- Sort Filter -->
+                    <form action="{{ route('purchasing.goodsReceived') }}" method="GET">
+                        <select name="sort" class="inv-form-input"
+                            style="width: 160px; height: 36px; cursor: pointer; border-radius: 18px; border: 1px solid #d2d2d7; padding: 0 12px; font-size: 0.9rem;"
+                            onchange="this.form.submit()">
+                            <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest Received
+                            </option>
+                            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest Received
+                            </option>
+                            <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Supplier
+                                (A-Z)</option>
+                            <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Supplier
+                                (Z-A)</option>
+                            @if (request('search'))
+                                <input type="hidden" name="search" value="{{ request('search') }}">
+                            @endif
+                        </select>
+                    </form>
+                </div>
 
                 <div class="purchasing-list-container" id="gr-list">
                     <div class="purchasing-list-row header-row">
                         <div class="col-header">
                             <div class="inv-checkbox" id="select-all-checkbox"></div>
                         </div>
+                        <div class="col-header" style="width: 50px;">#</div>
                         <div class="col-header">PO Number</div>
                         <div class="col-header">Supplier</div>
                         <div class="col-header">Received Date</div>
@@ -117,8 +142,12 @@
                             <div class="col-checkbox">
                                 <div class="inv-checkbox item-checkbox" data-id="{{ $po->id }}"></div>
                             </div>
+                            <div class="col-index"
+                                style="width: 50px; font-size: 13px; color: var(--text-secondary); display: flex; align-items: center;">
+                                {{ ($receivedPos->currentPage() - 1) * $receivedPos->perPage() + $loop->iteration }}
+                            </div>
                             <div class="col-po-number">{{ $po->reference_number }}</div>
-                            <div class="col-supplier">{{ $po->supplier->name }}</div>
+                            <div class="col-supplier">{{ $po->supplier->name ?? 'Unknown Supplier' }}</div>
                             <div class="col-date">{{ $po->updated_at->format('d/m/Y') }}</div>
                             <!-- Using updated_at as received date for now -->
                             <div class="col-cost">฿{{ number_format($po->total_amount, 2) }}</div>
@@ -193,7 +222,7 @@
                 <div class="receive-footer" style="margin-top: 30px; display: flex; justify-content: flex-end;">
                     <button type="submit" class="purchasing-button-primary purchasing-button-lg btn-confirm-receive"
                         style="padding: 12px 32px; font-size: 1rem;">
-                        <i class="fa-solid fa-check"></i> Confirm & Receive Stock
+                        <i class="fa-solid fa-check-double"></i> Confirm & Receive Stock
                     </button>
                 </div>
             </form>

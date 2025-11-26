@@ -38,6 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
             formInputs.forEach(input => input.disabled = false);
             if (saveBtn) saveBtn.style.display = 'block';
 
+            // Reset Status
+            if (document.getElementById('status')) document.getElementById('status').value = 'Active';
+
             if (mode === 'add') {
                 if (modalTitle) modalTitle.textContent = 'Add New Supplier';
                 if (saveBtn) saveBtn.textContent = 'Save Supplier';
@@ -54,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (document.getElementById('phone')) document.getElementById('phone').value = data.phone || '';
                 if (document.getElementById('email')) document.getElementById('email').value = data.email || '';
                 if (document.getElementById('address')) document.getElementById('address').value = data.address || '';
+                if (document.getElementById('status')) document.getElementById('status').value = data.status || 'Active';
             } else if (mode === 'view') {
                 if (modalTitle) modalTitle.textContent = 'Supplier Details';
                 formInputs.forEach(input => input.disabled = true);
@@ -65,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (document.getElementById('phone')) document.getElementById('phone').value = data.phone || '';
                 if (document.getElementById('email')) document.getElementById('email').value = data.email || '';
                 if (document.getElementById('address')) document.getElementById('address').value = data.address || '';
+                if (document.getElementById('status')) document.getElementById('status').value = data.status || 'Active';
             }
         };
 
