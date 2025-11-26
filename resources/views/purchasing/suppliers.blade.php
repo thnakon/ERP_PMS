@@ -44,6 +44,58 @@
             .flash-message.error i {
                 color: #ff3b30;
             }
+
+            /* Apple-style Pagination */
+            .people-pagination {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 16px 24px;
+                border-top: 1px solid #e5e5ea;
+                margin-top: auto;
+                background-color: #fff;
+                border-bottom-left-radius: 12px;
+                border-bottom-right-radius: 12px;
+            }
+
+            .pagination-text {
+                font-size: 13px;
+                color: #8e8e93;
+                font-weight: 500;
+            }
+
+            .pagination-controls {
+                display: flex;
+                gap: 8px;
+            }
+
+            .pagination-btn {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                border: 1px solid #e5e5ea;
+                background-color: #fff;
+                color: #007aff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                text-decoration: none;
+                font-size: 12px;
+            }
+
+            .pagination-btn:hover:not(.disabled) {
+                background-color: #f2f2f7;
+                border-color: #d1d1d6;
+            }
+
+            .pagination-btn.disabled {
+                color: #c7c7cc;
+                cursor: not-allowed;
+                border-color: #f2f2f7;
+                background-color: #fff;
+            }
         </style>
     </head>
 

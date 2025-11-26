@@ -54,6 +54,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/inventorys/batches/{id}', [InventoryController::class, 'destroyBatch'])->name('inventorys.batches.destroy');
     Route::post('/inventorys/batches/bulk-delete', [InventoryController::class, 'bulkDestroyBatches'])->name('inventorys.batches.bulk_destroy');
     Route::get('/inventorys/stock-adjustments', [InventoryController::class, 'stockAdjustments'])->name('inventorys.stock-adjustments');
+    Route::post('/inventorys/stock-adjustments', [InventoryController::class, 'storeStockAdjustment'])->name('inventorys.stock-adjustments.store');
+    Route::put('/inventorys/stock-adjustments/{id}', [InventoryController::class, 'updateStockAdjustment'])->name('inventorys.stock-adjustments.update');
+    Route::delete('/inventorys/stock-adjustments/{id}', [InventoryController::class, 'destroyStockAdjustment'])->name('inventorys.stock-adjustments.destroy');
+    Route::post('/inventorys/stock-adjustments/bulk-delete', [InventoryController::class, 'bulkDestroyStockAdjustments'])->name('inventorys.stock-adjustments.bulk_destroy');
+    Route::get('/inventorys/stock-adjustments/export', [InventoryController::class, 'exportStockAdjustments'])->name('inventorys.stock-adjustments.export');
 
     //report subpages
     Route::get('/reports/sales', [ReportsController::class, 'sales'])->name('reports.sales');

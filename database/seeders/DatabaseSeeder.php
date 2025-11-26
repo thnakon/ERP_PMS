@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             SupplierSeeder::class,
             PurchaseOrderSeeder::class,
             BatchSeeder::class,
+            StockAdjustmentSeeder::class,
         ]);
     }
 }
