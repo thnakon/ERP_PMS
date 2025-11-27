@@ -159,7 +159,7 @@
                 </div>
                 <div class="inv-header-right">
                     <button class="inv-btn-primary" onclick="openNewModal()">
-                        <i class="fa-solid fa-plus"></i> New Product
+                        <i class="fa-solid fa-tablets"></i> New Product
                     </button>
                 </div>
             </div>

@@ -104,25 +104,26 @@
         </div>
     </div>
 
-    {{-- Comfirm Madol log out --}}
-    <div id="logoutModal" class="apple-modal-overlay">
-        <div class="apple-modal-content">
-            <div class="apple-modal-header">
-                <h3>{{ __('ยืนยันการออกจากระบบ') }}</h3>
-            </div>
-            <div class="apple-modal-body">
-                <p>{{ __('คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?') }}</p>
-            </div>
-            <div class="apple-modal-footer">
-                <button type="button" class="apple-button cancel-button" id="cancelLogout">
-                    {{ __('ยกเลิก') }}
-                </button>
-                <button type="button" class="apple-button confirm-button" id="confirmLogout">
-                    {{ __('ออกจากระบบ') }}
-                </button>
-            </div>
+    {{-- Confirm Logout Modal --}}
+<div id="logoutModal" class="apple-modal-overlay">
+    <div class="apple-modal-content">
+        <div class="apple-modal-header">
+            <h3>{{ __('Confirm Logout') }}</h3>
+        </div>
+        <div class="apple-modal-body">
+            <p>{{ __('Are you sure you want to log out?') }}</p>
+        </div>
+        <div class="apple-modal-footer">
+            <button type="button" class="apple-button cancel-button" id="cancelLogout">
+                {{ __('Cancel') }}
+            </button>
+            <button type="button" class="apple-button confirm-button" id="confirmLogout">
+                {{ __('Log Out') }}
+            </button>
         </div>
     </div>
+</div>
+
 
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

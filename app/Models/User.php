@@ -20,11 +20,19 @@ class User extends Authenticatable
     protected $fillable = [
         'first_name',
         'last_name',
+        'employee_id',
         'role',
+        'position',
+        'pharmacist_license_id',
         'gender',
         'birthdate',
         'email',
+        'phone_number',
+        'profile_photo_path',
+        'language',
+        'theme',
         'password',
+        'last_read_notifications_at',
     ];
 
     /**

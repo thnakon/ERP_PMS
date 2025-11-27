@@ -28,7 +28,17 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false))->with('success', 'เข้าสู่ระบบสำเร็จ!'); // <-- เพิ่มบรรทัดนี้
+        // Log login activity
+        \App\Models\ActivityLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'Login',
+            'description' => 'User logged in',
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
+        return redirect()->intended(route('dashboard', absolute: false))
+            ->with('success', 'Login successful!'); // success flash for toast
     }
 
     /**
@@ -42,6 +52,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('success', 'ออกจากระบบสำเร็จ!'); // <-- เพิ่มบรรทัดนี้
+        return redirect('/')->with('success', 'Successfully logged out!'); // <-- เพิ่มบรรทัดนี้
     }
 }

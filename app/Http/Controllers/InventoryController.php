@@ -401,7 +401,7 @@ class InventoryController extends Controller
             // 1. Create Log
             \App\Models\StockAdjustment::create([
                 'product_id' => $request->product_id,
-                'user_id' => auth()->id(), // Assuming logged in user
+                'user_id' => \Illuminate\Support\Facades\Auth::id(), // Assuming logged in user
                 'type' => $request->type,
                 'quantity' => $request->quantity,
                 'reason' => $request->reason,

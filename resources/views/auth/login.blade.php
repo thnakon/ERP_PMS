@@ -58,14 +58,32 @@
                     {{ __('Log in') }}
                 </button>
             </div>
-        </form>
-
-        <div class="privacy-info">
-            <p>ข้อมูลบัญชี Oboun ของคุณจะถูกใช้เพื่อยืนยันตัวตนและรักษาความปลอดภัย
-                การดำเนินการนี้เป็นการยืนยันว่าคุณได้อ่านและยอมรับ <a href="#">ข้อกำหนดและเงื่อนไข</a> ของเราแล้ว
-            </p>
-        </div>
-
+            @if (session('success'))
+                <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+                <script>
+                    Toastify({
+                        text: '<div class="flex items-center gap-3"><div class="w-6 h-6 rounded-full bg-[#34C759] flex items-center justify-center shrink-0"><i class="fa-solid fa-check text-white text-[10px]"></i></div><span class="text-[#1D1D1F] font-medium text-sm">Login successful!</span></div>',
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        backgroundColor: "white",
+                        escapeMarkup: false,
+                        stopOnFocus: true,
+                        className: "soft-shadow rounded-full px-6 py-3 border border-gray-100",
+                        style: {
+                            background: "white",
+                            boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+                            borderRadius: "50px",
+                            padding: "12px 24px",
+                            color: "#1D1D1F",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            minWidth: "300px"
+                        }
+                    }).showToast();
+                </script>
+            @endif
     </div>
     {{-- (สิ้นสุดกล่องล็อกอิน) --}}
 

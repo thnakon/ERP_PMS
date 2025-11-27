@@ -1,41 +1,41 @@
 <header id="header" class="apple-header">
     {{-- เปลี่ยนกลับเป็น header-left-section เพื่อให้ CSS ทำงานถูกต้อง --}}
-    <div class="header-left-section"> 
-        
+    <div class="header-left-section">
+
         <!-- Global Search Wrapper (รวมช่องค้นหาและผลลัพธ์) -->
         <div class="global-search-wrapper">
             <div class="header-search-container">
                 <i class="fa-solid fa-magnifying-glass search-icon"
-   style="
+                    style="
        background: linear-gradient(90deg,#007aff,#7d22ff,#d31aff,#ff3b30,#ff9500);
        -webkit-background-clip: text;
        -webkit-text-fill-color: transparent;
    ">
-</i>
+                </i>
 
                 <input type="text" id="globalSearch" placeholder="Search or Ai search" autocomplete="off" />
-                <i id="aiSearchButton" class="fa-solid fa-atom ai-search-icon" 
-   style="
+                <i id="aiSearchButton" class="fa-solid fa-atom ai-search-icon"
+                    style="
        background: linear-gradient(90deg,#007aff,#7d22ff,#d31aff,#ff3b30,#ff9500);
        -webkit-background-clip: text;
        -webkit-text-fill-color: transparent;
    ">
-</i>
+                </i>
 
             </div>
             <!-- ผลลัพธ์การค้นหา -->
             <div id="liveSearchResults" class="live-search-results"> </div>
         </div>
-        
+
         <button class="header-action-btn" title="Speedometer">
-    <i class="fa-solid fa-microphone"
-       style="
+            <i class="fa-solid fa-microphone"
+                style="
            background: linear-gradient(90deg,#007aff);
            -webkit-background-clip: text;
            -webkit-text-fill-color: transparent;
        ">
-    </i>
-</button>
+            </i>
+        </button>
 
     </div>
 
@@ -47,21 +47,122 @@
             <span class="help-badge">!</span>
         </button>
 
-        <!-- Setting/Slider Button -->
-        <button class="header-action-btn" title="System Preferences">
-            <i class="fa-solid fa-sliders"></i>
-        </button>
-        
         <!-- Notification Button -->
-        <button class="header-action-btn" title="Notifications">
-            <i class="fa-solid fa-bell"></i>
-            <span class="notification-badge">9+</span>
-        </button>
+        <div class="relative">
+            <button class="header-action-btn" title="Notifications" id="notificationBtn">
+                <i class="fa-solid fa-bell"></i>
+                @if (isset($unreadCount) && $unreadCount > 0)
+                    <span class="notification-badge"
+                        id="header-notif-badge">{{ $unreadCount > 9 ? '9+' : $unreadCount }}</span>
+                @endif
+            </button>
+
+            <!-- Notification Modal -->
+            <div id="notificationModal"
+                class="hidden absolute top-12 right-0 w-[380px] bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden animate-fade-in-down">
+                <div class="flex items-center justify-between p-4 border-b border-gray-100 bg-white sticky top-0 z-10">
+                    <h3 class="font-bold text-lg text-[#1D1D1F]">Notifications</h3>
+                    <button id="closeNotificationBtn"
+                        class="w-8 h-8 rounded-full bg-[#F2F2F7] hover:bg-[#E5E5EA] flex items-center justify-center text-[#86868B] transition">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="max-h-[400px] overflow-y-auto">
+                    @if (isset($notifications) && $notifications->count() > 0)
+                        @foreach ($notifications as $notif)
+                            <div
+                                class="flex gap-3 p-4 border-b border-gray-50 hover:bg-[#F5F5F7] transition cursor-pointer">
+                                <div class="shrink-0">
+                                    <img src="{{ $notif->user->profile_photo_path ? asset('storage/' . $notif->user->profile_photo_path) : asset('images/default-avatar.png') }}"
+                                        class="w-10 h-10 rounded-full object-cover border border-gray-200"
+                                        alt="Avatar">
+                                </div>
+                                <div>
+                                    <p class="text-[13px] text-[#1D1D1F] leading-snug">
+                                        <span class="font-semibold">{{ $notif->user->name ?? 'User' }}</span>
+                                        {{ str_replace($notif->user->name ?? '', '', $notif->description) }}
+                                    </p>
+                                    <span
+                                        class="text-[11px] text-[#86868B] mt-1 block">{{ $notif->created_at->diffForHumans() }}</span>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="p-8 text-center text-[#86868B]">
+                            <i class="fa-regular fa-bell-slash text-2xl mb-2"></i>
+                            <p class="text-sm">No new notifications</p>
+                        </div>
+                    @endif
+                </div>
+                <div class="p-3 bg-[#F9F9F9] text-center border-t border-gray-100">
+                    <a href="{{ route('notifications.index') }}"
+                        class="text-xs font-medium text-[#007AFF] hover:underline">View all
+                        notifications</a>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            @keyframes fadeInDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .animate-fade-in-down {
+                animation: fadeInDown 0.2s ease-out forwards;
+            }
+        </style>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const btn = document.getElementById('notificationBtn');
+                const modal = document.getElementById('notificationModal');
+                const closeBtn = document.getElementById('closeNotificationBtn');
+                const badge = document.getElementById('header-notif-badge');
+
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    modal.classList.toggle('hidden');
+
+                    // Mark as read if opening and badge exists
+                    if (!modal.classList.contains('hidden') && badge) {
+                        fetch('{{ route('notifications.mark-read') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        }).then(response => {
+                            if (response.ok) {
+                                badge.remove();
+                            }
+                        });
+                    }
+                });
+
+                closeBtn.addEventListener('click', function() {
+                    modal.classList.add('hidden');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!modal.contains(e.target) && !btn.contains(e.target)) {
+                        modal.classList.add('hidden');
+                    }
+                });
+            });
+        </script>
 
         <div class="user-profile-dropdown-wrapper">
 
             <div class="user-profile-container" id="userProfileButton">
-                <img src="https://cdn.kbizoom.com/media/2025/05/19013428/go-yoon-jung-2025-1905251-1905251.webp"
+                <img src="{{ Auth::user()->profile_photo_path ? asset('storage/' . Auth::user()->profile_photo_path) : asset('images/default-avatar.png') }}"
                     alt="User Avatar" class="user-avatar">
                 <span class="user-name" style="font-family: -apple-system, BlinkMacSystemFont, "SF Pro
                     Display", "SF Pro Text" , "IBM Plex Sans Thai" , "Noto Sans Thai" , "Segoe UI" ,
@@ -71,7 +172,7 @@
 
             <div class="profile-dropdown-menu" id="profileDropdown">
                 <a href="{{ route('profile.edit') }}" class="dropdown-item profile-header">
-                    <img src="https://cdn.kbizoom.com/media/2025/05/19013428/go-yoon-jung-2025-1905251-1905251.webp"
+                    <img src="{{ Auth::user()->profile_photo_path ? asset('storage/' . Auth::user()->profile_photo_path) : asset('images/default-avatar.png') }}"
                         alt="User Avatar" class="user-avatar-in-menu">
                     <div>
                         <strong>{{ Auth::user()->name }}</strong>
@@ -79,9 +180,9 @@
                     </div>
                 </a>
                 <div class="dropdown-divider"></div>
-                
+
                 {{-- เปลี่ยนเป็น dropdown-item เพื่อให้สไตล์ Dropdown ทำงาน --}}
-                <a href="{{ route('profile.edit') }}" class="dropdown-item"> 
+                <a href="{{ route('profile.edit') }}" class="dropdown-item">
                     <i class="fa-solid fa-user-circle"></i>
                     <span>Oboun Account</span>
                 </a>
@@ -128,7 +229,7 @@
                 <div class="dropdown-divider"></div>
                 <form method="POST" action="{{ route('logout') }}" style="margin: 0;" id="logout-form-header">
                     @csrf
-                    <a href="#" class="dropdown-item danger" id="open-logout-modal-header"> 
+                    <a href="#" class="dropdown-item danger" id="open-logout-modal-header">
                         <i class="fa-solid fa-right-from-bracket"></i> Log Out
                     </a>
                 </form>
@@ -151,8 +252,9 @@
         </div>
         <div class="modal-body">
             <p class="modal-greeting"><strong>Hello, {{ Auth::user()->name }}</strong></p>
-            <p class="modal-description">We are here to assist you. Please select an option below or type your question to find answers.</p>
-            
+            <p class="modal-description">We are here to assist you. Please select an option below or type your question
+                to find answers.</p>
+
             <div class="modal-actions">
                 <a href="#" class="modal-action-link primary">
                     <i class="fa-solid fa-headset"></i> Contact Support
@@ -164,7 +266,7 @@
                     <i class="fa-solid fa-bug"></i> Report a Bug
                 </a>
             </div>
-            
+
             <div class="modal-footer-info">
                 <small>Oboun ERP v1.0 | Copyright © 2025</small>
             </div>

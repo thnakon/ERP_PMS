@@ -74,7 +74,7 @@
                 </div>
 
                 <button class="purchasing-button-primary" id="open-po-modal" style="margin-top: 20px">
-                    <i class="fa-solid fa-plus"></i>
+                    <i class="fa-solid fa-cart-shopping"></i>
                     <span>Create New PO</span>
                 </button>
             </div>

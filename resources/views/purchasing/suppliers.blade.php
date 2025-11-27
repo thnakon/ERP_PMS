@@ -120,7 +120,7 @@
 
 
                 <button class="purchasing-button-primary" id="open-supplier-modal">
-                    <i class="fa-solid fa-plus"></i>
+                    <i class="fa-solid fa-truck-field"></i>
                     <span>Add New Supplier</span>
                 </button>
             </div>
