@@ -1020,16 +1020,25 @@
                 activeBtn.classList.add('bg-white', 'shadow-sm', 'text-[#1D1D1F]');
             }
 
-            // Initialize with 'info' tab active
+            // Initialize with 'info' tab active or from URL param
             window.addEventListener('DOMContentLoaded', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const tabParam = urlParams.get('tab');
+
                 // Check if there are errors in specific bags to open relevant tabs
                 @if ($errors->hasBag('userDeletion'))
                     switchTab('settings');
                     document.getElementById('delete-account-modal').classList.remove('hidden');
                 @elseif ($errors->hasBag('updatePassword') || $errors->any())
                     switchTab('settings');
+                @elseif (session('status') === 'profile-updated')
+                    switchTab('settings');
                 @else
-                    switchTab('info');
+                    if (tabParam) {
+                        switchTab(tabParam);
+                    } else {
+                        switchTab('info');
+                    }
                 @endif
 
                 // Success Notifications

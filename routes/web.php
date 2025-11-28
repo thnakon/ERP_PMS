@@ -35,6 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/notifications/{id}', [\App\Http\Controllers\NotificationController::class, 'update'])->name('notifications.update');
     Route::delete('/notifications/{id}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::post('/notifications/mark-read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+    Route::get('/notifications/latest', [\App\Http\Controllers\NotificationController::class, 'checkLatest'])->name('notifications.latest');
+    Route::post('/notifications/bulk-destroy', [\App\Http\Controllers\NotificationController::class, 'bulkDestroy'])->name('notifications.bulk-destroy');
 
     //setting
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');

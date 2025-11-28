@@ -332,3 +332,196 @@
         </div>
     </div>
 </div>
+
+<!-- === Real-time Toast Container === -->
+<div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
+
+<style>
+    /* Toast Animation */
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+
+    .toast-enter {
+        animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .toast-exit {
+        animation: slideOutRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Toast Styling */
+    .mac-toast {
+        pointer-events: auto;
+        width: 320px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    }
+
+    .mac-toast-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: #007AFF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .mac-toast-content {
+        flex: 1;
+    }
+
+    .mac-toast-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1D1D1F;
+        margin-bottom: 2px;
+    }
+
+    .mac-toast-message {
+        font-size: 13px;
+        color: #86868B;
+        line-height: 1.4;
+    }
+
+    .mac-toast-close {
+        color: #86868B;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 4px;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+    }
+
+    .mac-toast-close:hover {
+        opacity: 1;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let lastChecked = '{{ now()->toDateTimeString() }}';
+        const toastContainer = document.getElementById('toast-container');
+        const badge = document.getElementById('header-notif-badge');
+        const notificationBtn = document.getElementById('notificationBtn');
+
+        function pollNotifications() {
+            fetch(`{{ route('notifications.latest') }}?last_checked=${lastChecked}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.timestamp) {
+                        lastChecked = data.timestamp;
+                    }
+
+                    if (data.notifications && data.notifications.length > 0) {
+                        // Update badge
+                        let currentCount = badge ? parseInt(badge.innerText) : 0;
+                        if (isNaN(currentCount)) currentCount = 0; // handle '9+'
+
+                        const newCount = currentCount + data.notifications.length;
+
+                        if (badge) {
+                            badge.innerText = newCount > 9 ? '9+' : newCount;
+                        } else {
+                            // Create badge if not exists
+                            const newBadge = document.createElement('span');
+                            newBadge.className = 'notification-badge';
+                            newBadge.id = 'header-notif-badge';
+                            newBadge.innerText = newCount > 9 ? '9+' : newCount;
+                            notificationBtn.appendChild(newBadge);
+                        }
+
+                        // Show Toasts
+                        data.notifications.forEach(notif => {
+                            showToast(notif);
+                        });
+                    }
+                })
+                .catch(err => console.error('Polling error:', err));
+        }
+
+        function showToast(notification) {
+            const toast = document.createElement('div');
+            toast.className = 'mac-toast toast-enter';
+
+            const userAvatar = notification.user && notification.user.profile_photo_path ?
+                `/storage/${notification.user.profile_photo_path}` :
+                '/images/default-avatar.png';
+
+            let userName = 'System';
+            if (notification.user) {
+                if (notification.user.name) {
+                    userName = notification.user.name;
+                } else if (notification.user.first_name) {
+                    userName = notification.user.first_name + (notification.user.last_name ? ' ' + notification
+                        .user.last_name : '');
+                }
+            }
+
+            toast.innerHTML = `
+                <div class="mac-toast-icon">
+                    <img src="${userAvatar}" class="w-full h-full object-cover rounded-[10px]" alt="Avatar">
+                </div>
+                <div class="mac-toast-content">
+                    <div class="mac-toast-title">${userName}</div>
+                    <div class="mac-toast-message">${notification.description}</div>
+                    <div style="font-size: 11px; color: #8e8e93; margin-top: 4px;">${new Date(notification.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                </div>
+                <button class="mac-toast-close" onclick="this.parentElement.remove()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Play sound (optional)
+            // const audio = new Audio('/sounds/notification.mp3');
+            // audio.play().catch(e => {});
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-exit');
+                setTimeout(() => {
+                    toast.remove();
+                }, 400);
+            }, 5000);
+        }
+
+        // Poll every 5 seconds
+        setInterval(pollNotifications, 5000);
+    });
+</script>

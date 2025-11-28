@@ -1,3 +1,8 @@
+@php
+    if (session('success')) {
+        session()->flash('suppress_global_toast', true);
+    }
+@endphp
 <x-app-layout>
     <!DOCTYPE html>
     <html lang="en">
@@ -109,6 +114,7 @@
             <span id="flash-text">Operation successful</span>
         </div>
 
+        {{-- Flash messages handled by local script --}}
         @if (session('success'))
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
@@ -153,11 +159,22 @@
                             style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 0.9rem;"></i>
                     </div>
                 </form>
+
+                <!-- Bulk Actions (Hidden by default) -->
+                <div id="bulk-actions" style="display: none; margin-left: auto; gap: 8px;">
+                    <span class="inv-text-sub" style="margin-right: 8px;">Selected: <span
+                            id="selected-count">0</span></span>
+                    <button class="inv-btn-secondary" style="font-size: 0.8rem; color: #ff3b30;"
+                        onclick="confirmBulkDelete()"><i class="fa-solid fa-trash"></i> Delete Selected</button>
+                </div>
             </div>
 
             <!-- Table Header -->
             <div class="inv-card-row header grid-notifications"
-                style="grid-template-columns: 60px 2fr 1fr 3fr 1fr 100px;">
+                style="grid-template-columns: 40px 60px 2fr 1fr 3fr 1fr 100px;">
+                <div class="inv-checkbox-wrapper">
+                    <input type="checkbox" class="inv-checkbox" id="select-all">
+                </div>
                 <div class="inv-col-header">#</div>
                 <div class="inv-col-header">User</div>
                 <div class="inv-col-header">Action</div>
@@ -172,7 +189,11 @@
 
             <!-- Notifications Loop -->
             @forelse($notifications as $notification)
-                <div class="inv-card-row grid-notifications" style="grid-template-columns: 60px 2fr 1fr 3fr 1fr 100px;">
+                <div class="inv-card-row grid-notifications"
+                    style="grid-template-columns: 40px 60px 2fr 1fr 3fr 1fr 100px;">
+                    <div class="inv-checkbox-wrapper">
+                        <input type="checkbox" class="inv-checkbox item-checkbox" data-id="{{ $notification->id }}">
+                    </div>
                     <div class="inv-text-sub" style="font-weight: 500;">
                         {{ ($notifications->currentPage() - 1) * $notifications->perPage() + $loop->iteration }}
                     </div>
@@ -255,17 +276,25 @@
                     <button class="inv-modal-close" onclick="closeModal('modal-delete')">&times;</button>
                 </div>
                 <div class="inv-modal-body">
-                    <p>Are you sure you want to delete this notification? This action cannot be undone.</p>
+                    <p id="delete-confirm-text">Are you sure you want to delete this notification? This action cannot
+                        be undone.</p>
                 </div>
                 <div class="inv-modal-footer">
                     <button type="button" class="inv-btn-secondary"
                         onclick="closeModal('modal-delete')">Cancel</button>
+
+                    {{-- Single Delete Form --}}
                     <form id="delete-form" method="POST" style="display: inline;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="inv-btn-primary"
                             style="background-color: #ff3b30; border-color: #ff3b30;">Delete</button>
                     </form>
+
+                    {{-- Bulk Delete Button --}}
+                    <button id="btn-bulk-delete" type="button" class="inv-btn-primary"
+                        style="background-color: #ff3b30; border-color: #ff3b30; display: none;"
+                        onclick="executeBulkDelete()">Delete Selected</button>
                 </div>
             </div>
         </div>
@@ -308,10 +337,97 @@
             }
 
             function confirmDelete(id) {
+                document.getElementById('delete-form').style.display = 'inline';
+                document.getElementById('btn-bulk-delete').style.display = 'none';
+                document.getElementById('delete-confirm-text').textContent =
+                    'Are you sure you want to delete this notification? This action cannot be undone.';
+
                 const form = document.getElementById('delete-form');
                 form.action = `/notifications/${id}`;
                 openModal('modal-delete');
             }
+
+            function confirmBulkDelete() {
+                document.getElementById('delete-form').style.display = 'none';
+                document.getElementById('btn-bulk-delete').style.display = 'inline';
+
+                const count = document.querySelectorAll('.item-checkbox:checked').length;
+                document.getElementById('delete-confirm-text').textContent =
+                    `Are you sure you want to delete ${count} selected notifications? This action cannot be undone.`;
+
+                openModal('modal-delete');
+            }
+
+            function executeBulkDelete() {
+                const selected = Array.from(document.querySelectorAll('.item-checkbox:checked')).map(cb => cb.dataset.id);
+
+                if (selected.length === 0) return;
+
+                fetch('{{ route('notifications.bulk-destroy') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            ids: selected
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showFlash('Notifications deleted successfully', 'success');
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            showFlash('Error deleting notifications', 'error');
+                            closeModal('modal-delete');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showFlash('An error occurred', 'error');
+                        closeModal('modal-delete');
+                    });
+            }
+
+            // --- Bulk Actions Logic ---
+            const selectAll = document.getElementById('select-all');
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            const bulkActions = document.getElementById('bulk-actions');
+            const selectedCountSpan = document.getElementById('selected-count');
+
+            function updateBulkActions() {
+                const checked = document.querySelectorAll('.item-checkbox:checked');
+                const count = checked.length;
+
+                if (count > 0) {
+                    bulkActions.style.display = 'flex';
+                    selectedCountSpan.textContent = count;
+                } else {
+                    bulkActions.style.display = 'none';
+                }
+            }
+
+            if (selectAll) {
+                selectAll.addEventListener('change', function() {
+                    const isChecked = this.checked;
+                    document.querySelectorAll('.item-checkbox').forEach(cb => {
+                        cb.checked = isChecked;
+                    });
+                    updateBulkActions();
+                });
+            }
+
+            document.querySelectorAll('.item-checkbox').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    updateBulkActions();
+                    const allChecked = document.querySelectorAll('.item-checkbox:checked').length === document
+                        .querySelectorAll('.item-checkbox').length;
+                    if (selectAll) selectAll.checked = allChecked;
+                });
+            });
         </script>
     </body>
 

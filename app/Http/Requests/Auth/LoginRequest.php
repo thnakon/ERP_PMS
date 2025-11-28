@@ -41,11 +41,22 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        // Check if user exists
+        $user = \App\Models\User::where('email', $this->input('email'))->first();
+
+        if (! $user) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => 'ไม่พบบัญชีผู้ใช้นี้ในระบบ',
+            ]);
+        }
+
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'password' => 'รหัสผ่านไม่ถูกต้อง',
             ]);
         }
 
@@ -80,6 +91,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }

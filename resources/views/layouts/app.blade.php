@@ -105,24 +105,24 @@
     </div>
 
     {{-- Confirm Logout Modal --}}
-<div id="logoutModal" class="apple-modal-overlay">
-    <div class="apple-modal-content">
-        <div class="apple-modal-header">
-            <h3>{{ __('Confirm Logout') }}</h3>
-        </div>
-        <div class="apple-modal-body">
-            <p>{{ __('Are you sure you want to log out?') }}</p>
-        </div>
-        <div class="apple-modal-footer">
-            <button type="button" class="apple-button cancel-button" id="cancelLogout">
-                {{ __('Cancel') }}
-            </button>
-            <button type="button" class="apple-button confirm-button" id="confirmLogout">
-                {{ __('Log Out') }}
-            </button>
+    <div id="logoutModal" class="apple-modal-overlay">
+        <div class="apple-modal-content">
+            <div class="apple-modal-header">
+                <h3>{{ __('Confirm Logout') }}</h3>
+            </div>
+            <div class="apple-modal-body">
+                <p>{{ __('Are you sure you want to log out?') }}</p>
+            </div>
+            <div class="apple-modal-footer">
+                <button type="button" class="apple-button cancel-button" id="cancelLogout">
+                    {{ __('Cancel') }}
+                </button>
+                <button type="button" class="apple-button confirm-button" id="confirmLogout">
+                    {{ __('Log Out') }}
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
 
 

@@ -21,7 +21,8 @@ class ProfileController extends Controller
     {
         $logs = ActivityLog::where('user_id', $request->user()->id)
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->appends(['tab' => 'activity']);
 
         return view('profile.edit', [
             'user' => $request->user(),
@@ -68,7 +69,7 @@ class ProfileController extends Controller
             $this->logActivity($request, 'Profile Updated', implode(', ', $changes));
         }
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.edit', ['tab' => 'settings'])->with('status', 'profile-updated');
     }
 
     /**

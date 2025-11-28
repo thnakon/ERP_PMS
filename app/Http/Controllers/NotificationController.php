@@ -32,6 +32,29 @@ class NotificationController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function checkLatest(Request $request)
+    {
+        $lastChecked = $request->input('last_checked');
+
+        // If no timestamp provided, default to now (to avoid fetching old logs on first load)
+        if (!$lastChecked) {
+            return response()->json([
+                'notifications' => [],
+                'timestamp' => now()->toDateTimeString()
+            ]);
+        }
+
+        $notifications = ActivityLog::with('user')
+            ->where('created_at', '>', $lastChecked)
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'notifications' => $notifications,
+            'timestamp' => now()->toDateTimeString()
+        ]);
+    }
+
     public function update(Request $request, $id)
     {
         // Admin only check
@@ -62,5 +85,22 @@ class NotificationController extends Controller
         $log->delete();
 
         return redirect()->back()->with('success', 'Notification deleted successfully.');
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        // Admin only check
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:activity_logs,id',
+        ]);
+
+        ActivityLog::whereIn('id', $request->ids)->delete();
+
+        return response()->json(['success' => true]);
     }
 }

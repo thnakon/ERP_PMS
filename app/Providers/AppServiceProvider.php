@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
                 // Usually "Unread" means "Since I last looked". If I never looked, everything is unread.
                 // Let's use User->created_at as fallback.
                 $getLastVisit = function ($route) use ($visits, $user) {
-                    return $visits[$route] ?? $user->created_at;
+                    return $visits[$route] ?? $user->created_at ?? '1970-01-01 00:00:00';
                 };
 
                 // 1. Manage Products (New Products)
@@ -83,11 +83,10 @@ class AppServiceProvider extends ServiceProvider
                 $badgeCounts['goods_received'] = Purchase::where('status', 'completed')
                     ->where('updated_at', '>', $lastVisitGR) // Use updated_at for completion time approx
                     ->count();
+                // Notifications Count (Unread)
+                $lastRead = Auth::user()->last_read_notifications_at ?? '1970-01-01 00:00:00';
+                $badgeCounts['notifications'] = \App\Models\ActivityLog::where('created_at', '>', $lastRead)->count();
             }
-
-            // Notifications Count (Unread)
-            $lastRead = Auth::user()->last_read_notifications_at ?? '1970-01-01 00:00:00';
-            $badgeCounts['notifications'] = \App\Models\ActivityLog::where('created_at', '>', $lastRead)->count();
 
             $view->with('badgeCounts', $badgeCounts);
         });
