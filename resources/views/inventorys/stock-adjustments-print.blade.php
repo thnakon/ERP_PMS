@@ -44,42 +44,61 @@
             color: #ff3b30;
             font-weight: bold;
         }
+
+        /* Fade In Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
     </style>
 </head>
 
 <body onload="window.print()">
 
-    <div class="header">
-        <h1>Stock Adjustment Log</h1>
-        <p>Generated on: {{ now()->format('d/m/Y H:i') }}</p>
-    </div>
+    <div class="fade-in">
+        <div class="header">
+            <h1>Stock Adjustment Log</h1>
+            <p>Generated on: {{ now()->format('d/m/Y H:i') }}</p>
+        </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Product</th>
-                <th>Type</th>
-                <th>Quantity</th>
-                <th>Reason</th>
-                <th>User</th>
-                <th>Note</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($adjustments as $adj)
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ $adj->created_at->format('d/m/Y H:i') }}</td>
-                    <td>{{ $adj->product->name ?? 'Unknown' }}</td>
-                    <td class="badge-{{ $adj->type }}">{{ ucfirst($adj->type) }}</td>
-                    <td>{{ $adj->quantity }}</td>
-                    <td>{{ $adj->reason }}</td>
-                    <td>{{ $adj->user->name ?? 'Unknown' }}</td>
-                    <td>{{ $adj->note }}</td>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Reason</th>
+                    <th>User</th>
+                    <th>Note</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($adjustments as $adj)
+                    <tr>
+                        <td>{{ $adj->created_at->format('d/m/Y H:i') }}</td>
+                        <td>{{ $adj->product->name ?? 'Unknown' }}</td>
+                        <td class="badge-{{ $adj->type }}">{{ ucfirst($adj->type) }}</td>
+                        <td>{{ $adj->quantity }}</td>
+                        <td>{{ $adj->reason }}</td>
+                        <td>{{ $adj->user->name ?? 'Unknown' }}</td>
+                        <td>{{ $adj->note }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 
 </body>
 

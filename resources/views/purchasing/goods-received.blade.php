@@ -1,6 +1,6 @@
 <x-app-layout>
     <!-- Main Page Container -->
-    <div class="purchasing-page-container">
+    <div class="purchasing-page-container fade-in">
 
         {{-- Header --}}
         <div class="sr-header">
@@ -30,11 +30,6 @@
 
                 <!-- Toggle View Button (Optional, maybe just scroll) -->
             </div>
-        </div>
-
-        <!-- Notification Container -->
-        <div id="notification-container"
-            style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; align-items: center;">
         </div>
 
         <!-- VIEW 1: Main Dashboard (Awaiting & History) -->
@@ -228,71 +223,89 @@
             </form>
         </div>
 
-        <!-- Delete Confirmation Modal -->
-        <div class="inv-modal-overlay" id="delete-gr-modal-overlay">
-            <div class="inv-modal" style="max-width: 400px;">
-                <div class="inv-modal-header">
-                    <div class="inv-modal-title" style="color: #ff3b30;">Delete Received Record</div>
-                    <button type="button" class="inv-modal-close" id="close-delete-gr-modal-btn">&times;</button>
-                </div>
-                <div class="inv-modal-body">
-                    <p id="delete-gr-confirm-text" style="color: var(--text-secondary); margin: 0;">Are you sure? This
-                        will revert the PO status and remove the record.</p>
-                </div>
-                <div class="inv-modal-footer">
-                    <button type="button" class="inv-btn-secondary" id="cancel-delete-gr-btn">Cancel</button>
-                    <button id="btn-confirm-delete-gr" type="button" class="inv-btn-primary"
-                        style="background-color: #ff3b30; border-color: #ff3b30; box-shadow: none;">Delete</button>
-                </div>
+    </div>
+    <!-- End of purchasing-page-container -->
+
+    <!-- Notification Container -->
+    <div id="notification-container"
+        style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; align-items: center;">
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="inv-modal-overlay" id="delete-gr-modal-overlay">
+        <div class="inv-modal" style="max-width: 400px;">
+            <div class="inv-modal-header">
+                <div class="inv-modal-title" style="color: #ff3b30;">Delete Received Record</div>
+                <button type="button" class="inv-modal-close"
+                    onclick="closeModal('delete-gr-modal-overlay')">&times;</button>
+            </div>
+            <div class="inv-modal-body">
+                <p id="delete-gr-confirm-text" style="color: var(--text-secondary); margin: 0;">Are you sure? This
+                    will revert the PO status and remove the record.</p>
+            </div>
+            <div class="inv-modal-footer">
+                <button type="button" class="inv-btn-secondary"
+                    onclick="closeModal('delete-gr-modal-overlay')">Cancel</button>
+                <button id="btn-confirm-delete-gr" type="button" class="inv-btn-primary"
+                    style="background-color: #ff3b30; border-color: #ff3b30; box-shadow: none;"
+                    onclick="executeDelete()">Delete</button>
             </div>
         </div>
-
     </div>
 
     <script>
+        // --- Modal Functions ---
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // --- Notification Logic ---
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `inv-notification ${type}`;
+            notification.style.cssText = `
+                background: white;
+                color: #1d1d1f;
+                padding: 12px 24px;
+                border-radius: 14px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                opacity: 0;
+                transform: translateY(-20px);
+                transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            `;
+
+            const icon = type === 'success' ?
+                '<i class="fa-solid fa-circle-check" style="color: #34c759; font-size: 18px;"></i>' :
+                '<i class="fa-solid fa-circle-exclamation" style="color: #ff3b30; font-size: 18px;"></i>';
+
+            notification.innerHTML = `${icon}<span>${message}</span>`;
+            container.appendChild(notification);
+
+            requestAnimationFrame(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateY(0)';
+            });
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(-20px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Notification Logic ---
-            const showNotification = (message, type = 'success') => {
-                const container = document.getElementById('notification-container');
-                const notification = document.createElement('div');
-                notification.className = `inv-notification ${type}`;
-                notification.style.cssText = `
-                    background: white;
-                    color: #1d1d1f;
-                    padding: 12px 24px;
-                    border-radius: 14px;
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-                    margin-bottom: 10px;
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-                    font-size: 14px;
-                    font-weight: 500;
-                    opacity: 0;
-                    transform: translateY(-20px);
-                    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-                `;
-
-                const icon = type === 'success' ?
-                    '<i class="fa-solid fa-circle-check" style="color: #34c759; font-size: 18px;"></i>' :
-                    '<i class="fa-solid fa-circle-exclamation" style="color: #ff3b30; font-size: 18px;"></i>';
-
-                notification.innerHTML = `${icon}<span>${message}</span>`;
-                container.appendChild(notification);
-
-                requestAnimationFrame(() => {
-                    notification.style.opacity = '1';
-                    notification.style.transform = 'translateY(0)';
-                });
-
-                setTimeout(() => {
-                    notification.style.opacity = '0';
-                    notification.style.transform = 'translateY(-20px)';
-                    setTimeout(() => notification.remove(), 300);
-                }, 3000);
-            };
-
             // --- View Switching ---
             const mainView = document.getElementById('gr-main-view');
             const receiveView = document.getElementById('gr-receive-view');
@@ -379,18 +392,13 @@
 
                     try {
                         const formData = new FormData(receiveForm);
-                        const data = Object.fromEntries(formData.entries());
-
-                        // Convert complex name attributes to JSON object structure
-                        // Actually, FormData handles array names, but JSON.stringify needs help or we send as JSON
-                        // Let's build the JSON object manually to match the Controller validation
+                        // Manual JSON build
                         const payload = {
                             po_id: receivePoIdInput.value,
                             received_date: document.getElementById('receive_date').value,
                             items: []
                         };
 
-                        // Parse rows
                         const rows = receiveItemsBody.querySelectorAll('tr');
                         rows.forEach(row => {
                             payload.items.push({
@@ -432,22 +440,9 @@
                 });
             }
 
-            // --- Delete Logic (Bulk & Single) ---
-            const deleteModal = document.getElementById('delete-gr-modal-overlay');
-            const closeDeleteBtn = document.getElementById('close-delete-gr-modal-btn');
-            const cancelDeleteBtn = document.getElementById('cancel-delete-gr-btn');
-            const confirmDeleteBtn = document.getElementById('btn-confirm-delete-gr');
-            const deleteConfirmText = document.getElementById('delete-gr-confirm-text');
+            // --- Delete Logic ---
             let deleteIds = [];
-
-            const openDeleteModal = () => deleteModal.classList.add('show');
-            const closeDeleteModal = () => {
-                deleteModal.classList.remove('show');
-                deleteIds = [];
-            };
-
-            if (closeDeleteBtn) closeDeleteBtn.addEventListener('click', closeDeleteModal);
-            if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+            const deleteConfirmText = document.getElementById('delete-gr-confirm-text');
 
             // Single Delete
             document.querySelectorAll('.btn-delete-gr').forEach(btn => {
@@ -455,7 +450,7 @@
                     deleteIds = [btn.dataset.id];
                     deleteConfirmText.textContent =
                         'Are you sure you want to delete this received record? This will revert the PO status.';
-                    openDeleteModal();
+                    openModal('delete-gr-modal-overlay');
                 });
             });
 
@@ -469,55 +464,46 @@
 
                     deleteConfirmText.textContent =
                         `Are you sure you want to delete ${deleteIds.length} records?`;
-                    openDeleteModal();
+                    openModal('delete-gr-modal-overlay');
                 });
             }
 
-            // Confirm Delete
-            if (confirmDeleteBtn) {
-                confirmDeleteBtn.addEventListener('click', async () => {
-                    if (deleteIds.length === 0) return;
+            // Execute Delete Function (Global scope for onclick)
+            window.executeDelete = async function() {
+                const confirmDeleteBtn = document.getElementById('btn-confirm-delete-gr');
+                if (deleteIds.length === 0) return;
 
-                    confirmDeleteBtn.disabled = true;
-                    confirmDeleteBtn.textContent = 'Deleting...';
+                confirmDeleteBtn.disabled = true;
+                confirmDeleteBtn.textContent = 'Deleting...';
 
-                    try {
-                        const res = await fetch(
-                            '{{ route('purchasing.purchaseOrders.bulk_destroy') }}', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector(
-                                        'meta[name="csrf-token"]').content
-                                },
-                                body: JSON.stringify({
-                                    ids: deleteIds
-                                })
-                            });
+                try {
+                    const res = await fetch(
+                        '{{ route('purchasing.purchaseOrders.bulk_destroy') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                ids: deleteIds
+                            })
+                        });
 
-                        const result = await res.json();
-                        if (result.success) {
-                            showNotification(result.message, 'success');
-                            setTimeout(() => window.location.reload(), 1500);
-                        } else {
-                            throw new Error(result.message);
-                        }
-                    } catch (err) {
-                        showNotification(err.message, 'error');
-                        confirmDeleteBtn.disabled = false;
-                        confirmDeleteBtn.textContent = 'Delete';
-                        closeDeleteModal();
+                    const result = await res.json();
+                    if (result.success) {
+                        showNotification(result.message, 'success');
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        throw new Error(result.message);
                     }
-                });
-            }
-
-            // --- Bulk Selection Logic (Reusing global logic from purchasing.js but ensuring it binds) ---
-            // We need to re-run the checkbox logic if purchasing.js ran before this content was ready, 
-            // but purchasing.js uses DOMContentLoaded.
-            // Since we are also in DOMContentLoaded, let's manually trigger the update logic or duplicate it slightly for safety if needed.
-            // Actually, purchasing.js logic is global. Let's just ensure we have the right IDs.
-            // IDs used: select-all-checkbox, item-checkbox, bulk-actions, selected-count.
-            // These match.
+                } catch (err) {
+                    showNotification(err.message, 'error');
+                    confirmDeleteBtn.disabled = false;
+                    confirmDeleteBtn.textContent = 'Delete';
+                    closeModal('delete-gr-modal-overlay');
+                }
+            };
         });
     </script>
     <!-- Main Purchasing JS -->

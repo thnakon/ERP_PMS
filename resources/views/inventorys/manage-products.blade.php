@@ -145,7 +145,7 @@
             window.assetUrl = "{{ asset('') }}";
         </script>
 
-        <div class="inv-container">
+        <div class="inv-container fade-in">
             <div class="inv-breadcrumb-bar">
                 Dashboard / Inventory /
                 <span style="color: #3a3a3c; font-weight: 600;">Manage Products</span> > <a
