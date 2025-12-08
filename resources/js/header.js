@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
-    
+
     // --- Global Elements ---
     const sidebar = document.getElementById('sidebar');
     const header = document.getElementById('header');
-    
+
     const profileButton = document.getElementById('userProfileButton');
     const profileDropdown = document.getElementById('profileDropdown');
 
     const searchInput = document.getElementById('globalSearch');
     const aiSearchButton = document.getElementById('aiSearchButton');
     const resultsContainer = document.getElementById('liveSearchResults');
-    let debounceTimer; 
+    let debounceTimer;
 
     // --- Modal Elements ---
     const openHelpModalBtn = document.getElementById('showHelpModalButton'); // ปุ่มหลักใน Header
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const openFeedbackDropdownBtn = document.getElementById('openFeedbackModalBtn'); // ลิงก์ Feedback
     const closeModalBtn = document.getElementById('closeModalBtn');
     const modalOverlay = document.getElementById('appleModalOverlay');
-    
+
     // --- NEW: Panel Elements ---
     const appearancePanelOverlay = document.getElementById('appearancePanelOverlay');
     const languagePanelOverlay = document.getElementById('languagePanelOverlay');
@@ -28,15 +28,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // Selectors สำหรับปุ่ม Back ใน Panel
     const backToProfileBtnAppearance = document.getElementById('backToProfileBtnAppearance');
     const backToProfileBtnLanguage = document.getElementById('backToProfileBtnLanguage');
-    
+
     // --- 1. Sidebar/Header Position Observer ---
     if (sidebar && header) {
         // ใช้ body class แทน MutationObserver เพื่อให้ CSS จัดการง่ายขึ้น
         const body = document.body;
         if (sidebar.classList.contains('collapsed')) {
-             body.classList.add("sidebar-collapsed");
+            body.classList.add("sidebar-collapsed");
         }
-        
+
         const observer = new MutationObserver(() => {
             if (sidebar.classList.contains('collapsed')) {
                 body.classList.add("sidebar-collapsed");
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
     }
-    
+
     // --- 2. Profile Dropdown Logic (เดิม) ---
     if (profileButton && profileDropdown) {
         profileButton.addEventListener('click', (event) => {
@@ -56,16 +56,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
             profileDropdown.classList.toggle('show');
             profileButton.classList.toggle('active');
-            event.stopPropagation(); 
+            event.stopPropagation();
         });
     }
 
     // --- 3. Global Search Logic (เดิม) ---
     if (searchInput && aiSearchButton && resultsContainer) {
-        
+
         searchInput.addEventListener('input', () => {
             const query = searchInput.value;
-            
+
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
                 fetchLiveResults(query);
@@ -82,14 +82,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        aiSearchButton.addEventListener('click', () => {
-            const query = searchInput.value;
-            if (query.trim() !== '') {
-                window.location.href = `/ai-search?q=${encodeURIComponent(query)}`;
-            } else {
-                searchInput.focus();
-            }
-        });
+        // AI Search Button - handled by inline script in header.blade.php
+        // This line is removed to prevent conflict with the modal handler
 
         async function fetchLiveResults(query) {
             if (query.trim().length < 2) {
@@ -101,8 +95,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 // *** คุณต้องสร้าง Route นี้ใน Laravel ***
                 const response = await fetch(`/live-search?q=${encodeURIComponent(query)}`);
                 if (!response.ok) throw new Error('Network response was not ok');
-                
-                const data = await response.json(); 
+
+                const data = await response.json();
                 renderResults(data);
 
             } catch (error) {
@@ -112,8 +106,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function renderResults(data) {
-            resultsContainer.innerHTML = ''; 
-            
+            resultsContainer.innerHTML = '';
+
             if (!data || (data.products?.length === 0 && data.patients?.length === 0)) {
                 resultsContainer.classList.remove('show');
                 return;
@@ -171,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 charIndex++;
                 speed = typeSpeed;
             }
-            
+
             if (!isDeleting && charIndex > currentPhrase.length) {
                 isDeleting = true;
                 speed = pauseTime;
@@ -187,18 +181,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         animatePlaceholder();
     }
-    
+
     // --- 4. Modal Logic (Support/Feedback) ---
 
     // Function to show modal
     function showModal(title = "Help & Support") {
         if (modalOverlay) {
             // อัปเดต Title (ถ้ามีการส่งมา)
-            document.getElementById('modalTitle').textContent = title; 
-            
+            document.getElementById('modalTitle').textContent = title;
+
             modalOverlay.classList.add('show');
             document.body.style.overflow = 'hidden'; // ป้องกัน Scroll ด้านหลัง
-            
+
             // ปิด Dropdown ทันทีเมื่อเปิด Modal
             if (profileDropdown && profileDropdown.classList.contains('show')) {
                 profileDropdown.classList.remove('show');
@@ -222,11 +216,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (openHelpModalBtn) {
         openHelpModalBtn.addEventListener('click', () => showModal("Help & Support"));
     }
-    
+
     // Event Listener: Open buttons (Dropdown - Support)
     if (openSupportDropdownBtn) {
         openSupportDropdownBtn.addEventListener('click', (e) => {
-            e.preventDefault(); 
+            e.preventDefault();
             showModal("Help & Support");
         });
     }
@@ -236,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // สมมติว่า Feedback ใช้ Modal เดียวกัน แต่เปลี่ยน Title
         openFeedbackDropdownBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            showModal("Send Feedback"); 
+            showModal("Send Feedback");
         });
     }
 
@@ -259,13 +253,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             if (modalOverlay.classList.contains('show')) {
-                 hideModal();
+                hideModal();
             } else if (appearancePanelOverlay.classList.contains('show-panel')) {
-                 hidePanel(appearancePanelOverlay);
-                 showProfileDropdown();
+                hidePanel(appearancePanelOverlay);
+                showProfileDropdown();
             } else if (languagePanelOverlay.classList.contains('show-panel')) {
-                 hidePanel(languagePanelOverlay);
-                 showProfileDropdown();
+                hidePanel(languagePanelOverlay);
+                showProfileDropdown();
             }
         }
     });
@@ -284,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (panelElement === languagePanelOverlay) {
             hidePanel(appearancePanelOverlay);
         }
-        
+
         // เปิด Panel ที่ต้องการ
         if (panelElement) {
             panelElement.classList.add('show-panel');
@@ -311,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function () {
             showPanel(appearancePanelOverlay);
             e.stopPropagation(); // [MODIFIED] ป้องกันการปิดทันทีจาก Global click
         });
-        
+
         // Dummy logic for theme selection
         appearancePanelOverlay.querySelectorAll('.setting-option').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -346,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function () {
         backToProfileBtnAppearance.addEventListener('click', (e) => {
             hidePanel(appearancePanelOverlay);
             showProfileDropdown();
-            e.stopPropagation(); 
+            e.stopPropagation();
         });
     }
     if (backToProfileBtnLanguage) {
@@ -362,13 +356,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // ปิด Profile Dropdown
         if (profileDropdown && profileDropdown.classList.contains('show')) {
             // Dropdown ควรปิดเมื่อคลิกนอก Dropdown, ปุ่มเปิด, และ Panels ที่อาจกำลังจะเปิด
-            if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target) && 
+            if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target) &&
                 !openAppearancePanelBtn.contains(event.target) && !openLanguagePanelBtn.contains(event.target)) {
                 profileDropdown.classList.remove('show');
                 profileButton.classList.remove('active');
             }
         }
-        
+
         // ปิด Settings Panels (ถ้าคลิกนอกบริเวณ Dropdown, Panels, และปุ่มเปิด)
         // Note: การคลิกปุ่ม Appearance/Language ใน Dropdown จะถูก showPanel จัดการ
         if (appearancePanelOverlay && appearancePanelOverlay.classList.contains('show-panel')) {
@@ -384,7 +378,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // ไม่ต้องเรียก showProfileDropdown() เพราะถือว่าผู้ใช้ต้องการปิดทั้งเมนู
             }
         }
-        
+
         // ปิด Live Search Results (เดิม)
         if (resultsContainer && resultsContainer.classList.contains('show')) {
             if (!searchInput.contains(event.target) && !resultsContainer.contains(event.target) && !aiSearchButton.contains(event.target)) {

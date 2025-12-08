@@ -2,6 +2,7 @@
 
     <head>
         <meta charset="UTF-8">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Suppliers - Pharmacy ERP</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -165,7 +166,7 @@
                         <input type="hidden" name="sort" value="{{ request('sort') }}">
                     @endif
                     <i class="fa-solid fa-search"></i>
-                    <input type="text" name="search" value="{{ request('search') }}"
+                    <input type="text" name="search" id="search-input" value="{{ request('search') }}"
                         placeholder="Search by Company, Contact, or Phone...">
                 </form>
             </div>
@@ -182,70 +183,69 @@
         </div>
 
         <!-- List View -->
-        <div class="purchasing-list-container" id="supplier-list">
-            <!-- Header Row -->
-            <div class="purchasing-list-row header-row">
-                <div class="col-checkbox">
-                    <div class="inv-checkbox-wrapper">
-                        <input type="checkbox" class="inv-checkbox" id="select-all">
-                    </div>
-                </div>
-                <div class="col-index" style="font-weight: 600; color: var(--text-secondary);">#</div>
-                <div class="col-company-name">Company Name</div>
-                <div class="col-contact">Contact Person</div>
-                <div class="col-phone">Phone</div>
-                <div class="col-email">Email</div>
-                <div class="col-pos">Total POs</div>
-                <div class="col-actions" style="text-align: center;">Actions</div>
-            </div>
-
-            <!-- Data Rows -->
-            @forelse($suppliers as $supplier)
-                <div class="purchasing-list-row">
+        <div id="view-list" class="transition-opacity duration-300">
+            <div class="purchasing-list-container" id="supplier-list">
+                <!-- Header Row -->
+                <div class="purchasing-list-row header-row">
                     <div class="col-checkbox">
-                        <div class="inv-checkbox-wrapper">
-                            <input type="checkbox" class="inv-checkbox item-checkbox" data-id="{{ $supplier->id }}">
+                        <div class="inv-checkbox" id="select-all-checkbox"></div>
+                    </div>
+                    <div class="col-index" style="font-weight: 600; color: var(--text-secondary);">#</div>
+                    <div class="col-company-name">Company Name</div>
+                    <div class="col-contact">Contact Person</div>
+                    <div class="col-phone">Phone</div>
+                    <div class="col-email">Email</div>
+                    <div class="col-pos">Total POs</div>
+                    <div class="col-actions" style="text-align: center;">Actions</div>
+                </div>
+
+                <!-- Data Rows -->
+                @forelse($suppliers as $supplier)
+                    <div class="purchasing-list-row">
+                        <div class="col-checkbox">
+                            <div class="inv-checkbox item-checkbox" data-id="{{ $supplier->id }}"></div>
+                        </div>
+                        <div class="col-index" style="font-size: 13px; color: var(--text-secondary);">
+                            {{ ($suppliers->currentPage() - 1) * $suppliers->perPage() + $loop->iteration }}</div>
+                        <div class="col-company-name" data-label="Company Name">{{ $supplier->name }}</div>
+                        <div class="col-contact" data-label="Contact Person">{{ $supplier->contact_person ?? '-' }}
+                        </div>
+                        <div class="col-phone" data-label="Phone">{{ $supplier->phone ?? '-' }}</div>
+                        <div class="col-email" data-label="Email">{{ $supplier->email ?? '-' }}</div>
+                        <div class="col-pos" data-label="Total POs" style="text-align: center">
+                            {{ $supplier->purchases_count ?? 0 }}</div>
+                        <div class="col-actions" data-label="Actions"
+                            style="display: flex; justify-content: center; gap: 8px;">
+                            <button class="purchasing-icon-button"
+                                onclick="openViewModal({{ json_encode($supplier) }})" title="View">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button class="purchasing-icon-button"
+                                onclick="openEditModal({{ json_encode($supplier) }})" title="Edit">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button class="purchasing-icon-button btn-delete-row"
+                                onclick="confirmDelete({{ $supplier->id }})" title="Delete">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="col-index" style="font-size: 13px; color: var(--text-secondary);">
-                        {{ ($suppliers->currentPage() - 1) * $suppliers->perPage() + $loop->iteration }}</div>
-                    <div class="col-company-name" data-label="Company Name">{{ $supplier->name }}</div>
-                    <div class="col-contact" data-label="Contact Person">{{ $supplier->contact_person ?? '-' }}</div>
-                    <div class="col-phone" data-label="Phone">{{ $supplier->phone ?? '-' }}</div>
-                    <div class="col-email" data-label="Email">{{ $supplier->email ?? '-' }}</div>
-                    <div class="col-pos" data-label="Total POs" style="text-align: center">
-                        {{ $supplier->purchases_count ?? 0 }}</div>
-                    <div class="col-actions" data-label="Actions"
-                        style="display: flex; justify-content: center; gap: 8px;">
-                        <button class="purchasing-icon-button" onclick="openViewModal({{ json_encode($supplier) }})"
-                            title="View">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                        <button class="purchasing-icon-button" onclick="openEditModal({{ json_encode($supplier) }})"
-                            title="Edit">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button class="purchasing-icon-button btn-delete-row"
-                            onclick="confirmDelete({{ $supplier->id }})" title="Delete">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
+                @empty
+                    <div class="purchasing-list-row"
+                        style="display: flex; justify-content: center; align-items: center; padding: 40px;">
+                        <div style="text-align: center; color: var(--text-secondary);">
+                            <i class="fa-solid fa-box-open"
+                                style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                            <p>No suppliers found.</p>
+                        </div>
                     </div>
-                </div>
-            @empty
-                <div class="purchasing-list-row"
-                    style="display: flex; justify-content: center; align-items: center; padding: 40px;">
-                    <div style="text-align: center; color: var(--text-secondary);">
-                        <i class="fa-solid fa-box-open"
-                            style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
-                        <p>No suppliers found.</p>
-                    </div>
-                </div>
-            @endforelse
-        </div>
+                @endforelse
+            </div>
 
-        <!-- Pagination -->
-        <div style="margin-top: 20px;">
-            {{ $suppliers->links('vendor.pagination.apple') }}
+            <!-- Pagination -->
+            <div style="margin-top: 20px;">
+                {{ $suppliers->onEachSide(1)->links('vendor.pagination.apple') }}
+            </div>
         </div>
     </div>
 
@@ -381,6 +381,18 @@
 
     <script src="{{ asset('resources/js/purchasing.js') }}"></script>
 
+    <style>
+        .purchasing-list-row.selected-row {
+            background-color: #f5f5f7;
+            /* Light gray highlight */
+        }
+
+        /* Ensure checkbox pointer events */
+        .inv-checkbox {
+            cursor: pointer;
+        }
+    </style>
+
     <script>
         // --- Flash Message Logic ---
         function showFlash(message, type = 'success') {
@@ -424,7 +436,8 @@
             document.getElementById('modal-title').textContent = 'Edit Supplier';
             document.getElementById('modal-submit-btn').textContent = 'Update Supplier';
             document.getElementById('supplier-form').action = "/purchasing/suppliers/" + supplier.id;
-            document.getElementById('method-spoof').innerHTML = '<input type="hidden" name="_method" value="PUT">';
+            document.getElementById('method-spoof').innerHTML =
+                '<input type="hidden" name="_method" value="PUT">';
 
             // Fill inputs
             document.getElementById('company_name').value = supplier.name;
@@ -446,7 +459,6 @@
 
             const statusBadge = document.getElementById('view-status');
             statusBadge.textContent = supplier.status || 'Active';
-            // Assuming you have status badge styles, if not, basic styling
             statusBadge.className = 'inv-status-badge ' + (supplier.status === 'Active' ? 'active' : 'inactive');
 
             openModal('modal-view-supplier');
@@ -472,49 +484,114 @@
         }
 
         // --- Bulk Actions Logic ---
-        const selectAll = document.getElementById('select-all');
-        const checkboxes = document.querySelectorAll('.item-checkbox');
-        const bulkActions = document.getElementById('bulk-actions');
-        const selectedCountSpan = document.getElementById('selected-count');
+        function initializeCustomCheckboxes() {
+            const selectAll = document.getElementById('select-all-checkbox');
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            const bulkActions = document.getElementById('bulk-actions');
+            const selectedCountSpan = document.getElementById('selected-count');
 
-        function updateBulkActions() {
-            const checked = document.querySelectorAll('.item-checkbox:checked');
-            const count = checked.length;
-
-            if (count > 0) {
-                bulkActions.style.display = 'flex';
-                selectedCountSpan.textContent = count;
-            } else {
-                bulkActions.style.display = 'none';
+            function updateBulkUI() {
+                const count = document.querySelectorAll('.item-checkbox.active').length;
+                if (count > 0) {
+                    bulkActions.style.display = 'flex';
+                    selectedCountSpan.textContent = count;
+                } else {
+                    bulkActions.style.display = 'none';
+                }
             }
-        }
 
-        // Select All Listener
-        if (selectAll) {
-            selectAll.addEventListener('change', function() {
-                const isChecked = this.checked;
-                document.querySelectorAll('.item-checkbox').forEach(cb => {
-                    cb.checked = isChecked;
+            if (selectAll) {
+                // Clear old listeners by cloning
+                const newSelectAll = selectAll.cloneNode(true);
+                selectAll.parentNode.replaceChild(newSelectAll, selectAll);
+
+                newSelectAll.addEventListener('click', function() {
+                    const isActive = this.classList.contains('active');
+                    if (isActive) {
+                        this.classList.remove('active');
+                        document.querySelectorAll('.item-checkbox').forEach(cb => {
+                            cb.classList.remove('active');
+                            cb.closest('.purchasing-list-row').classList.remove('selected-row');
+                        });
+                    } else {
+                        this.classList.add('active');
+                        document.querySelectorAll('.item-checkbox').forEach(cb => {
+                            cb.classList.add('active');
+                            cb.closest('.purchasing-list-row').classList.add('selected-row');
+                        });
+                    }
+                    updateBulkUI();
                 });
-                updateBulkActions();
+            }
+
+            checkboxes.forEach(cb => {
+                const newCb = cb.cloneNode(true);
+                cb.parentNode.replaceChild(newCb, cb);
+
+                newCb.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    this.closest('.purchasing-list-row').classList.toggle('selected-row');
+                    updateBulkUI();
+
+                    // Update Select All
+                    const allActive = document.querySelectorAll('.item-checkbox.active').length === document
+                        .querySelectorAll('.item-checkbox').length;
+                    const selectAllBtn = document.getElementById('select-all-checkbox');
+                    if (selectAllBtn) {
+                        if (allActive) selectAllBtn.classList.add('active');
+                        else selectAllBtn.classList.remove('active');
+                    }
+                });
             });
         }
 
-        // Individual Checkbox Listener
-        document.querySelectorAll('.item-checkbox').forEach(cb => {
-            cb.addEventListener('change', function() {
-                updateBulkActions();
+        // Initial init
+        initializeCustomCheckboxes();
 
-                // Update Select All state
-                const allChecked = document.querySelectorAll('.item-checkbox:checked').length === document
-                    .querySelectorAll('.item-checkbox').length;
-                if (selectAll) selectAll.checked = allChecked;
+        // --- Real-time Search ---
+        const searchInput = document.getElementById('search-input');
+        let searchTimeout;
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                const query = this.value;
+                const url = new URL(window.location.href);
+
+                if (query.length > 0) {
+                    url.searchParams.set('search', query);
+                    url.searchParams.delete('page');
+                } else {
+                    url.searchParams.delete('search');
+                }
+
+                window.history.pushState({}, '', url);
+
+                searchTimeout = setTimeout(() => {
+                    fetch(url, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            // Update List
+                            document.getElementById('view-list').innerHTML = doc.getElementById(
+                                'view-list').innerHTML;
+
+                            // Re-init checkboxes
+                            initializeCustomCheckboxes();
+                        })
+                        .catch(e => console.error(e));
+                }, 400);
             });
-        });
+        }
 
         function confirmBulkDelete() {
-            const checked = document.querySelectorAll('.item-checkbox:checked');
-            const count = checked.length;
+            const selected = document.querySelectorAll('.item-checkbox.active');
+            const count = selected.length;
 
             if (count === 0) return;
 
@@ -528,8 +605,8 @@
         }
 
         function executeBulkDelete() {
-            const checked = document.querySelectorAll('.item-checkbox:checked');
-            const ids = Array.from(checked).map(cb => cb.dataset.id);
+            const selected = document.querySelectorAll('.item-checkbox.active');
+            const ids = Array.from(selected).map(cb => cb.dataset.id);
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             const btn = document.getElementById('btn-bulk-delete');
@@ -541,26 +618,51 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         ids: ids
                     })
                 })
                 .then(async res => {
-                    if (!res.ok) throw new Error(await res.text());
-                    return res.json();
+                    // If server redirected to HTML or returned non-JSON, handle gracefully
+                    if (!res.ok) {
+                        const text = await res.text().catch(() => '');
+                        throw new Error(text || 'Server error');
+                    }
+
+                    // Try parsing JSON; if it fails, assume success and reload current page
+                    return res.text().then(txt => {
+                        try {
+                            return JSON.parse(txt);
+                        } catch (e) {
+                            return {
+                                __raw_text: txt
+                            };
+                        }
+                    });
                 })
                 .then(data => {
                     closeModal('modal-delete');
-                    if (data.success) {
-                        showFlash(data.message, 'success');
-                        setTimeout(() => window.location.reload(), 1500);
-                    } else {
-                        showFlash(data.message, 'error');
-                        btn.disabled = false;
-                        btn.textContent = originalText;
+                    // If server returned JSON with success flag
+                    if (data && data.success) {
+                        showFlash(data.message || 'Deleted', 'success');
+                        setTimeout(() => window.location.href = window.location.pathname + window.location.search, 800);
+                        return;
                     }
+
+                    // If server returned raw text (non-JSON), assume deletion happened and reload
+                    if (data && data.__raw_text !== undefined) {
+                        showFlash('Deleted', 'success');
+                        setTimeout(() => window.location.href = window.location.pathname + window.location.search, 800);
+                        return;
+                    }
+
+                    // Otherwise show error
+                    showFlash((data && data.message) || 'An error occurred', 'error');
+                    btn.disabled = false;
+                    btn.textContent = originalText;
                 })
                 .catch(err => {
                     console.error(err);

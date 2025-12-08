@@ -76,6 +76,11 @@ Route::middleware('auth')->group(function () {
 
     //people subpages
     Route::get('/peoples/patients-customer', [PeoplesController::class, 'patientscustomer'])->name('peoples.patients-customer');
+    Route::post('/peoples/patients', [PeoplesController::class, 'store'])->name('peoples.patients.store');
+    Route::put('/peoples/patients/{id}', [PeoplesController::class, 'update'])->name('peoples.patients.update');
+    Route::delete('/peoples/patients/{id}', [PeoplesController::class, 'destroy'])->name('peoples.patients.destroy');
+    Route::post('/peoples/patients/bulk-delete', [PeoplesController::class, 'bulkDelete'])->name('peoples.patients.bulk-delete');
+
     Route::get('/peoples/staff-user', [PeoplesController::class, 'staffuser'])->name('peoples.staff-user');
     Route::get('/peoples/recent', [PeoplesController::class, 'recent'])->name('peoples.recent');
 

@@ -50,7 +50,7 @@ class InventoryController extends Controller
             $query->latest();
         }
 
-        $products = $query->paginate(10);
+        $products = $query->paginate(5);
         $categories = Category::all(); // For the filter dropdown and modal
 
         return view('inventorys.manage-products', compact('products', 'categories'));
@@ -178,7 +178,7 @@ class InventoryController extends Controller
             $query->latest();
         }
 
-        $categories = $query->paginate(10);
+        $categories = $query->paginate(5);
 
         return view('inventorys.categories', compact('categories'));
     }
@@ -290,7 +290,7 @@ class InventoryController extends Controller
             $query->orderBy('expiry_date', 'asc'); // FEFO default
         }
 
-        $batches = $query->paginate(10);
+        $batches = $query->paginate(5);
 
         return view('inventorys.expiry-management', compact('batches'));
     }
@@ -380,7 +380,7 @@ class InventoryController extends Controller
             $query->latest();
         }
 
-        $adjustments = $query->paginate(10);
+        $adjustments = $query->paginate(5);
         $products = Product::all(); // For the modal dropdown
 
         return view('inventorys.stock-adjustments', compact('adjustments', 'products'));

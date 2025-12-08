@@ -1,238 +1,514 @@
 <x-app-layout>
+    <!DOCTYPE html>
+    <html lang="en">
+
     <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <link rel="stylesheet" href="{{ asset('css/people.css') }}">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Recent Activity - Pharmacy ERP</title>
+
+        <!-- Import Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- Import Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+
+        <!-- Import FontAwesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Sarabun", sans-serif;
+                background-color: #F5F5F7;
+                color: #1D1D1F;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            /* Custom Scrollbar */
+            ::-webkit-scrollbar {
+                width: 0px;
+                background: transparent;
+            }
+
+            /* Soft Shadow */
+            .soft-shadow {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            }
+
+            /* Animations */
+            .fade-in {
+                animation: fadeIn 0.3s ease-in-out;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Segmented Control Active State */
+            .view-toggle-active {
+                background-color: #007AFF;
+                color: white;
+                box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+            }
+
+            .view-toggle-inactive {
+                color: #86868B;
+                background-color: transparent;
+            }
+
+            .view-toggle-inactive:hover {
+                color: #1D1D1F;
+            }
+
+            /* Activity Icons Backgrounds */
+            .icon-bg-sales {
+                background-color: #E5F1FF;
+                color: #007AFF;
+            }
+
+            .icon-bg-inventory {
+                background-color: #FFF7E6;
+                color: #FF9500;
+            }
+
+            .icon-bg-system {
+                background-color: #F2F2F7;
+                color: #86868B;
+            }
+
+            .icon-bg-error {
+                background-color: #FFF5F5;
+                color: #FF3B30;
+            }
+
+            /* --- Inventory/Table Styles (Ported) --- */
+            .inv-card-row {
+                display: grid;
+                gap: 16px;
+                align-items: center;
+                background: white;
+                border-radius: 12px;
+                padding: 16px 24px;
+                margin-bottom: 8px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+                transition: all 0.2s ease;
+                border: 1px solid transparent;
+            }
+
+            .inv-card-row:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+                border-color: rgba(0, 122, 255, 0.1);
+            }
+
+            .inv-card-row.header {
+                background: transparent;
+                box-shadow: none;
+                padding: 12px 24px;
+                margin-bottom: 0;
+                border-radius: 0;
+                border: none;
+            }
+
+            .inv-card-row.header:hover {
+                transform: none;
+                box-shadow: none;
+                border-color: transparent;
+            }
+
+            .inv-col-header {
+                font-size: 12px;
+                font-weight: 600;
+                color: #8e8e93;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .inv-text-main {
+                font-size: 14px;
+                font-weight: 500;
+                color: #1d1d1f;
+            }
+
+            .inv-text-sub {
+                font-size: 13px;
+                color: #86868b;
+            }
+
+            .inv-product-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .inv-product-name {
+                font-weight: 600;
+                color: #1d1d1f;
+                font-size: 15px;
+            }
+
+            /* Grid Template for Recent Activity */
+            .grid-recent {
+                grid-template-columns: 3fr 4fr 2fr 2fr 1fr;
+            }
+
+            /* Pagination */
+            .people-pagination {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 4px;
+                margin-top: 10px;
+                background-color: transparent;
+            }
+
+            .pagination-text {
+                font-size: 13px;
+                color: #86868b;
+                font-weight: 500;
+            }
+
+            .pagination-controls {
+                display: flex;
+                gap: 8px;
+                background: white;
+                padding: 6px 8px;
+                border-radius: 32px;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            }
+
+            .pagination-btn {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                border: none;
+                background-color: transparent;
+                color: #1d1d1f;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                text-decoration: none;
+                font-size: 12px;
+            }
+
+            .pagination-btn:hover:not(.disabled) {
+                background-color: #f5f5f7;
+                color: #007aff;
+                transform: scale(1.05);
+            }
+
+            .pagination-btn.disabled {
+                color: #d1d1d6;
+                cursor: not-allowed;
+            }
+
+            /* Header Styles */
+            .sr-header {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 32px;
+                gap: 16px;
+            }
+
+            @media (min-width: 768px) {
+                .sr-header {
+                    flex-direction: row;
+                }
+            }
+
+            .sr-header-left {
+                width: 100%;
+            }
+
+            @media (min-width: 768px) {
+                .sr-header-left {
+                    width: auto;
+                }
+            }
+
+            .sr-breadcrumb {
+                font-size: 14px;
+                color: #86868b;
+                margin-bottom: 8px;
+            }
+
+            .sr-page-title {
+                font-size: 32px;
+                font-weight: 700;
+                color: #1d1d1f;
+                letter-spacing: -0.02em;
+            }
+        </style>
     </head>
-    
-    <div class="sr-container">
 
-        {{-- HEADER --}}
-        <div class="sr-header">
-            <div class="sr-header-left">
-                <p class="sr-breadcrumb">Dashboard / People / Recent < <a href="{{ route('peoples.staff-user') }}" style="color: #017aff">Staff-Users</a></p>
-                <h2 class="sr-page-title">Recent (Log)</h2>
-            </div>
+    <body class="min-h-screen p-6 md:p-10">
 
-            <div class="sr-header-right" style="margin-right: 10px">
-                <button class="sr-icon-button" title="Filter">
-                    <i class="fa-solid fa-filter"></i>
-                </button>
-                <button class="sr-button-primary">
-                    <i class="fa-solid fa-plus"></i>
-                    <span>Add new recent</span>
-                </button>
-            </div>
-        </div>
+        <div class="max-w-[1400px] mx-auto">
 
-        {{-- FILTER BAR --}}
-        <div class="people-filters-wrapper">
-            <div class="people-filter-group">
-                <label for="date-range-filter">
-                    <i class="fa-solid fa-calendar-days"></i> Date Range
-                </label>
-                <select id="date-range-filter" class="people-select">
-                    <option value="today" selected>Today</option>
-                    <option value="yesterday">Yesterday</option>
-                    <option value="this_week">This Week</option>
-                    <option value="custom">Custom Range</option>
-                </select>
-            </div>
+            <!-- WRAPPER -->
+            <div class="os-container">
 
-            <div class="people-filter-group">
-                <label for="user-filter">
-                    <i class="fa-solid fa-user"></i> User
-                </label>
-                <select id="user-filter" class="people-select">
-                    <option value="all">All Users</option>
-                    <option value="admin">Pharmacist Apichat</option>
-                    <option value="pharmacist_sr">Pharmacist Sureeporn</option>
-                    <option value="staff_nv">Staff A (Nattawut)</option>
-                </select>
-            </div>
+                <!-- Header Section -->
+                <div class="sr-header" style="margin-bottom: 0px">
+                    <div class="sr-header-left">
+                        <p class="sr-breadcrumb">
+                            Dashboard / <span style="color: #3a3a3c; font-weight: 600;">Recent Activity</span>
+                        </p>
+                        <h2 class="sr-page-title">System Logs <span
+                                style="font-size: 0.6em; color: #8e8e93; font-weight: 500;">(Today)</span></h2>
+                    </div>
 
-            <div class="people-filter-group">
-                <label for="action-filter">
-                    <i class="fa-solid fa-bolt"></i> Action
-                </label>
-                <select id="action-filter" class="people-select">
-                    <option value="all">All Actions</option>
-                    <option value="create">Create</option>
-                    <option value="update">Update</option>
-                    <option value="delete">Delete/Deactivate</option>
-                    <option value="view">View</option>
-                </select>
-            </div>
+                    <div class="flex items-center gap-4 w-full md:w-auto justify-between md::justify-end">
 
-            <button class="people-button-secondary">
-                <i class="fa-solid fa-filter"></i>
-                <span>Apply Filters</span>
-            </button>
-        </div>
+                        <!-- Search -->
+                        <div class="relative hidden md:block">
+                            <input type="text" placeholder="Search logs..."
+                                class="pl-10 pr-4 py-2 rounded-xl border border-transparent bg-white focus:bg-white focus:border-blue-300 focus:outline-none transition w-64 text-sm shadow-sm text-[#1D1D1F]">
+                            <i
+                                class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-[#86868B]"></i>
+                        </div>
 
-        {{-- LOG TABLE CONTENT --}}
-        <div class="people-content-area">
-            
-            <div class="inv-filters-wrapper">
-                {{-- [!!! 1. BULK ACTIONS (เพิ่มส่วนนี้) !!!] --}}
-                <div id="bulk-actions"
-    style="
-        display: none;
-        align-items: center;
-        gap: 16px;
+                        <!-- Category Filter -->
+                        <div class="bg-[#E5E5EA] p-1 rounded-xl flex font-medium text-[13px]"
+                            style="border-radius: 25px">
+                            <button onclick="filterLogs('all')" id="filter-all"
+                                class="px-5 py-1.5 rounded-[9px] transition-all duration-200 view-toggle-active"
+                                style="border-radius: 25px">All</button>
+                            <button onclick="filterLogs('sales')" id="filter-sales"
+                                class="px-5 py-1.5 rounded-[9px] transition-all duration-200 view-toggle-inactive"
+                                style="border-radius: 25px">Sales</button>
+                            <button onclick="filterLogs('inventory')" id="filter-inventory"
+                                class="px-5 py-1.5 rounded-[9px] transition-all duration-200 view-toggle-inactive"
+                                style="border-radius: 25px">Stock</button>
+                            <button onclick="filterLogs('system')" id="filter-system"
+                                class="px-5 py-1.5 rounded-[9px] transition-all duration-200 view-toggle-inactive"
+                                style="border-radius: 25px">System</button>
+                        </div>
 
-   
-        border-radius: 32px;
-        margin-left: auto;
-    ">
-
-    <!-- Selected Counter -->
-    <span style="font-weight: 600; color: #6e6e73; font-size: 0.9rem;">
-        Selected: <span id="selected-count">0</span>
-    </span>
-
-    <!-- Clear Logs Button -->
-    <button 
-        style="
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 32px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #ff3b30;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.06);
-        ">
-        <i class="fa-solid fa-trash"></i>
-        Clear Selected Logs
-    </button>
-
-    <!-- Export CSV Button -->
-    <button 
-        style="
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 32px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #1d1d1f;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.06);
-        ">
-        <i class="fa-solid fa-file-export"></i>
-        Export CSV
-    </button>
-
-</div>
-
-            </div>
-
-            <div class="people-list-container">
-                {{-- ส่วนหัวตาราง --}}
-                <div class="people-list-row header-row log-header">
-                    {{-- [!!! 2. CHECKBOX SELECT ALL (เพิ่มส่วนนี้) !!!] --}}
-                    <div class="people-checkbox" id="select-all"></div>
-                    
-                    <div class="col-log-time">Timestamp</div>
-                    <div class="col-log-user">User</div>
-                    <div class="col-log-action">Action</div>
-                    <div class="col-log-details">Details</div>
+                        <!-- Export Button -->
+                        <button
+                            class="bg-white text-[#1D1D1F] border border-gray-200 px-4 py-2.5 rounded-xl font-medium text-sm shadow-sm hover:bg-[#F9F9FB] transition flex items-center gap-2"
+                            style="border-radius: 25px">
+                            <i class="fa-solid fa-download text-[#86868B]"></i> Export
+                        </button>
+                    </div>
                 </div>
 
-                {{-- Log Row 1 --}}
-                <div class="people-list-row log-row">
-                    {{-- [!!! 3. CHECKBOX ITEM (เพิ่มส่วนนี้) !!!] --}}
-                    <div class="people-checkbox item-checkbox"></div>
-                    
-                    <div class="col-log-time" data-label="Timestamp">15/11/2025 11:30:15</div>
-                    <div class="col-log-user" data-label="User">
-                        <div class="sr-user-info">
-                            <span class="sr-user-name">ภญ. สุรีพร</span>
-                            <span class="sr-user-email">Pharmacist</span>
+                <!-- ACTIVITY LIST -->
+                <div id="view-list" class="transition-opacity duration-300">
+
+                    <!-- Table Header -->
+                    <div class="inv-card-row header grid-recent">
+                        <div class="inv-col-header">User / Actor</div>
+                        <div class="inv-col-header">Activity Description</div>
+                        <div class="inv-col-header">Category</div>
+                        <div class="inv-col-header">Time</div>
+                        <div class="inv-col-header" style="text-align: right;">Status</div>
+                    </div>
+
+                    <div class="space-y-3" id="log-container">
+
+                        <!-- Item 1: Sales (Just Now) -->
+                        <div class="inv-card-row grid-recent list-row" data-category="sales" style="border-radius: 24px;">
+                            <div class="inv-product-info">
+                                <img src="https://i.pravatar.cc/150?u=Pharm"
+                                    class="w-9 h-9 rounded-full object-cover border border-gray-100">
+                                <div>
+                                    <div class="inv-product-name">Somchai Jaidee</div>
+                                    <div class="inv-text-sub">Pharmacist</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="inv-text-main">Created Invoice #INV-2025-001</div>
+                                <div class="inv-text-sub">Sold: Paracetamol, Vitamin C</div>
+                            </div>
+                            <div>
+                                <span class="inv-status-badge" style="background-color: #E5F1FF; color: #007AFF;">
+                                    <i class="fa-solid fa-basket-shopping text-[10px] mr-1"></i> Sales
+                                </span>
+                            </div>
+                            <div>
+                                <div class="inv-text-main">Just now</div>
+                                <div class="inv-text-sub">10:42 AM</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <i class="fa-solid fa-circle-check text-[#34C759] text-lg" title="Success"></i>
+                            </div>
+                        </div>
+
+                        <!-- Item 2: Inventory (15m ago) -->
+                        <div class="inv-card-row grid-recent list-row" data-category="inventory" style="border-radius: 24px;">
+                            <div class="inv-product-info">
+                                <img src="https://i.pravatar.cc/150?u=Asst"
+                                    class="w-9 h-9 rounded-full object-cover border border-gray-100">
+                                <div>
+                                    <div class="inv-product-name">Wipawee S.</div>
+                                    <div class="inv-text-sub">Assistant</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="inv-text-main">Stock Adjustment</div>
+                                <div class="inv-text-sub">Updated 'Tylenol 500mg' qty: 50 -> 45</div>
+                            </div>
+                            <div>
+                                <span class="inv-status-badge" style="background-color: #FFF7E6; color: #FF9500;">
+                                    <i class="fa-solid fa-boxes-stacked text-[10px] mr-1"></i> Inventory
+                                </span>
+                            </div>
+                            <div>
+                                <div class="inv-text-main">15 mins ago</div>
+                                <div class="inv-text-sub">10:27 AM</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <i class="fa-solid fa-circle-check text-[#34C759] text-lg" title="Success"></i>
+                            </div>
+                        </div>
+
+                        <!-- Item 3: System (1h ago) -->
+                        <div class="inv-card-row grid-recent list-row" data-category="system" style="border-radius: 24px;">
+                            <div class="inv-product-info">
+                                <div
+                                    class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 border border-gray-200">
+                                    <i class="fa-solid fa-server"></i>
+                                </div>
+                                <div>
+                                    <div class="inv-product-name">System Auto</div>
+                                    <div class="inv-text-sub">Bot</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="inv-text-main">Daily Backup Completed</div>
+                                <div class="inv-text-sub">Database backup file generated (24MB)</div>
+                            </div>
+                            <div>
+                                <span class="inv-status-badge" style="background-color: #F2F2F7; color: #86868B;">
+                                    <i class="fa-solid fa-gears text-[10px] mr-1"></i> System
+                                </span>
+                            </div>
+                            <div>
+                                <div class="inv-text-main">1 hour ago</div>
+                                <div class="inv-text-sub">09:00 AM</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <i class="fa-solid fa-circle-check text-[#34C759] text-lg" title="Success"></i>
+                            </div>
+                        </div>
+
+                        <!-- Item 4: System Error (Yesterday) -->
+                        <div class="inv-card-row grid-recent list-row" data-category="system"
+                            style="background-color: #FFF5F5; border-radius: 24px;">
+                            <div class="inv-product-info">
+                                <img src="https://i.pravatar.cc/150?u=James"
+                                    class="w-9 h-9 rounded-full object-cover border border-gray-100">
+                                <div>
+                                    <div class="inv-product-name">James W.</div>
+                                    <div class="inv-text-sub">Admin</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="inv-text-main">Failed Login Attempt</div>
+                                <div class="inv-text-sub" style="color: #FF3B30;">Incorrect password entered 3 times
+                                </div>
+                            </div>
+                            <div>
+                                <span class="inv-status-badge" style="background-color: #FFF5F5; color: #FF3B30;">
+                                    <i class="fa-solid fa-shield-halved text-[10px] mr-1"></i> Security
+                                </span>
+                            </div>
+                            <div>
+                                <div class="inv-text-main">Yesterday</div>
+                                <div class="inv-text-sub">08:15 PM</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <i class="fa-solid fa-circle-exclamation text-[#FF3B30] text-lg" title="Warning"></i>
+                            </div>
+                        </div>
+
+                        <!-- Item 5: Sales (Yesterday) -->
+                        <div class="inv-card-row grid-recent list-row" data-category="sales" style="border-radius: 24px;">
+                            <div class="inv-product-info">
+                                <img src="https://i.pravatar.cc/150?u=Pharm"
+                                    class="w-9 h-9 rounded-full object-cover border border-gray-100">
+                                <div>
+                                    <div class="inv-product-name">Somchai Jaidee</div>
+                                    <div class="inv-text-sub">Pharmacist</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="inv-text-main">New Patient Registered</div>
+                                <div class="inv-text-sub">Added 'Mrs. Malee Jaiyen' to system</div>
+                            </div>
+                            <div>
+                                <span class="inv-status-badge" style="background-color: #E5F1FF; color: #007AFF;">
+                                    <i class="fa-solid fa-user-plus text-[10px] mr-1"></i> Registration
+                                </span>
+                            </div>
+                            <div>
+                                <div class="inv-text-main">Yesterday</div>
+                                <div class="inv-text-sub">04:30 PM</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <i class="fa-solid fa-circle-check text-[#34C759] text-lg" title="Success"></i>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="people-pagination">
+                        <div class="pagination-text" style="margin-right:5px">Showing 1 to 5 of 128 logs</div>
+                        <div class="pagination-controls">
+                            <a href="#" class="pagination-btn disabled"><i
+                                    class="fa-solid fa-chevron-left"></i></a>
+                            <a href="#" class="pagination-btn"><i class="fa-solid fa-chevron-right"></i></a>
                         </div>
                     </div>
-                    <div class="col-log-action" data-label="Action">
-                        <span class="log-action-tag update">UPDATED_STOCK</span>
-                    </div>
-                    <div class="col-log-details" data-label="Details">
-                        แก้ไขสต็อก Paracetamol (10mg) จาก 100 เป็น 90
-                    </div>
                 </div>
-
-                {{-- Log Row 2 --}}
-                <div class="people-list-row log-row">
-                    <div class="people-checkbox item-checkbox"></div>
-                    <div class="col-log-time" data-label="Timestamp">15/11/2025 11:29:00</div>
-                    <div class="col-log-user" data-label="User">
-                        <div class="sr-user-info">
-                            <span class="sr-user-name">ภญ. สุรีพร</span>
-                            <span class="sr-user-email">Pharmacist</span>
-                        </div>
-                    </div>
-                    <div class="col-log-action" data-label="Action">
-                        <span class="log-action-tag view">VIEWED_PATIENT</span>
-                    </div>
-                    <div class="col-log-details" data-label="Details">
-                        ดูข้อมูลผู้ป่วย ID: 105 (สมชาย ใจดี)
-                    </div>
-                </div>
-
-                {{-- Log Row 3 --}}
-                <div class="people-list-row log-row">
-                    <div class="people-checkbox item-checkbox"></div>
-                    <div class="col-log-time" data-label="Timestamp">15/11/2025 11:28:10</div>
-                    <div class="col-log-user" data-label="User">
-                         <div class="sr-user-info">
-                            <span class="sr-user-name">พนักงาน ก. (ณัฐวุฒิ)</span>
-                            <span class="sr-user-email">Staff</span>
-                        </div>
-                    </div>
-                    <div class="col-log-action" data-label="Action">
-                        <span class="log-action-tag create">CREATED_ORDER</span>
-                    </div>
-                    <div class="col-log-details" data-label="Details">
-                        สร้างบิล #2025-00520 (ยอด ฿288.46)
-                    </div>
-                </div>
-
-                {{-- Log Row 4 --}}
-                <div class="people-list-row log-row">
-                    <div class="people-checkbox item-checkbox"></div>
-                    <div class="col-log-time" data-label="Timestamp">15/11/2025 11:25:02</div>
-                    <div class="col-log-user" data-label="User">
-                         <div class="sr-user-info">
-                            <span class="sr-user-name">ภก. อภิชาติ</span>
-                            <span class="sr-user-email">Admin</span>
-                        </div>
-                    </div>
-                    <div class="col-log-action" data-label="Action">
-                        <span class="log-action-tag delete">DEACTIVATED_USER</span>
-                    </div>
-                    <div class="col-log-details" data-label="Details">
-                        ปิดใช้งานผู้ใช้ ID: 4 (อดีตพนักงาน ข.)
-                    </div>
-                </div>
-
             </div>
+
         </div>
 
-        <div class="people-pagination">
-            <span class="pagination-text">1-4 of 120</span>
-            <div class="pagination-controls">
-                <button class="pagination-btn disabled" aria-label="Previous Page">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button class="pagination-btn" aria-label="Next Page">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
-    
-    </div>
-    <script src="{{ asset('js/people.js') }}"></script>
+        <script>
+            function filterLogs(category) {
+                // Update Buttons
+                ['all', 'sales', 'inventory', 'system'].forEach(c => {
+                    const btn = document.getElementById('filter-' + c);
+                    if (c === category) {
+                        btn.classList.add('view-toggle-active');
+                        btn.classList.remove('view-toggle-inactive');
+                    } else {
+                        btn.classList.add('view-toggle-inactive');
+                        btn.classList.remove('view-toggle-active');
+                    }
+                });
+
+                // Filter Rows
+                const rows = document.querySelectorAll('#log-container .list-row');
+                rows.forEach(row => {
+                    if (category === 'all' || row.dataset.category === category) {
+                        row.classList.remove('hidden');
+                    } else {
+                        row.classList.add('hidden');
+                    }
+                });
+            }
+        </script>
+    </body>
+
+    </html>
 </x-app-layout>

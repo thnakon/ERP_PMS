@@ -109,7 +109,7 @@
                         <input type="hidden" name="sort" value="{{ request('sort') }}">
                     @endif
                     <i class="fa-solid fa-search"></i>
-                    <input type="text" name="search" value="{{ request('search') }}"
+                    <input type="text" name="search" id="search-input" value="{{ request('search') }}"
                         placeholder="Search by PO Number or Supplier...">
                     @if (request('status'))
                         <input type="hidden" name="status" value="{{ request('status') }}">
@@ -134,87 +134,90 @@
 
         <!-- List View -->
         <main class="content-area" id="po-list">
-            <div class="purchasing-list-container" id="po-list-container">
-                <!-- Header Row -->
-                <div class="purchasing-list-row header-row">
-                    <div class="col-header">
-                        <div class="inv-checkbox" id="select-all-checkbox"></div>
+            <div id="view-list" class="transition-opacity duration-300">
+                <div class="purchasing-list-container" id="po-list-container">
+                    <!-- Header Row -->
+                    <div class="purchasing-list-row header-row">
+                        <div class="col-header">
+                            <div class="inv-checkbox" id="select-all-checkbox"></div>
+                        </div>
+                        <div class="col-header" style="width: 50px;">#</div>
+                        <div class="col-header">PO Number</div>
+                        <div class="col-header">Supplier</div>
+                        <div class="col-header">Date Ordered</div>
+                        <div class="col-header">Total Cost</div>
+                        <div class="col-header">Status</div>
+                        <div class="col-header" style="text-align: center;">Actions</div>
                     </div>
-                    <div class="col-header" style="width: 50px;">#</div>
-                    <div class="col-header">PO Number</div>
-                    <div class="col-header">Supplier</div>
-                    <div class="col-header">Date Ordered</div>
-                    <div class="col-header">Total Cost</div>
-                    <div class="col-header">Status</div>
-                    <div class="col-header" style="text-align: center;">Actions</div>
+
+                    {{-- Dynamic Rows --}}
+                    @forelse($purchaseOrders as $po)
+                        <div class="purchasing-list-row po-item">
+                            <div class="col-checkbox">
+                                <div class="inv-checkbox item-checkbox" data-id="{{ $po->id }}"></div>
+                            </div>
+                            <div class="col-index"
+                                style="width: 50px; font-size: 13px; color: var(--text-secondary); display: flex; align-items: center;">
+                                {{ ($purchaseOrders->currentPage() - 1) * $purchaseOrders->perPage() + $loop->iteration }}
+                            </div>
+                            <div class="col-po-number" data-label="PO Number">{{ $po->reference_number }}</div>
+                            <div class="col-supplier" data-label="Supplier">{{ $po->supplier->name ?? 'Unknown' }}
+                            </div>
+                            <div class="col-date" data-label="Date Ordered">{{ $po->purchase_date->format('d/m/Y') }}
+                            </div>
+                            <div class="col-cost" data-label="Total Cost">฿{{ number_format($po->total_amount, 2) }}
+                            </div>
+                            <div class="col-status" data-label="Status">
+                                @php
+                                    $statusClass = match ($po->status) {
+                                        'draft' => 'status-draft',
+                                        'ordered' => 'status-sent', // Map ordered to sent style
+                                        'completed' => 'status-completed',
+                                        'cancelled' => 'status-cancelled',
+                                        default => 'status-draft',
+                                    };
+                                    $statusLabel = ucfirst($po->status);
+                                    if ($po->status == 'ordered') {
+                                        $statusLabel = 'Ordered';
+                                    }
+                                @endphp
+                                <span class="status-badge {{ $statusClass }}">{{ $statusLabel }}</span>
+                            </div>
+                            <div class="col-actions" data-label="Actions"
+                                style="display: flex; justify-content: center; gap: 8px;">
+                                <!-- Always show View, Edit, Delete -->
+                                <button class="purchasing-icon-button btn-view-po" title="View"
+                                    onclick="openViewModal({{ json_encode($po) }}, {{ json_encode($po->items) }})">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+
+                                <button class="purchasing-icon-button btn-edit-po" title="Edit"
+                                    onclick="openEditModal({{ json_encode($po) }}, {{ json_encode($po->items) }})">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+
+                                <button class="purchasing-icon-button btn-delete-po" title="Delete"
+                                    onclick="confirmDelete({{ $po->id }})">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="purchasing-list-row"
+                            style="display: flex; justify-content: center; align-items: center; padding: 40px;">
+                            <div style="text-align: center; color: var(--text-secondary);">
+                                <i class="fa-solid fa-file-invoice"
+                                    style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                                <p>No purchase orders found.</p>
+                            </div>
+                        </div>
+                    @endforelse
                 </div>
 
-                {{-- Dynamic Rows --}}
-                @forelse($purchaseOrders as $po)
-                    <div class="purchasing-list-row po-item">
-                        <div class="col-checkbox">
-                            <div class="inv-checkbox item-checkbox" data-id="{{ $po->id }}"></div>
-                        </div>
-                        <div class="col-index"
-                            style="width: 50px; font-size: 13px; color: var(--text-secondary); display: flex; align-items: center;">
-                            {{ ($purchaseOrders->currentPage() - 1) * $purchaseOrders->perPage() + $loop->iteration }}
-                        </div>
-                        <div class="col-po-number" data-label="PO Number">{{ $po->reference_number }}</div>
-                        <div class="col-supplier" data-label="Supplier">{{ $po->supplier->name ?? 'Unknown' }}</div>
-                        <div class="col-date" data-label="Date Ordered">{{ $po->purchase_date->format('d/m/Y') }}
-                        </div>
-                        <div class="col-cost" data-label="Total Cost">฿{{ number_format($po->total_amount, 2) }}
-                        </div>
-                        <div class="col-status" data-label="Status">
-                            @php
-                                $statusClass = match ($po->status) {
-                                    'draft' => 'status-draft',
-                                    'ordered' => 'status-sent', // Map ordered to sent style
-                                    'completed' => 'status-completed',
-                                    'cancelled' => 'status-cancelled',
-                                    default => 'status-draft',
-                                };
-                                $statusLabel = ucfirst($po->status);
-                                if ($po->status == 'ordered') {
-                                    $statusLabel = 'Ordered';
-                                }
-                            @endphp
-                            <span class="status-badge {{ $statusClass }}">{{ $statusLabel }}</span>
-                        </div>
-                        <div class="col-actions" data-label="Actions"
-                            style="display: flex; justify-content: center; gap: 8px;">
-                            <!-- Always show View, Edit, Delete -->
-                            <button class="purchasing-icon-button btn-view-po" title="View"
-                                data-po='@json($po)' data-items='@json($po->items)'>
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-
-                            <button class="purchasing-icon-button btn-edit-po" title="Edit"
-                                data-po='@json($po)' data-items='@json($po->items)'>
-                                <i class="fa-solid fa-pen"></i>
-                            </button>
-
-                            <button class="purchasing-icon-button btn-delete-po" title="Delete"
-                                data-id="{{ $po->id }}">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </div>
-                    </div>
-                @empty
-                    <div class="purchasing-list-row"
-                        style="display: flex; justify-content: center; align-items: center; padding: 40px;">
-                        <div style="text-align: center; color: var(--text-secondary);">
-                            <i class="fa-solid fa-file-invoice"
-                                style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
-                            <p>No purchase orders found.</p>
-                        </div>
-                    </div>
-                @endforelse
-            </div>
-
-            <!-- Pagination -->
-            <div class="mt-4">
-                {{ $purchaseOrders->appends(request()->query())->links() }}
+                <!-- Pagination -->
+                <div class="mt-4">
+                    {{ $purchaseOrders->appends(request()->query())->onEachSide(1)->links('vendor.pagination.apple') }}
+                </div>
             </div>
         </main>
 
@@ -606,22 +609,110 @@
         }
 
         // --- Bulk Actions Logic ---
-        const selectAll = document.getElementById(
-            'select-all-checkbox'); // Note: ID might be 'select-all' in other files, checking...
-        // In the viewed file it was 'select-all-checkbox' div class inv-checkbox. Wait, it's a div?
-        // In categories it was an input type checkbox.
-        // In the viewed file: <div class="inv-checkbox" id="select-all-checkbox"></div>
-        // This implies custom JS handling for checkboxes in purchasing.js.
-        // But I am rewriting JS. I should probably change these to real checkboxes for simplicity if I want to match categories.blade.php exactly.
-        // However, changing the table structure might break existing CSS if it relies on div.inv-checkbox.
-        // Let's stick to the existing HTML structure for the table but ensure my JS handles it, OR switch to input checkboxes.
-        // The user said "Adjust Modal... to be like this page".
-        // I will stick to the modal logic. The bulk delete trigger is outside the modal.
-        // I'll assume the checkboxes are handled by purchasing.js or I need to handle them.
-        // Let's look at the viewed file again.
-        // <div class="inv-checkbox item-checkbox" data-id="{{ $po->id }}"></div>
-        // This is definitely a custom checkbox.
-        // I will add a helper to get selected IDs based on this structure.
+        function initializeCustomCheckboxes() {
+            const selectAll = document.getElementById('select-all-checkbox');
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            const bulkActions = document.getElementById('bulk-actions');
+            const selectedCountSpan = document.getElementById('selected-count');
+
+            function updateBulkUI() {
+                const count = document.querySelectorAll('.item-checkbox.active').length;
+                if (count > 0) {
+                    bulkActions.style.display = 'flex';
+                    selectedCountSpan.textContent = count;
+                } else {
+                    bulkActions.style.display = 'none';
+                }
+            }
+
+            if (selectAll) {
+                // Clear old listeners by cloning
+                const newSelectAll = selectAll.cloneNode(true);
+                selectAll.parentNode.replaceChild(newSelectAll, selectAll);
+
+                newSelectAll.addEventListener('click', function() {
+                    const isActive = this.classList.contains('active');
+                    if (isActive) {
+                        this.classList.remove('active');
+                        document.querySelectorAll('.item-checkbox').forEach(cb => {
+                            cb.classList.remove('active');
+                            cb.closest('.purchasing-list-row').classList.remove('selected-row');
+                        });
+                    } else {
+                        this.classList.add('active');
+                        document.querySelectorAll('.item-checkbox').forEach(cb => {
+                            cb.classList.add('active');
+                            cb.closest('.purchasing-list-row').classList.add('selected-row');
+                        });
+                    }
+                    updateBulkUI();
+                });
+            }
+
+            checkboxes.forEach(cb => {
+                const newCb = cb.cloneNode(true);
+                cb.parentNode.replaceChild(newCb, cb);
+
+                newCb.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    this.closest('.purchasing-list-row').classList.toggle('selected-row');
+                    updateBulkUI();
+
+                    // Update Select All
+                    const allActive = document.querySelectorAll('.item-checkbox.active').length === document
+                        .querySelectorAll('.item-checkbox').length;
+                    const selectAllBtn = document.getElementById('select-all-checkbox');
+                    if (selectAllBtn) {
+                        if (allActive) selectAllBtn.classList.add('active');
+                        else selectAllBtn.classList.remove('active');
+                    }
+                });
+            });
+        }
+
+        // Initial init
+        initializeCustomCheckboxes();
+
+        // --- Real-time Search ---
+        const searchInput = document.getElementById('search-input');
+        let searchTimeout;
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                const query = this.value;
+                const url = new URL(window.location.href);
+
+                if (query.length > 0) {
+                    url.searchParams.set('search', query);
+                    url.searchParams.delete('page');
+                } else {
+                    url.searchParams.delete('search');
+                }
+
+                window.history.pushState({}, '', url);
+
+                searchTimeout = setTimeout(() => {
+                    fetch(url, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            // Update List
+                            document.getElementById('view-list').innerHTML = doc.getElementById(
+                                'view-list').innerHTML;
+
+                            // Re-init checkboxes
+                            initializeCustomCheckboxes();
+                        })
+                        .catch(e => console.error(e));
+                }, 400);
+            });
+        }
 
         function getSelectedIds() {
             const selected = document.querySelectorAll('.item-checkbox.active'); // Assuming 'active' class is toggled

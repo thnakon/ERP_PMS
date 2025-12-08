@@ -195,7 +195,7 @@
 
                     <!-- Search Input -->
                     <div style="position: relative;">
-                        <input type="text" name="search" value="{{ request('search') }}"
+                        <input type="text" name="search" id="search-input" value="{{ request('search') }}"
                             placeholder="Search Reason, Product, User..." class="inv-form-input"
                             style="width: 280px; height: 44px; padding-left: 40px;">
                         <i class="fa-solid fa-magnifying-glass"
@@ -212,39 +212,44 @@
                 </div>
             </div>
 
-            <!-- Table Header -->
-            <div class="inv-card-row header grid-adjustment"
-                style="display: grid; grid-template-columns: 40px 60px 2fr 1fr 1fr 1fr 1.5fr 1fr 100px; 
+            <!-- VIEW LIST CONTAINER -->
+            <div id="view-list" class="transition-opacity duration-300">
+                <!-- Table Header -->
+                <div class="inv-card-row header grid-adjustment"
+                    style="display: grid; grid-template-columns: 40px 60px 2fr 1fr 1fr 1fr 1.5fr 1fr 100px; 
                        padding: 0 16px; 
                        margin-bottom: 10px; 
                        background: transparent; 
                        border: none;">
-                <div class="inv-checkbox-wrapper">
-                    <input type="checkbox" class="inv-checkbox" id="select-all">
+                    <div class="inv-checkbox-wrapper">
+                        <input type="checkbox" class="inv-checkbox" id="select-all">
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Image
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Product
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Type</div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Qty</div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Reason
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">User</div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Date</div>
+                    <div class="inv-col-header"
+                        style="text-align: right; font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">
+                        Actions</div>
                 </div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Image</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Product</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Type</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Qty</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Reason</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">User</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Date</div>
-                <div class="inv-col-header"
-                    style="text-align: right; font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">
-                    Actions</div>
-            </div>
 
-            <!-- Adjustments Loop -->
-            @forelse($adjustments as $adj)
-                <div class="inv-card-row grid-adjustment adj-row"
-                    style="display: grid; grid-template-columns: 40px 60px 2fr 1fr 1fr 1fr 1.5fr 1fr 100px; 
+                <!-- Adjustments Loop -->
+                @forelse($adjustments as $adj)
+                    <div class="inv-card-row grid-adjustment adj-row"
+                        style="display: grid; grid-template-columns: 40px 60px 2fr 1fr 1fr 1fr 1.5fr 1fr 100px; 
                            background: #fff; 
                            border-radius: 22px; 
                            margin-bottom: 8px; 
@@ -253,83 +258,86 @@
                            border: 1px solid #f5f5f7;
                            transition: all 0.2s ease;
                            align-items: center;"
-                    onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'"
-                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.02)'">
+                        onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.02)'">
 
-                    <div class="inv-checkbox-wrapper">
-                        <input type="checkbox" class="inv-checkbox item-checkbox" data-id="{{ $adj->id }}">
-                    </div>
+                        <div class="inv-checkbox-wrapper">
+                            <input type="checkbox" class="inv-checkbox item-checkbox" data-id="{{ $adj->id }}">
+                        </div>
 
-                    <!-- Image -->
-                    <div class="inv-product-image" style="display: flex; align-items: center; justify-content: center;">
-                        @if ($adj->product && $adj->product->image_path)
-                            <img src="{{ asset($adj->product->image_path) }}" alt="{{ $adj->product->name }}"
-                                style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid #e5e5ea;">
-                        @else
-                            <div
-                                style="width: 40px; height: 40px; border-radius: 8px; background-color: #f2f2f7; display: flex; align-items: center; justify-content: center; color: #8e8e93;">
-                                <i class="fa-solid fa-image" style="font-size: 16px;"></i>
+                        <!-- Image -->
+                        <div class="inv-product-image"
+                            style="display: flex; align-items: center; justify-content: center;">
+                            @if ($adj->product && $adj->product->image_path)
+                                <img src="{{ asset($adj->product->image_path) }}" alt="{{ $adj->product->name }}"
+                                    style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid #e5e5ea;">
+                            @else
+                                <div
+                                    style="width: 40px; height: 40px; border-radius: 8px; background-color: #f2f2f7; display: flex; align-items: center; justify-content: center; color: #8e8e93;">
+                                    <i class="fa-solid fa-image" style="font-size: 16px;"></i>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="inv-product-info">
+                            <div class="inv-product-name" style="font-size: 14px; font-weight: 600; color: #1d1d1f;">
+                                {{ $adj->product->name ?? 'Unknown Product' }}
                             </div>
-                        @endif
-                    </div>
+                        </div>
 
-                    <div class="inv-product-info">
-                        <div class="inv-product-name" style="font-size: 14px; font-weight: 600; color: #1d1d1f;">
-                            {{ $adj->product->name ?? 'Unknown Product' }}
+                        <div>
+                            <span class="status-badge badge-{{ $adj->type }}">
+                                {{ $adj->type == 'addition' ? '+ Addition' : '- Subtraction' }}
+                            </span>
+                        </div>
+
+                        <div class="inv-text-main" style="font-size: 13px; font-weight: 600; color: #1d1d1f;">
+                            {{ $adj->quantity }}
+                        </div>
+
+                        <div class="inv-text-sub" style="font-size: 13px; color: #424245;">
+                            {{ $adj->reason }}
+                        </div>
+
+                        <div class="inv-text-sub" style="font-size: 13px; color: #424245;">
+                            {{ $adj->user->name ?? 'Unknown' }}
+                        </div>
+
+                        <div class="inv-text-sub" style="font-size: 13px; color: #86868b;">
+                            {{ $adj->created_at->format('d/m/Y H:i') }}
+                        </div>
+
+                        <div class="inv-action-group"
+                            style="display: flex; gap: 8px; justify-content: flex-end; align-items: center;">
+                            <!-- Edit Button -->
+                            <button class="inv-icon-action" title="Edit"
+                                onclick="openEditModal({{ json_encode($adj) }})"
+                                style="color: #86868b; background: none; border: none; cursor: pointer;">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+                            <!-- Delete Button -->
+                            <button class="inv-icon-action" title="Delete"
+                                onclick="confirmDelete({{ $adj->id }})"
+                                style="color: #86868b; background: none; border: none; cursor: pointer;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </div>
                     </div>
-
-                    <div>
-                        <span class="status-badge badge-{{ $adj->type }}">
-                            {{ $adj->type == 'addition' ? '+ Addition' : '- Subtraction' }}
-                        </span>
+                @empty
+                    <div class="inv-card-row"
+                        style="justify-content: center; padding: 40px; background: #fff; border-radius: 12px; margin-bottom: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+                        <div style="text-align: center;">
+                            <i class="fa-solid fa-clipboard-list"
+                                style="font-size: 48px; color: #e5e5ea; margin-bottom: 16px;"></i>
+                            <div class="inv-text-sub" style="font-size: 16px;">No adjustments found</div>
+                        </div>
                     </div>
+                @endforelse
 
-                    <div class="inv-text-main" style="font-size: 13px; font-weight: 600; color: #1d1d1f;">
-                        {{ $adj->quantity }}
-                    </div>
-
-                    <div class="inv-text-sub" style="font-size: 13px; color: #424245;">
-                        {{ $adj->reason }}
-                    </div>
-
-                    <div class="inv-text-sub" style="font-size: 13px; color: #424245;">
-                        {{ $adj->user->name ?? 'Unknown' }}
-                    </div>
-
-                    <div class="inv-text-sub" style="font-size: 13px; color: #86868b;">
-                        {{ $adj->created_at->format('d/m/Y H:i') }}
-                    </div>
-
-                    <div class="inv-action-group"
-                        style="display: flex; gap: 8px; justify-content: flex-end; align-items: center;">
-                        <!-- Edit Button -->
-                        <button class="inv-icon-action" title="Edit"
-                            onclick="openEditModal({{ json_encode($adj) }})"
-                            style="color: #86868b; background: none; border: none; cursor: pointer;">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-
-                        <!-- Delete Button -->
-                        <button class="inv-icon-action" title="Delete" onclick="confirmDelete({{ $adj->id }})"
-                            style="color: #86868b; background: none; border: none; cursor: pointer;">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            @empty
-                <div class="inv-card-row"
-                    style="justify-content: center; padding: 40px; background: #fff; border-radius: 12px; margin-bottom: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
-                    <div style="text-align: center;">
-                        <i class="fa-solid fa-clipboard-list"
-                            style="font-size: 48px; color: #e5e5ea; margin-bottom: 16px;"></i>
-                        <div class="inv-text-sub" style="font-size: 16px;">No adjustments found</div>
-                    </div>
-                </div>
-            @endforelse
-
-            {{-- Pagination --}}
-            {{ $adjustments->links('vendor.pagination.apple') }}
+                {{-- Pagination --}}
+                {{ $adjustments->onEachSide(1)->links('vendor.pagination.apple') }}
+            </div>
 
         </div>
 
@@ -538,7 +546,6 @@
 
             // --- Bulk Actions ---
             const selectAll = document.getElementById('select-all');
-            const checkboxes = document.querySelectorAll('.item-checkbox');
             const bulkActions = document.getElementById('bulk-actions');
             const selectedCountSpan = document.getElementById('selected-count');
 
@@ -554,24 +561,71 @@
                 }
             }
 
-            if (selectAll) {
-                selectAll.addEventListener('change', function() {
-                    const isChecked = this.checked;
-                    document.querySelectorAll('.item-checkbox').forEach(cb => {
-                        cb.checked = isChecked;
-                    });
-                    updateBulkActions();
+            function initializeBulkListeners() {
+                const selectAll = document.getElementById('select-all');
+                if (selectAll) {
+                    selectAll.onchange = function() {
+                        const isChecked = this.checked;
+                        document.querySelectorAll('.item-checkbox').forEach(cb => {
+                            cb.checked = isChecked;
+                        });
+                        updateBulkActions();
+                    };
+                }
+
+                document.querySelectorAll('.item-checkbox').forEach(cb => {
+                    cb.onchange = function() {
+                        updateBulkActions();
+                        if (selectAll) {
+                            const allChecked = document.querySelectorAll('.item-checkbox:checked').length ===
+                                document
+                                .querySelectorAll('.item-checkbox').length;
+                            selectAll.checked = allChecked;
+                        }
+                    };
                 });
             }
 
-            document.querySelectorAll('.item-checkbox').forEach(cb => {
-                cb.addEventListener('change', function() {
-                    updateBulkActions();
-                    const allChecked = document.querySelectorAll('.item-checkbox:checked').length === document
-                        .querySelectorAll('.item-checkbox').length;
-                    if (selectAll) selectAll.checked = allChecked;
+            // Initial bind
+            initializeBulkListeners();
+
+            // --- Real-time Search ---
+            const searchInput = document.getElementById('search-input');
+            let searchTimeout;
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    const query = this.value;
+                    const url = new URL(window.location.href);
+
+                    if (query.length > 0) {
+                        url.searchParams.set('search', query);
+                        url.searchParams.delete('page');
+                    } else {
+                        url.searchParams.delete('search');
+                    }
+
+                    window.history.pushState({}, '', url);
+
+                    searchTimeout = setTimeout(() => {
+                        fetch(url, {
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            })
+                            .then(response => response.text())
+                            .then(html => {
+                                const parser = new DOMParser();
+                                const doc = parser.parseFromString(html, 'text/html');
+                                document.getElementById('view-list').innerHTML = doc.getElementById(
+                                    'view-list').innerHTML;
+                                initializeBulkListeners();
+                            })
+                            .catch(err => console.error('Search error:', err));
+                    }, 400);
                 });
-            });
+            }
 
             function confirmBulkDelete() {
                 const title = document.getElementById('confirm-title');

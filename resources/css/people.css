@@ -327,7 +327,7 @@
 .people-pagination {
     display: flex; justify-content: space-between; align-items: center;
     padding: 12px 24px; margin-top: 2px; background-color: var(--card-bg-color);
-    border-radius: var(--border-radius-card); box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-radius: var(--border-radius-card);
     width: fit-content; margin-left: auto;
 }
 .pagination-text { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-right: 0; }

@@ -100,8 +100,13 @@
                         History
                     </h3>
                     <!-- Sort Filter -->
-                    <form action="{{ route('purchasing.goodsReceived') }}" method="GET">
-                        <select name="sort" class="inv-form-input"
+                    <form action="{{ route('purchasing.goodsReceived') }}" method="GET" id="history-filter-form"
+                        style="display: flex; gap: 10px;">
+                        <input type="text" name="search" id="search-input" value="{{ request('search') }}"
+                            placeholder="Search History..." class="inv-form-input"
+                            style="width: 200px; height: 36px; border-radius: 18px; border: 1px solid #d2d2d7; padding: 0 12px; font-size: 0.9rem;">
+
+                        <select name="sort" id="history-sort-select" class="inv-form-input"
                             style="width: 160px; height: 36px; cursor: pointer; border-radius: 18px; border: 1px solid #d2d2d7; padding: 0 12px; font-size: 0.9rem;"
                             onchange="this.form.submit()">
                             <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest Received
@@ -112,56 +117,56 @@
                                 (A-Z)</option>
                             <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Supplier
                                 (Z-A)</option>
-                            @if (request('search'))
-                                <input type="hidden" name="search" value="{{ request('search') }}">
-                            @endif
                         </select>
                     </form>
                 </div>
 
-                <div class="purchasing-list-container" id="gr-list">
-                    <div class="purchasing-list-row header-row">
-                        <div class="col-header">
-                            <div class="inv-checkbox" id="select-all-checkbox"></div>
+                <div id="view-list" class="transition-opacity duration-300">
+                    <div class="purchasing-list-container" id="gr-list">
+                        <div class="purchasing-list-row header-row">
+                            <div class="col-header">
+                                <div class="inv-checkbox" id="select-all-checkbox"></div>
+                            </div>
+                            <div class="col-header" style="width: 50px;">#</div>
+                            <div class="col-header">PO Number</div>
+                            <div class="col-header">Supplier</div>
+                            <div class="col-header">Received Date</div>
+                            <div class="col-header">Total Amount</div>
+                            <div class="col-header" style="text-align: center;">Actions</div>
                         </div>
-                        <div class="col-header" style="width: 50px;">#</div>
-                        <div class="col-header">PO Number</div>
-                        <div class="col-header">Supplier</div>
-                        <div class="col-header">Received Date</div>
-                        <div class="col-header">Total Amount</div>
-                        <div class="col-header" style="text-align: center;">Actions</div>
+
+                        @forelse($receivedPos as $po)
+                            <div class="purchasing-list-row">
+                                <div class="col-checkbox">
+                                    <div class="inv-checkbox item-checkbox" data-id="{{ $po->id }}"></div>
+                                </div>
+                                <div class="col-index"
+                                    style="width: 50px; font-size: 13px; color: var(--text-secondary); display: flex; align-items: center;">
+                                    {{ ($receivedPos->currentPage() - 1) * $receivedPos->perPage() + $loop->iteration }}
+                                </div>
+                                <div class="col-po-number">{{ $po->reference_number }}</div>
+                                <div class="col-supplier">{{ $po->supplier->name ?? 'Unknown Supplier' }}</div>
+                                <div class="col-date">{{ $po->updated_at->format('d/m/Y') }}</div>
+                                <!-- Using updated_at as received date for now -->
+                                <div class="col-cost">฿{{ number_format($po->total_amount, 2) }}</div>
+                                <div class="col-actions" style="display: flex; justify-content: center; gap: 8px;">
+                                    <button class="purchasing-icon-button btn-delete-gr"
+                                        data-id="{{ $po->id }}">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="purchasing-list-row"
+                                style="justify-content: center; padding: 20px; color: #86868b;">
+                                No received history.
+                            </div>
+                        @endforelse
                     </div>
 
-                    @forelse($receivedPos as $po)
-                        <div class="purchasing-list-row">
-                            <div class="col-checkbox">
-                                <div class="inv-checkbox item-checkbox" data-id="{{ $po->id }}"></div>
-                            </div>
-                            <div class="col-index"
-                                style="width: 50px; font-size: 13px; color: var(--text-secondary); display: flex; align-items: center;">
-                                {{ ($receivedPos->currentPage() - 1) * $receivedPos->perPage() + $loop->iteration }}
-                            </div>
-                            <div class="col-po-number">{{ $po->reference_number }}</div>
-                            <div class="col-supplier">{{ $po->supplier->name ?? 'Unknown Supplier' }}</div>
-                            <div class="col-date">{{ $po->updated_at->format('d/m/Y') }}</div>
-                            <!-- Using updated_at as received date for now -->
-                            <div class="col-cost">฿{{ number_format($po->total_amount, 2) }}</div>
-                            <div class="col-actions" style="display: flex; justify-content: center; gap: 8px;">
-                                <button class="purchasing-icon-button btn-delete-gr" data-id="{{ $po->id }}">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="purchasing-list-row"
-                            style="justify-content: center; padding: 20px; color: #86868b;">
-                            No received history.
-                        </div>
-                    @endforelse
-                </div>
-
-                <div class="mt-4">
-                    {{ $receivedPos->links() }}
+                    <div class="mt-4">
+                        {{ $receivedPos->onEachSide(1)->links('vendor.pagination.apple') }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -504,6 +509,112 @@
                     closeModal('delete-gr-modal-overlay');
                 }
             };
+
+            // --- Bulk Actions Logic ---
+            function initializeCustomCheckboxes() {
+                const selectAll = document.getElementById('select-all-checkbox');
+                const checkboxes = document.querySelectorAll('.item-checkbox');
+                const bulkActions = document.getElementById('bulk-actions');
+                const selectedCountSpan = document.getElementById('selected-count');
+
+                function updateBulkUI() {
+                    const count = document.querySelectorAll('.item-checkbox.active').length;
+                    if (count > 0) {
+                        bulkActions.style.display = 'flex';
+                        selectedCountSpan.textContent = count;
+                    } else {
+                        bulkActions.style.display = 'none';
+                    }
+                }
+
+                if (selectAll) {
+                    // Clear old listeners by cloning
+                    const newSelectAll = selectAll.cloneNode(true);
+                    selectAll.parentNode.replaceChild(newSelectAll, selectAll);
+
+                    newSelectAll.addEventListener('click', function() {
+                        const isActive = this.classList.contains('active');
+                        if (isActive) {
+                            this.classList.remove('active');
+                            document.querySelectorAll('.item-checkbox').forEach(cb => {
+                                cb.classList.remove('active');
+                                cb.closest('.purchasing-list-row').classList.remove('selected-row');
+                            });
+                        } else {
+                            this.classList.add('active');
+                            document.querySelectorAll('.item-checkbox').forEach(cb => {
+                                cb.classList.add('active');
+                                cb.closest('.purchasing-list-row').classList.add('selected-row');
+                            });
+                        }
+                        updateBulkUI();
+                    });
+                }
+
+                checkboxes.forEach(cb => {
+                    const newCb = cb.cloneNode(true);
+                    cb.parentNode.replaceChild(newCb, cb);
+
+                    newCb.addEventListener('click', function() {
+                        this.classList.toggle('active');
+                        this.closest('.purchasing-list-row').classList.toggle('selected-row');
+                        updateBulkUI();
+
+                        // Update Select All
+                        const allActive = document.querySelectorAll('.item-checkbox.active')
+                            .length === document.querySelectorAll('.item-checkbox').length;
+                        const selectAllBtn = document.getElementById('select-all-checkbox');
+                        if (selectAllBtn) {
+                            if (allActive) selectAllBtn.classList.add('active');
+                            else selectAllBtn.classList.remove('active');
+                        }
+                    });
+                });
+            }
+
+            // Initial init
+            initializeCustomCheckboxes();
+
+            // --- Real-time Search ---
+            const searchInput = document.getElementById('search-input');
+            let searchTimeout;
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    const query = this.value;
+                    const url = new URL(window.location.href);
+
+                    if (query.length > 0) {
+                        url.searchParams.set('search', query);
+                        url.searchParams.delete('page');
+                    } else {
+                        url.searchParams.delete('search');
+                    }
+
+                    window.history.pushState({}, '', url);
+
+                    searchTimeout = setTimeout(() => {
+                        fetch(url, {
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            })
+                            .then(response => response.text())
+                            .then(html => {
+                                const parser = new DOMParser();
+                                const doc = parser.parseFromString(html, 'text/html');
+                                // Update List
+                                document.getElementById('view-list').innerHTML = doc
+                                    .getElementById('view-list').innerHTML;
+
+                                // Re-init checkboxes
+                                initializeCustomCheckboxes();
+                            })
+                            .catch(e => console.error(e));
+                    }, 400);
+                });
+            }
         });
     </script>
     <!-- Main Purchasing JS -->

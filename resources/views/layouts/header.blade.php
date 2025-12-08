@@ -525,3 +525,436 @@
         setInterval(pollNotifications, 5000);
     });
 </script>
+
+<!-- === Global Search JavaScript === -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('globalSearch');
+        const searchResults = document.getElementById('liveSearchResults');
+
+        // Clone the AI button to remove ALL existing event listeners (from bundled header.js)
+        const oldAiBtn = document.getElementById('aiSearchButton');
+        const aiSearchBtn = oldAiBtn.cloneNode(true);
+        oldAiBtn.parentNode.replaceChild(aiSearchBtn, oldAiBtn);
+
+        let searchTimeout;
+        let isAiMode = false;
+
+        // --- Live Search ---
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value.trim();
+
+            if (query.length < 2) {
+                hideSearchResults();
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                performLiveSearch(query);
+            }, 300);
+        });
+
+        // Focus event
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim().length >= 2) {
+                searchResults.classList.add('show');
+            }
+        });
+
+        // Close on click outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.global-search-wrapper')) {
+                hideSearchResults();
+            }
+        });
+
+        // Enter key for full search
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = this.value.trim();
+                if (query.length > 0) {
+                    window.location.href = `/search?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+
+        // AI Search Button
+        aiSearchBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const query = searchInput.value.trim();
+            if (query.length > 0) {
+                performAiSearch(query);
+            } else {
+                // Show AI Search help modal
+                showAiModal('',
+                    'สวัสดีครับ! 🤖\n\nผมคือ AI ผู้ช่วยของ Oboun ERP พิมพ์คำถามหรือคำค้นหาแล้วกด AI เพื่อให้ผมช่วยค้นหาและวิเคราะห์ข้อมูลให้ครับ\n\n**ตัวอย่างคำถาม:**\n• "สินค้าที่ stock ใกล้หมด"\n• "ลูกค้าชื่อ สมชาย"\n• "สรุปยอดขายวันนี้"\n• "แนะนำสินค้าขายดี"'
+                );
+            }
+        });
+
+        function performLiveSearch(query) {
+            fetch(`/live-search?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    displaySearchResults(data, query);
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                });
+        }
+
+        function displaySearchResults(data, query) {
+            let html = '';
+            let hasResults = false;
+
+            // Products
+            if (data.products && data.products.length > 0) {
+                hasResults = true;
+                html += `<div class="search-result-header"><i class="fa-solid fa-box"></i> สินค้า</div>`;
+                data.products.forEach(product => {
+                    const imgSrc = product.image_path ? `/${product.image_path}` :
+                        '/images/product-placeholder.png';
+                    html += `
+                    <a href="/inventorys/manage-products?search=${encodeURIComponent(product.name)}" class="search-result-item">
+                        <img src="${imgSrc}" style="width:32px;height:32px;border-radius:6px;object-fit:cover;background:#f5f5f7;">
+                        <div style="flex:1;">
+                            <div style="font-weight:500;">${highlightMatch(product.name, query)}</div>
+                            <div style="font-size:12px;color:#86868b;">${product.generic_name || '-'} • ฿${parseFloat(product.selling_price).toLocaleString()}</div>
+                        </div>
+                    </a>
+                `;
+                });
+            }
+
+            // Patients/Customers
+            if (data.patients && data.patients.length > 0) {
+                hasResults = true;
+                html += `<div class="search-result-header"><i class="fa-solid fa-users"></i> ลูกค้า</div>`;
+                data.patients.forEach(patient => {
+                    html += `
+                    <a href="/peoples/patients?search=${encodeURIComponent(patient.name)}" class="search-result-item">
+                        <div style="width:32px;height:32px;border-radius:50%;background:#e8f2ff;display:flex;align-items:center;justify-content:center;color:#007aff;">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-weight:500;">${highlightMatch(patient.name, query)}</div>
+                            <div style="font-size:12px;color:#86868b;">${patient.phone || '-'} ${patient.email ? '• ' + patient.email : ''}</div>
+                        </div>
+                    </a>
+                `;
+                });
+            }
+
+            // Suppliers
+            if (data.suppliers && data.suppliers.length > 0) {
+                hasResults = true;
+                html += `<div class="search-result-header"><i class="fa-solid fa-truck"></i> Suppliers</div>`;
+                data.suppliers.forEach(supplier => {
+                    html += `
+                    <a href="/purchasing/suppliers?search=${encodeURIComponent(supplier.name)}" class="search-result-item">
+                        <div style="width:32px;height:32px;border-radius:8px;background:#e5fbeB;display:flex;align-items:center;justify-content:center;color:#34c759;">
+                            <i class="fa-solid fa-building"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-weight:500;">${highlightMatch(supplier.name, query)}</div>
+                            <div style="font-size:12px;color:#86868b;">${supplier.contact_person || '-'} • ${supplier.phone || '-'}</div>
+                        </div>
+                    </a>
+                `;
+                });
+            }
+
+            // Categories
+            if (data.categories && data.categories.length > 0) {
+                hasResults = true;
+                html += `<div class="search-result-header"><i class="fa-solid fa-folder"></i> หมวดหมู่</div>`;
+                data.categories.forEach(category => {
+                    html += `
+                    <a href="/inventorys/categories?search=${encodeURIComponent(category.name)}" class="search-result-item">
+                        <div style="width:32px;height:32px;border-radius:8px;background:#fff3cd;display:flex;align-items:center;justify-content:center;color:#ff9500;">
+                            <i class="fa-solid fa-tag"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-weight:500;">${highlightMatch(category.name, query)}</div>
+                        </div>
+                    </a>
+                `;
+                });
+            }
+
+            // Users
+            if (data.users && data.users.length > 0) {
+                hasResults = true;
+                html += `<div class="search-result-header"><i class="fa-solid fa-user-tie"></i> พนักงาน</div>`;
+                data.users.forEach(user => {
+                    const avatar = user.profile_photo_path ? `/storage/${user.profile_photo_path}` :
+                        '/images/default-avatar.png';
+                    html += `
+                    <a href="/peoples/staff-user?search=${encodeURIComponent(user.name)}" class="search-result-item">
+                        <img src="${avatar}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+                        <div style="flex:1;">
+                            <div style="font-weight:500;">${highlightMatch(user.name, query)}</div>
+                            <div style="font-size:12px;color:#86868b;">${user.email}</div>
+                        </div>
+                    </a>
+                `;
+                });
+            }
+
+            // Purchase Orders
+            if (data.purchases && data.purchases.length > 0) {
+                hasResults = true;
+                html +=
+                    `<div class="search-result-header"><i class="fa-solid fa-file-invoice"></i> ใบสั่งซื้อ</div>`;
+                data.purchases.forEach(purchase => {
+                    const statusClass = purchase.status === 'completed' ? '#34c759' : purchase
+                        .status === 'ordered' ? '#007aff' : '#86868b';
+                    html += `
+                    <a href="/purchasing/purchase-orders?search=${encodeURIComponent(purchase.reference_number)}" class="search-result-item">
+                        <div style="width:32px;height:32px;border-radius:8px;background:#f0f0f5;display:flex;align-items:center;justify-content:center;color:${statusClass};">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-weight:500;">${highlightMatch(purchase.reference_number, query)}</div>
+                            <div style="font-size:12px;color:#86868b;">฿${parseFloat(purchase.total_amount).toLocaleString()} • ${purchase.status}</div>
+                        </div>
+                    </a>
+                `;
+                });
+            }
+
+            if (!hasResults) {
+                html = `
+                <div style="text-align:center;padding:30px;color:#86868b;">
+                    <i class="fa-solid fa-search" style="font-size:24px;opacity:0.5;margin-bottom:10px;display:block;"></i>
+                    <div>ไม่พบผลลัพธ์สำหรับ "${query}"</div>
+                    <div style="font-size:12px;margin-top:8px;">ลองค้นหาด้วย AI <i class="fa-solid fa-atom"></i></div>
+                </div>
+            `;
+            } else {
+                // Add footer with AI suggestion
+                html += `
+                <div style="padding:10px 16px;border-top:1px solid rgba(0,0,0,0.05);display:flex;justify-content:space-between;align-items:center;">
+                    <a href="/search?q=${encodeURIComponent(query)}" style="font-size:12px;color:#007aff;text-decoration:none;">ดูผลลัพธ์ทั้งหมด →</a>
+                    <button onclick="document.getElementById('aiSearchButton').click()" style="font-size:12px;color:#d31aff;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;">
+                        <i class="fa-solid fa-atom"></i> ค้นหาด้วย AI
+                    </button>
+                </div>
+            `;
+            }
+
+            searchResults.innerHTML = html;
+            searchResults.classList.add('show');
+        }
+
+        function highlightMatch(text, query) {
+            if (!text) return '-';
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex,
+                '<mark style="background:#ffe066;padding:0 2px;border-radius:2px;">$1</mark>');
+        }
+
+        function hideSearchResults() {
+            searchResults.classList.remove('show');
+        }
+
+        // --- AI Search ---
+        function performAiSearch(query) {
+            showAiModal(query,
+                '<div style="text-align:center;padding:20px;"><i class="fa-solid fa-atom fa-spin" style="font-size:32px;background:linear-gradient(90deg,#007aff,#d31aff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></i><div style="margin-top:10px;color:#86868b;">กำลังประมวลผล...</div></div>'
+            );
+
+            fetch(`/ai-search?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateAiModalContent(formatAiResponse(data.response));
+                    } else {
+                        updateAiModalContent(
+                            `<div style="color:#ff3b30;">เกิดข้อผิดพลาด: ${data.message}</div>`);
+                    }
+                })
+                .catch(error => {
+                    console.error('AI Search error:', error);
+                    updateAiModalContent('<div style="color:#ff3b30;">ไม่สามารถเชื่อมต่อกับ AI ได้</div>');
+                });
+        }
+
+        function formatAiResponse(response) {
+            // Convert markdown-like formatting to HTML
+            return response
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>')
+                .replace(/• /g, '&bull; ');
+        }
+
+        function showAiModal(query, content) {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('ai-search-modal');
+            if (existingModal) existingModal.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'ai-search-modal';
+            modal.innerHTML = `
+            <div class="ai-modal-overlay" onclick="this.parentElement.remove()">
+                <div class="ai-modal" onclick="event.stopPropagation()">
+                    <div class="ai-modal-header">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <i class="fa-solid fa-atom" style="font-size:20px;background:linear-gradient(90deg,#007aff,#7d22ff,#d31aff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></i>
+                            <span style="font-weight:600;">AI Search</span>
+                        </div>
+                        <button onclick="this.closest('#ai-search-modal').remove()" style="background:none;border:none;font-size:18px;color:#86868b;cursor:pointer;">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    ${query ? `<div class="ai-modal-query"><i class="fa-solid fa-search"></i> ${query}</div>` : ''}
+                    <div class="ai-modal-content" id="ai-modal-content">
+                        ${content}
+                    </div>
+                    <div class="ai-modal-footer">
+                        <input type="text" id="ai-follow-up" placeholder="ถามเพิ่มเติม..." value="${query}" style="flex:1;border:1px solid #e5e5ea;border-radius:20px;padding:10px 16px;font-size:14px;outline:none;">
+                        <button onclick="performFollowUpAiSearch()" style="background:linear-gradient(90deg,#007aff,#d31aff);color:white;border:none;border-radius:20px;padding:10px 20px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;">
+                            <i class="fa-solid fa-paper-plane"></i> ส่ง
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+            document.body.appendChild(modal);
+
+            // Focus on input
+            setTimeout(() => {
+                document.getElementById('ai-follow-up').focus();
+            }, 100);
+        }
+
+        function updateAiModalContent(content) {
+            const contentDiv = document.getElementById('ai-modal-content');
+            if (contentDiv) {
+                contentDiv.innerHTML = content;
+            }
+        }
+
+        // Make available globally
+        window.performFollowUpAiSearch = function() {
+            const input = document.getElementById('ai-follow-up');
+            if (input && input.value.trim()) {
+                performAiSearch(input.value.trim());
+            }
+        };
+
+        // Enter key for AI follow-up
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.activeElement.id === 'ai-follow-up') {
+                e.preventDefault();
+                window.performFollowUpAiSearch();
+            }
+        });
+    });
+</script>
+
+<style>
+    /* AI Search Modal Styles */
+    .ai-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10001;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .ai-modal {
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(40px);
+        -webkit-backdrop-filter: blur(40px);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .ai-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        background: linear-gradient(135deg, rgba(0, 122, 255, 0.05) 0%, rgba(211, 26, 255, 0.05) 100%);
+    }
+
+    .ai-modal-query {
+        padding: 12px 20px;
+        background: #f5f5f7;
+        font-size: 14px;
+        color: #1d1d1f;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ai-modal-query i {
+        color: #86868b;
+    }
+
+    .ai-modal-content {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #1d1d1f;
+    }
+
+    .ai-modal-footer {
+        display: flex;
+        gap: 10px;
+        padding: 16px 20px;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        background: #fafafa;
+    }
+
+    .ai-modal-footer input:focus {
+        border-color: #007aff;
+        box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+    }
+</style>

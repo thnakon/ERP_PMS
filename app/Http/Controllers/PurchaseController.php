@@ -108,7 +108,7 @@ class PurchaseController extends Controller
             $query->latest();
         }
 
-        $suppliers = $query->withCount('purchases')->paginate(10); // Assuming 'purchases' relationship exists
+        $suppliers = $query->withCount('purchases')->paginate(5); // Assuming 'purchases' relationship exists
 
         return view('purchasing.suppliers', compact('suppliers'));
     }
@@ -226,7 +226,7 @@ class PurchaseController extends Controller
             $query->latest();
         }
 
-        $purchaseOrders = $query->paginate(10);
+        $purchaseOrders = $query->paginate(5);
         $suppliers = \App\Models\Supplier::all();
         $products = \App\Models\Product::all();
 
@@ -399,7 +399,7 @@ class PurchaseController extends Controller
             $receivedQuery->latest('updated_at');
         }
 
-        $receivedPos = $receivedQuery->paginate(10);
+        $receivedPos = $receivedQuery->paginate(5);
 
         return view('purchasing.goods-received', compact('awaitingPos', 'receivedPos'));
     }

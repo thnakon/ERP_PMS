@@ -188,7 +188,7 @@
                     </select>
                     <!-- Search Input -->
                     <div style="position: relative;">
-                        <input type="text" name="search" value="{{ request('search') }}"
+                        <input type="text" name="search" id="search-input" value="{{ request('search') }}"
                             placeholder="Search Categories..." class="inv-form-input"
                             style="width: 280px; height: 44px; padding-left: 40px;">
                         <i class="fa-solid fa-magnifying-glass"
@@ -205,60 +205,64 @@
                 </div>
             </div>
 
-            <!-- Table Header -->
-            <div class="inv-card-row header grid-categories"
-                style="grid-template-columns: 40px 60px 2fr 3fr 1fr 1fr 130px;">
-                <div class="inv-checkbox-wrapper">
-                    <input type="checkbox" class="inv-checkbox" id="select-all">
-                </div>
-                <div class="inv-col-header">#</div>
-                <div class="inv-col-header">Category Name</div>
-                <div class="inv-col-header">Description</div>
-                <div class="inv-col-header">Items</div>
-                <div class="inv-col-header">Status</div>
-                <div class="inv-col-header" style="text-align: right;">Actions</div>
-            </div>
-
-            <!-- Categories Loop -->
-            @forelse($categories as $index => $category)
-                <div class="inv-card-row grid-categories"
+            <!-- VIEW LIST CONTAINER -->
+            <div id="view-list" class="transition-opacity duration-300">
+                <!-- Table Header -->
+                <div class="inv-card-row header grid-categories"
                     style="grid-template-columns: 40px 60px 2fr 3fr 1fr 1fr 130px;">
                     <div class="inv-checkbox-wrapper">
-                        <input type="checkbox" class="inv-checkbox item-checkbox" data-id="{{ $category->id }}">
+                        <input type="checkbox" class="inv-checkbox" id="select-all">
                     </div>
-                    <div class="inv-text-sub" style="font-weight: 500;">
-                        {{ ($categories->currentPage() - 1) * $categories->perPage() + $loop->iteration }}
-                    </div>
-                    <div class="inv-product-info" data-label="Name">
-                        <div class="inv-product-name">{{ $category->name }}</div>
-                        {{-- <div class="inv-product-generic">Generic Name</div> --}}
-                    </div>
-                    <div class="inv-text-sub" data-label="Desc">{{ Str::limit($category->description, 50) }}</div>
-                    <div class="inv-text-main" data-label="Items">{{ $category->products_count }} Items</div>
-                    <div data-label="Status">
-                        <span
-                            class="inv-status-badge {{ strtolower($category->status) == 'active' ? 'active' : 'inactive' }}">
-                            {{ $category->status }}
-                        </span>
-                    </div>
-                    <div class="inv-action-group" data-label="Actions"
-                        style="display: flex; gap: 6px; justify-content: flex-start;">
-                        <button class="inv-icon-action" onclick="openViewModal({{ json_encode($category) }})"><i
-                                class="fa-solid fa-eye"></i></button>
-                        <button class="inv-icon-action" onclick="openEditModal({{ json_encode($category) }})"><i
-                                class="fa-solid fa-pen"></i></button>
-                        <button class="inv-icon-action btn-delete-row"
-                            onclick="confirmDelete({{ $category->id }})"><i class="fa-solid fa-trash"></i></button>
-                    </div>
+                    <div class="inv-col-header">#</div>
+                    <div class="inv-col-header">Category Name</div>
+                    <div class="inv-col-header">Description</div>
+                    <div class="inv-col-header">Items</div>
+                    <div class="inv-col-header">Status</div>
+                    <div class="inv-col-header" style="text-align: right;">Actions</div>
                 </div>
-            @empty
-                <div class="inv-card-row" style="justify-content: center; padding: 20px;">
-                    <span class="inv-text-sub">No categories found.</span>
-                </div>
-            @endforelse
 
-            {{-- Pagination --}}
-            {{ $categories->links('vendor.pagination.apple') }}
+                <!-- Categories Loop -->
+                @forelse($categories as $index => $category)
+                    <div class="inv-card-row grid-categories"
+                        style="grid-template-columns: 40px 60px 2fr 3fr 1fr 1fr 130px;">
+                        <div class="inv-checkbox-wrapper">
+                            <input type="checkbox" class="inv-checkbox item-checkbox" data-id="{{ $category->id }}">
+                        </div>
+                        <div class="inv-text-sub" style="font-weight: 500;">
+                            {{ ($categories->currentPage() - 1) * $categories->perPage() + $loop->iteration }}
+                        </div>
+                        <div class="inv-product-info" data-label="Name">
+                            <div class="inv-product-name">{{ $category->name }}</div>
+                            {{-- <div class="inv-product-generic">Generic Name</div> --}}
+                        </div>
+                        <div class="inv-text-sub" data-label="Desc">{{ Str::limit($category->description, 50) }}</div>
+                        <div class="inv-text-main" data-label="Items">{{ $category->products_count }} Items</div>
+                        <div data-label="Status">
+                            <span
+                                class="inv-status-badge {{ strtolower($category->status) == 'active' ? 'active' : 'inactive' }}">
+                                {{ $category->status }}
+                            </span>
+                        </div>
+                        <div class="inv-action-group" data-label="Actions"
+                            style="display: flex; gap: 6px; justify-content: flex-start;">
+                            <button class="inv-icon-action" onclick="openViewModal({{ json_encode($category) }})"><i
+                                    class="fa-solid fa-eye"></i></button>
+                            <button class="inv-icon-action" onclick="openEditModal({{ json_encode($category) }})"><i
+                                    class="fa-solid fa-pen"></i></button>
+                            <button class="inv-icon-action btn-delete-row"
+                                onclick="confirmDelete({{ $category->id }})"><i
+                                    class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                @empty
+                    <div class="inv-card-row" style="justify-content: center; padding: 20px;">
+                        <span class="inv-text-sub">No categories found.</span>
+                    </div>
+                @endforelse
+
+                {{-- Pagination --}}
+                {{ $categories->onEachSide(1)->links('vendor.pagination.apple') }}
+            </div>
 
         </div>
 
@@ -404,7 +408,6 @@
 
             // --- Bulk Actions Logic ---
             const selectAll = document.getElementById('select-all');
-            const checkboxes = document.querySelectorAll('.item-checkbox');
             const bulkActions = document.getElementById('bulk-actions');
             const selectedCountSpan = document.getElementById('selected-count');
 
@@ -420,28 +423,71 @@
                 }
             }
 
-            // Select All Listener
-            if (selectAll) {
-                selectAll.addEventListener('change', function() {
-                    const isChecked = this.checked;
-                    document.querySelectorAll('.item-checkbox').forEach(cb => {
-                        cb.checked = isChecked;
-                    });
-                    updateBulkActions();
+            function initializeBulkListeners() {
+                const selectAll = document.getElementById('select-all');
+                if (selectAll) {
+                    selectAll.onchange = function() {
+                        const isChecked = this.checked;
+                        document.querySelectorAll('.item-checkbox').forEach(cb => {
+                            cb.checked = isChecked;
+                        });
+                        updateBulkActions();
+                    };
+                }
+
+                document.querySelectorAll('.item-checkbox').forEach(cb => {
+                    cb.onchange = function() {
+                        updateBulkActions();
+                        if (selectAll) {
+                            const allChecked = document.querySelectorAll('.item-checkbox:checked').length ===
+                                document
+                                .querySelectorAll('.item-checkbox').length;
+                            selectAll.checked = allChecked;
+                        }
+                    };
                 });
             }
 
-            // Individual Checkbox Listener
-            document.querySelectorAll('.item-checkbox').forEach(cb => {
-                cb.addEventListener('change', function() {
-                    updateBulkActions();
+            // Initial bind
+            initializeBulkListeners();
 
-                    // Update Select All state
-                    const allChecked = document.querySelectorAll('.item-checkbox:checked').length === document
-                        .querySelectorAll('.item-checkbox').length;
-                    if (selectAll) selectAll.checked = allChecked;
+            // --- Real-time Search ---
+            const searchInput = document.getElementById('search-input');
+            let searchTimeout;
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    const query = this.value;
+                    const url = new URL(window.location.href);
+
+                    if (query.length > 0) {
+                        url.searchParams.set('search', query);
+                        url.searchParams.delete('page');
+                    } else {
+                        url.searchParams.delete('search');
+                    }
+
+                    window.history.pushState({}, '', url);
+
+                    searchTimeout = setTimeout(() => {
+                        fetch(url, {
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            })
+                            .then(response => response.text())
+                            .then(html => {
+                                const parser = new DOMParser();
+                                const doc = parser.parseFromString(html, 'text/html');
+                                document.getElementById('view-list').innerHTML = doc.getElementById(
+                                    'view-list').innerHTML;
+                                initializeBulkListeners();
+                            })
+                            .catch(err => console.error('Search error:', err));
+                    }, 400);
                 });
-            });
+            }
 
             function confirmBulkDelete() {
                 const checked = document.querySelectorAll('.item-checkbox:checked');

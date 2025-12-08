@@ -195,7 +195,7 @@
 
                     <!-- Search Input -->
                     <div style="position: relative;">
-                        <input type="text" name="search" value="{{ request('search') }}"
+                        <input type="text" name="search" id="search-input" value="{{ request('search') }}"
                             placeholder="Search Product, Batch No..." class="inv-form-input"
                             style="width: 280px; height: 44px; padding-left: 40px;">
                         <i class="fa-solid fa-magnifying-glass"
@@ -212,56 +212,62 @@
                 </div>
             </div>
 
-            <!-- Table Header -->
-            <div class="inv-card-row header grid-expiry"
-                style="display: grid; grid-template-columns: 40px 60px 2fr 1.5fr 1.5fr 1fr 1fr 150px; 
+            <!-- VIEW LIST CONTAINER -->
+            <div id="view-list" class="transition-opacity duration-300">
+                <!-- Table Header -->
+                <div class="inv-card-row header grid-expiry"
+                    style="display: grid; grid-template-columns: 40px 60px 2fr 1.5fr 1.5fr 1fr 1fr 150px; 
                        padding: 0 16px; 
                        margin-bottom: 10px; 
                        background: transparent; 
                        border: none;">
-                <div class="inv-checkbox-wrapper">
-                    <input type="checkbox" class="inv-checkbox" id="select-all">
+                    <div class="inv-checkbox-wrapper">
+                        <input type="checkbox" class="inv-checkbox" id="select-all">
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Image
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Product
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Batch No.
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Expiry
+                        Date
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Status
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Qty</div>
+                    <div class="inv-col-header"
+                        style="text-align: right; font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">
+                        Actions</div>
                 </div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Image</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Product</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Batch No.
-                </div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Expiry Date
-                </div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Status</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Qty</div>
-                <div class="inv-col-header"
-                    style="text-align: right; font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">
-                    Actions</div>
-            </div>
 
-            <!-- Batches Loop -->
-            @forelse($batches as $batch)
-                @php
-                    $today = \Carbon\Carbon::now();
-                    $expiry = \Carbon\Carbon::parse($batch->expiry_date);
-                    $diff = $today->diffInDays($expiry, false);
+                <!-- Batches Loop -->
+                @forelse($batches as $batch)
+                    @php
+                        $today = \Carbon\Carbon::now();
+                        $expiry = \Carbon\Carbon::parse($batch->expiry_date);
+                        $diff = $today->diffInDays($expiry, false);
 
-                    if ($diff < 0) {
-                        $status = 'Expired';
-                        $statusClass = 'badge-expired';
-                    } elseif ($diff <= 90) {
-                        $status = 'Near Expiry';
-                        $statusClass = 'badge-near-expiry';
-                    } else {
-                        $status = 'Good';
-                        $statusClass = 'badge-good';
-                    }
-                @endphp
+                        if ($diff < 0) {
+                            $status = 'Expired';
+                            $statusClass = 'badge-expired';
+                        } elseif ($diff <= 90) {
+                            $status = 'Near Expiry';
+                            $statusClass = 'badge-near-expiry';
+                        } else {
+                            $status = 'Good';
+                            $statusClass = 'badge-good';
+                        }
+                    @endphp
 
-                <div class="inv-card-row grid-expiry batch-row"
-                    style="display: grid; grid-template-columns: 40px 60px 2fr 1.5fr 1.5fr 1fr 1fr 150px; 
+                    <div class="inv-card-row grid-expiry batch-row"
+                        style="display: grid; grid-template-columns: 40px 60px 2fr 1.5fr 1.5fr 1fr 1fr 150px; 
                            background: #fff; 
                            border-radius: 22px; 
                            margin-bottom: 8px; 
@@ -270,97 +276,99 @@
                            border: 1px solid #f5f5f7;
                            transition: all 0.2s ease;
                            align-items: center;"
-                    onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'"
-                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.02)'">
+                        onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.02)'">
 
-                    <div class="inv-checkbox-wrapper">
-                        <input type="checkbox" class="inv-checkbox item-checkbox" data-id="{{ $batch->id }}">
-                    </div>
+                        <div class="inv-checkbox-wrapper">
+                            <input type="checkbox" class="inv-checkbox item-checkbox" data-id="{{ $batch->id }}">
+                        </div>
 
-                    <!-- Image -->
-                    <div class="inv-product-image" style="display: flex; align-items: center; justify-content: center;">
-                        @if ($batch->product && $batch->product->image_path)
-                            <img src="{{ asset($batch->product->image_path) }}" alt="{{ $batch->product->name }}"
-                                style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid #e5e5ea;">
-                        @else
-                            <div
-                                style="width: 40px; height: 40px; border-radius: 8px; background-color: #f2f2f7; display: flex; align-items: center; justify-content: center; color: #8e8e93;">
-                                <i class="fa-solid fa-image" style="font-size: 16px;"></i>
+                        <!-- Image -->
+                        <div class="inv-product-image"
+                            style="display: flex; align-items: center; justify-content: center;">
+                            @if ($batch->product && $batch->product->image_path)
+                                <img src="{{ asset($batch->product->image_path) }}" alt="{{ $batch->product->name }}"
+                                    style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid #e5e5ea;">
+                            @else
+                                <div
+                                    style="width: 40px; height: 40px; border-radius: 8px; background-color: #f2f2f7; display: flex; align-items: center; justify-content: center; color: #8e8e93;">
+                                    <i class="fa-solid fa-image" style="font-size: 16px;"></i>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="inv-product-info">
+                            <div class="inv-product-name" style="font-size: 14px; font-weight: 600; color: #1d1d1f;">
+                                {{ $batch->product->name ?? 'Unknown Product' }}
                             </div>
-                        @endif
-                    </div>
+                        </div>
 
-                    <div class="inv-product-info">
-                        <div class="inv-product-name" style="font-size: 14px; font-weight: 600; color: #1d1d1f;">
-                            {{ $batch->product->name ?? 'Unknown Product' }}
+                        <div class="inv-text-sub" style="font-size: 13px; color: #424245;">
+                            {{ $batch->batch_number }}
+                        </div>
+
+                        <div class="inv-text-sub" style="font-size: 13px; color: #1d1d1f; font-weight: 500;">
+                            {{ $expiry->format('d/m/Y') }}
+                            <span style="font-size: 11px; color: #86868b; display: block;">
+                                {{ $diff < 0 ? abs(floor($diff)) . ' days ago' : floor($diff) . ' days left' }}
+                            </span>
+                        </div>
+
+                        <div>
+                            <span class="status-badge {{ $statusClass }}">
+                                {{ $status }}
+                            </span>
+                        </div>
+
+                        <div class="inv-text-main" style="font-size: 13px; font-weight: 600; color: #1d1d1f;">
+                            {{ $batch->quantity }}
+                        </div>
+
+                        <div class="inv-action-group"
+                            style="display: flex; gap: 8px; justify-content: flex-end; align-items: center;">
+                            <!-- Return Button -->
+                            <button class="inv-icon-action" title="Return to Supplier"
+                                onclick="confirmAction({{ $batch->id }}, 'return')"
+                                style="color: #86868b; background: none; border: none; cursor: pointer;">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+
+                            <!-- Write-off Button -->
+                            <button class="inv-icon-action" title="Write-off"
+                                onclick="confirmAction({{ $batch->id }}, 'write-off')"
+                                style="color: #86868b; background: none; border: none; cursor: pointer;">
+                                <i class="fa-solid fa-ban"></i>
+                            </button>
+
+                            <!-- Edit Button -->
+                            <button class="inv-icon-action" title="Edit"
+                                onclick="openEditModal({{ json_encode($batch) }})"
+                                style="color: #86868b; background: none; border: none; cursor: pointer;">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+                            <!-- Delete Button -->
+                            <button class="inv-icon-action" title="Delete"
+                                onclick="confirmAction({{ $batch->id }}, 'delete')"
+                                style="color: #86868b; background: none; border: none; cursor: pointer;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </div>
                     </div>
-
-                    <div class="inv-text-sub" style="font-size: 13px; color: #424245;">
-                        {{ $batch->batch_number }}
+                @empty
+                    <div class="inv-card-row"
+                        style="justify-content: center; padding: 40px; background: #fff; border-radius: 12px; margin-bottom: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+                        <div style="text-align: center;">
+                            <i class="fa-solid fa-box-open"
+                                style="font-size: 48px; color: #e5e5ea; margin-bottom: 16px;"></i>
+                            <div class="inv-text-sub" style="font-size: 16px;">No batches found</div>
+                        </div>
                     </div>
+                @endforelse
 
-                    <div class="inv-text-sub" style="font-size: 13px; color: #1d1d1f; font-weight: 500;">
-                        {{ $expiry->format('d/m/Y') }}
-                        <span style="font-size: 11px; color: #86868b; display: block;">
-                            {{ $diff < 0 ? abs(floor($diff)) . ' days ago' : floor($diff) . ' days left' }}
-                        </span>
-                    </div>
-
-                    <div>
-                        <span class="status-badge {{ $statusClass }}">
-                            {{ $status }}
-                        </span>
-                    </div>
-
-                    <div class="inv-text-main" style="font-size: 13px; font-weight: 600; color: #1d1d1f;">
-                        {{ $batch->quantity }}
-                    </div>
-
-                    <div class="inv-action-group"
-                        style="display: flex; gap: 8px; justify-content: flex-end; align-items: center;">
-                        <!-- Return Button -->
-                        <button class="inv-icon-action" title="Return to Supplier"
-                            onclick="confirmAction({{ $batch->id }}, 'return')"
-                            style="color: #86868b; background: none; border: none; cursor: pointer;">
-                            <i class="fa-solid fa-rotate-left"></i>
-                        </button>
-
-                        <!-- Write-off Button -->
-                        <button class="inv-icon-action" title="Write-off"
-                            onclick="confirmAction({{ $batch->id }}, 'write-off')"
-                            style="color: #86868b; background: none; border: none; cursor: pointer;">
-                            <i class="fa-solid fa-ban"></i>
-                        </button>
-
-                        <!-- Edit Button -->
-                        <button class="inv-icon-action" title="Edit"
-                            onclick="openEditModal({{ json_encode($batch) }})"
-                            style="color: #86868b; background: none; border: none; cursor: pointer;">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-
-                        <!-- Delete Button -->
-                        <button class="inv-icon-action" title="Delete"
-                            onclick="confirmAction({{ $batch->id }}, 'delete')"
-                            style="color: #86868b; background: none; border: none; cursor: pointer;">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            @empty
-                <div class="inv-card-row"
-                    style="justify-content: center; padding: 40px; background: #fff; border-radius: 12px; margin-bottom: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
-                    <div style="text-align: center;">
-                        <i class="fa-solid fa-box-open"
-                            style="font-size: 48px; color: #e5e5ea; margin-bottom: 16px;"></i>
-                        <div class="inv-text-sub" style="font-size: 16px;">No batches found</div>
-                    </div>
-                </div>
-            @endforelse
-
-            {{-- Pagination --}}
-            {{ $batches->links('vendor.pagination.apple') }}
+                {{-- Pagination --}}
+                {{ $batches->onEachSide(1)->links('vendor.pagination.apple') }}
+            </div>
 
         </div>
 
@@ -516,7 +524,6 @@
 
             // --- Bulk Actions ---
             const selectAll = document.getElementById('select-all');
-            const checkboxes = document.querySelectorAll('.item-checkbox');
             const bulkActions = document.getElementById('bulk-actions');
             const selectedCountSpan = document.getElementById('selected-count');
 
@@ -532,24 +539,71 @@
                 }
             }
 
-            if (selectAll) {
-                selectAll.addEventListener('change', function() {
-                    const isChecked = this.checked;
-                    document.querySelectorAll('.item-checkbox').forEach(cb => {
-                        cb.checked = isChecked;
-                    });
-                    updateBulkActions();
+            function initializeBulkListeners() {
+                const selectAll = document.getElementById('select-all');
+                if (selectAll) {
+                    selectAll.onchange = function() {
+                        const isChecked = this.checked;
+                        document.querySelectorAll('.item-checkbox').forEach(cb => {
+                            cb.checked = isChecked;
+                        });
+                        updateBulkActions();
+                    };
+                }
+
+                document.querySelectorAll('.item-checkbox').forEach(cb => {
+                    cb.onchange = function() {
+                        updateBulkActions();
+                        if (selectAll) {
+                            const allChecked = document.querySelectorAll('.item-checkbox:checked').length ===
+                                document
+                                .querySelectorAll('.item-checkbox').length;
+                            selectAll.checked = allChecked;
+                        }
+                    };
                 });
             }
 
-            document.querySelectorAll('.item-checkbox').forEach(cb => {
-                cb.addEventListener('change', function() {
-                    updateBulkActions();
-                    const allChecked = document.querySelectorAll('.item-checkbox:checked').length === document
-                        .querySelectorAll('.item-checkbox').length;
-                    if (selectAll) selectAll.checked = allChecked;
+            // Initial bind
+            initializeBulkListeners();
+
+            // --- Real-time Search ---
+            const searchInput = document.getElementById('search-input');
+            let searchTimeout;
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    const query = this.value;
+                    const url = new URL(window.location.href);
+
+                    if (query.length > 0) {
+                        url.searchParams.set('search', query);
+                        url.searchParams.delete('page');
+                    } else {
+                        url.searchParams.delete('search');
+                    }
+
+                    window.history.pushState({}, '', url);
+
+                    searchTimeout = setTimeout(() => {
+                        fetch(url, {
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            })
+                            .then(response => response.text())
+                            .then(html => {
+                                const parser = new DOMParser();
+                                const doc = parser.parseFromString(html, 'text/html');
+                                document.getElementById('view-list').innerHTML = doc.getElementById(
+                                    'view-list').innerHTML;
+                                initializeBulkListeners();
+                            })
+                            .catch(err => console.error('Search error:', err));
+                    }, 400);
                 });
-            });
+            }
 
             function confirmBulkDelete() {
                 const title = document.getElementById('confirm-title');

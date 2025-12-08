@@ -1,12 +1,12 @@
-document.addEventListener('DOMContentLoaded', function() {
-    
+document.addEventListener('DOMContentLoaded', function () {
+
     // --- 1. Slider Toggle Logic ---
     const toggles = document.querySelectorAll('.inv-toggle-wrapper');
 
     toggles.forEach(toggleWrapper => {
         const buttons = toggleWrapper.querySelectorAll('.inv-toggle-btn');
         const activeButton = toggleWrapper.querySelector('.inv-toggle-btn.active');
-        
+
         if (activeButton) updateSlider(toggleWrapper, activeButton);
 
         buttons.forEach(btn => {
@@ -14,12 +14,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 buttons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 updateSlider(toggleWrapper, btn);
-                
+
                 // Filter Logic for Product Page
                 if (toggleWrapper.id === 'productViewToggle') {
                     applyProductFilter(btn.dataset.target);
                 }
-                
+
                 // [!!! FIXED !!!] Filter Logic for Expiry Page
                 if (toggleWrapper.id === 'expiryViewToggle') {
                     applyExpiryFilter(btn.dataset.target);
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- 2. Filtering Logic ---
-    
+
     // For Manage Products Page
     function applyProductFilter(filterType) {
         const sectionInactive = document.getElementById('section-inactive');
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function applyExpiryFilter(filterType) {
         // Select all rows that are marked as filterable items
         const allRows = document.querySelectorAll('.product-row');
-        
+
         allRows.forEach(row => {
             const rowStatus = row.dataset.status;
 
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
-        
+
         // Optional: Manage section headers visibility (Simple version: just let them stay)
         // If you wanted to hide empty sections, you'd need more complex logic here.
     }
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateBulkState() {
         const checkedCount = document.querySelectorAll('.item-checkbox.checked').length;
-        
+
         if (bulkActions && selectedCountSpan) {
             if (checkedCount > 0) {
                 bulkActions.style.display = 'flex';
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 bulkActions.style.display = 'none';
             }
         }
-        
+
         if (selectAllBtn) {
             if (checkedCount === itemCheckboxes.length && itemCheckboxes.length > 0) {
                 selectAllBtn.classList.add('checked');
@@ -110,10 +110,10 @@ document.addEventListener('DOMContentLoaded', function() {
         box.addEventListener('click', (e) => {
             e.stopPropagation();
             box.classList.toggle('checked');
-            
+
             const input = box.querySelector('input[type="checkbox"]');
-            if(input) input.checked = box.classList.contains('checked');
-            
+            if (input) input.checked = box.classList.contains('checked');
+
             updateBulkState();
         });
     });
@@ -126,14 +126,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 itemCheckboxes.forEach(box => {
                     box.classList.remove('checked');
                     const input = box.querySelector('input[type="checkbox"]');
-                    if(input) input.checked = false;
+                    if (input) input.checked = false;
                 });
             } else {
                 selectAllBtn.classList.add('checked');
                 itemCheckboxes.forEach(box => {
                     box.classList.add('checked');
                     const input = box.querySelector('input[type="checkbox"]');
-                    if(input) input.checked = true;
+                    if (input) input.checked = true;
                 });
             }
             updateBulkState();
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteBtns = document.querySelectorAll('.inv-icon-action.delete');
     deleteBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
-            if(!confirm('Are you sure you want to remove this item?')) {
+            if (!confirm('Are you sure you want to remove this item?')) {
                 e.preventDefault();
             }
         });
@@ -153,21 +153,21 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // --- 6. Modal Functions (Global) ---
-window.openModal = function(modalId) {
+window.openModal = function (modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('show');
     }
 }
 
-window.closeModal = function(modalId) {
+window.closeModal = function (modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.remove('show');
     }
 }
 
-window.addEventListener('click', function(e) {
+window.addEventListener('click', function (e) {
     if (e.target.classList.contains('inv-modal-overlay')) {
         e.target.classList.remove('show');
     }
@@ -181,7 +181,7 @@ function previewImage(event) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
 
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             preview.src = e.target.result;
             preview.style.display = 'block';      // โชว์รูป
             placeholder.style.display = 'none';   // ซ่อนข้อความ

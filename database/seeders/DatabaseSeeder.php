@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             BatchSeeder::class,
             StockAdjustmentSeeder::class,
             ActivityLogSeeder::class,
+            PatientSeeder::class,
         ]);
     }
 }

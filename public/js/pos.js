@@ -6,6 +6,37 @@ document.addEventListener('DOMContentLoaded', function () {
     let selectedPaymentMethod = 'cash'; // Default
     let currentGrandTotal = 0; // Track total for modals
     let timerInterval;
+    let currentPatient = null;
+
+    // --- Simulated Patient Database ---
+    const patients = [
+        { id: 'MB-2023-889', name: 'Somchai Meesuk', phone: '0812345678', allergies: ['Penicillin'] },
+        { id: 'MB-2024-002', name: 'Malee Jaiyen', phone: '0898765432', allergies: ['Aspirin', 'Sulfa'] },
+        { id: 'MB-2025-110', name: 'James W.', phone: '0901122334', allergies: [] }
+    ];
+
+    // --- Customer Search Logic ---
+    const customerSearchInput = document.querySelector('.pos-search-wrapper input[placeholder="Customer Phone / ID"]');
+    if (customerSearchInput) {
+        customerSearchInput.addEventListener('keyup', function (e) {
+            if (e.key === 'Enter') {
+                const term = e.target.value.trim();
+                const patient = patients.find(p => p.phone === term || p.id === term);
+
+                if (patient) {
+                    currentPatient = patient;
+                    alert(`Customer Selected: ${patient.name}\nAllergies: ${patient.allergies.length > 0 ? patient.allergies.join(', ') : 'None'}`);
+                    e.target.style.borderColor = '#34C759';
+                    e.target.style.backgroundColor = '#f0fdf4';
+                } else {
+                    currentPatient = null;
+                    alert('Customer not found');
+                    e.target.style.borderColor = '#FF3B30';
+                    e.target.style.backgroundColor = '#fff1f2';
+                }
+            }
+        });
+    }
 
     // --- Slider Logic ---
     const slider = document.getElementById('categorySlider');
@@ -45,7 +76,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- Cart Logic ---
-    window.addToCart = function (name, price) {
+    window.addToCart = function (name, price, drugType = null) {
+        // Allergy Check
+        if (currentPatient && drugType && currentPatient.allergies.includes(drugType)) {
+            alert(`⚠️ WARNING: Patient ${currentPatient.name} is allergic to ${drugType}! Cannot add this item.`);
+            return;
+        }
+
         const existingItem = cart.find(item => item.name === name);
         if (existingItem) {
             existingItem.qty++;

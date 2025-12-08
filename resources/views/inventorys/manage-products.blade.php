@@ -195,7 +195,7 @@
 
                     <!-- Search Input -->
                     <div style="position: relative;">
-                        <input type="text" name="search" value="{{ request('search') }}"
+                        <input type="text" name="search" id="search-input" value="{{ request('search') }}"
                             placeholder="Search Name, SKU..." class="inv-form-input"
                             style="width: 280px; height: 44px; padding-left: 40px;">
                         <i class="fa-solid fa-magnifying-glass"
@@ -212,42 +212,51 @@
                 </div>
             </div>
 
-            <!-- Table Header -->
-            <div class="inv-card-row header grid-products"
-                style="grid-template-columns: 40px 50px 60px 3fr 1.5fr 1.5fr 1fr 1fr 1fr 130px; 
+            <!-- VIEW LIST CONTAINER -->
+            <div id="view-list" class="transition-opacity duration-300">
+                <!-- Table Header -->
+                <div class="inv-card-row header grid-products"
+                    style="grid-template-columns: 40px 50px 60px 3fr 1.5fr 1.5fr 1fr 1fr 1fr 130px; 
                        padding: 0 16px; 
                        margin-bottom: 10px; 
                        background: transparent; 
                        border: none;">
-                <div class="inv-checkbox-wrapper">
-                    <input type="checkbox" class="inv-checkbox" id="select-all">
+                    <div class="inv-checkbox-wrapper">
+                        <input type="checkbox" class="inv-checkbox" id="select-all">
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">#</div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Image
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Product
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Category
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">
+                        SKU/Barcode
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Price
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Stock
+                    </div>
+                    <div class="inv-col-header"
+                        style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Status
+                    </div>
+                    <div class="inv-col-header"
+                        style="text-align: right; font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">
+                        Actions</div>
                 </div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">#</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Image</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Product</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Category</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">SKU/Barcode
-                </div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Price</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Stock</div>
-                <div class="inv-col-header"
-                    style="font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">Status</div>
-                <div class="inv-col-header"
-                    style="text-align: right; font-size: 12px; font-weight: 600; color: #86868b; text-transform: uppercase;">
-                    Actions</div>
-            </div>
 
-            <!-- Products Loop -->
-            @forelse($products as $index => $product)
-                <div class="inv-card-row grid-products product-row"
-                    style="grid-template-columns: 40px 50px 60px 3fr 1.5fr 1.5fr 1fr 1fr 1fr 130px; 
+                <!-- Products Loop -->
+                @forelse($products as $index => $product)
+                    <div class="inv-card-row grid-products product-row"
+                        style="grid-template-columns: 40px 50px 60px 3fr 1.5fr 1.5fr 1fr 1fr 1fr 130px; 
                            background: #fff; 
                            border-radius: 22px; 
                            margin-bottom: 8px; 
@@ -255,98 +264,102 @@
                            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
                            border: 1px solid #f5f5f7;
                            transition: all 0.2s ease;"
-                    onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'"
-                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.02)'">
+                        onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.02)'">
 
-                    <div class="inv-checkbox-wrapper">
-                        <input type="checkbox" class="inv-checkbox item-checkbox" data-id="{{ $product->id }}">
-                    </div>
+                        <div class="inv-checkbox-wrapper">
+                            <input type="checkbox" class="inv-checkbox item-checkbox" data-id="{{ $product->id }}">
+                        </div>
 
-                    <div class="inv-text-sub" style="font-weight: 500; font-size: 13px; color: #8e8e93;">
-                        {{ ($products->currentPage() - 1) * $products->perPage() + $loop->iteration }}
-                    </div>
+                        <div class="inv-text-sub" style="font-weight: 500; font-size: 13px; color: #8e8e93;">
+                            {{ ($products->currentPage() - 1) * $products->perPage() + $loop->iteration }}
+                        </div>
 
-                    <!-- Image Column -->
-                    <div class="inv-product-image" style="display: flex; align-items: center; justify-content: center;">
-                        @if ($product->image_path)
-                            <img src="{{ asset($product->image_path) }}" alt="{{ $product->name }}"
-                                style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid #e5e5ea;">
-                        @else
-                            <div
-                                style="width: 40px; height: 40px; border-radius: 8px; background-color: #f2f2f7; display: flex; align-items: center; justify-content: center; color: #8e8e93;">
-                                <i class="fa-solid fa-image" style="font-size: 16px;"></i>
+                        <!-- Image Column -->
+                        <div class="inv-product-image"
+                            style="display: flex; align-items: center; justify-content: center;">
+                            @if ($product->image_path)
+                                <img src="{{ asset($product->image_path) }}" alt="{{ $product->name }}"
+                                    style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid #e5e5ea;">
+                            @else
+                                <div
+                                    style="width: 40px; height: 40px; border-radius: 8px; background-color: #f2f2f7; display: flex; align-items: center; justify-content: center; color: #8e8e93;">
+                                    <i class="fa-solid fa-image" style="font-size: 16px;"></i>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="inv-product-info" data-label="Product">
+                            <div class="inv-product-details">
+                                <div class="inv-product-name"
+                                    style="font-size: 14px; font-weight: 600; color: #1d1d1f;">
+                                    {{ $product->name }}</div>
+                                <div class="inv-product-generic" style="font-size: 12px; color: #86868b;">
+                                    {{ $product->generic_name ?? '-' }}</div>
                             </div>
-                        @endif
-                    </div>
+                        </div>
 
-                    <div class="inv-product-info" data-label="Product">
-                        <div class="inv-product-details">
-                            <div class="inv-product-name" style="font-size: 14px; font-weight: 600; color: #1d1d1f;">
-                                {{ $product->name }}</div>
-                            <div class="inv-product-generic" style="font-size: 12px; color: #86868b;">
-                                {{ $product->generic_name ?? '-' }}</div>
+                        <div class="inv-text-sub" data-label="Category" style="font-size: 13px; color: #424245;">
+                            {{ $product->category->name ?? '-' }}
+                        </div>
+
+                        <div class="inv-text-sub" data-label="SKU" style="font-size: 13px; color: #86868b;">
+                            {{ $product->barcode ?? '-' }}
+                        </div>
+
+                        <div class="inv-text-main" data-label="Price"
+                            style="font-size: 13px; font-weight: 600; color: #1d1d1f;">
+                            ฿{{ number_format($product->selling_price, 2) }}
+                        </div>
+
+                        <div class="inv-text-main" data-label="Stock"
+                            style="font-size: 13px; font-weight: 600; color: #1d1d1f;">
+                            {{ $product->total_stock }} <span
+                                style="font-size: 11px; color: #86868b; font-weight: 400;">Units</span>
+                        </div>
+
+                        <div data-label="Status">
+                            <span class="inv-status-badge {{ $product->is_active ? 'active' : 'inactive' }}"
+                                style="font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; background-color: {{ $product->is_active ? '#e5fbeB' : '#f5f5f7' }}; color: {{ $product->is_active ? '#34c759' : '#8e8e93' }};">
+                                {{ $product->is_active ? 'Active' : 'Inactive' }}
+                            </span>
+                        </div>
+
+                        <div class="inv-action-group" data-label="Actions"
+                            style="display: flex; gap: 12px; justify-content: flex-end; align-items: center;">
+                            <button class="inv-icon-action"
+                                onclick="openViewModal({{ json_encode($product->load('category')) }})"
+                                style="color: #86868b; background: none; border: none; cursor: pointer; transition: color 0.2s;"
+                                onmouseover="this.style.color='#007aff'" onmouseout="this.style.color='#86868b'">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button class="inv-icon-action" onclick="openEditModal({{ json_encode($product) }})"
+                                style="color: #86868b; background: none; border: none; cursor: pointer; transition: color 0.2s;"
+                                onmouseover="this.style.color='#ff9500'" onmouseout="this.style.color='#86868b'">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button class="inv-icon-action btn-delete-row"
+                                onclick="confirmDelete({{ $product->id }})"
+                                style="color: #86868b; background: none; border: none; cursor: pointer; transition: color 0.2s;"
+                                onmouseover="this.style.color='#ff3b30'" onmouseout="this.style.color='#86868b'">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </div>
                     </div>
-
-                    <div class="inv-text-sub" data-label="Category" style="font-size: 13px; color: #424245;">
-                        {{ $product->category->name ?? '-' }}
+                @empty
+                    <div class="inv-card-row"
+                        style="justify-content: center; padding: 40px; background: #fff; border-radius: 12px; margin-bottom: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+                        <div style="text-align: center;">
+                            <i class="fa-solid fa-box-open"
+                                style="font-size: 48px; color: #e5e5ea; margin-bottom: 16px;"></i>
+                            <div class="inv-text-sub" style="font-size: 16px;">No products found</div>
+                        </div>
                     </div>
+                @endforelse
 
-                    <div class="inv-text-sub" data-label="SKU" style="font-size: 13px; color: #86868b;">
-                        {{ $product->barcode ?? '-' }}
-                    </div>
-
-                    <div class="inv-text-main" data-label="Price"
-                        style="font-size: 13px; font-weight: 600; color: #1d1d1f;">
-                        ฿{{ number_format($product->selling_price, 2) }}
-                    </div>
-
-                    <div class="inv-text-main" data-label="Stock"
-                        style="font-size: 13px; font-weight: 600; color: #1d1d1f;">
-                        {{ $product->total_stock }} <span
-                            style="font-size: 11px; color: #86868b; font-weight: 400;">Units</span>
-                    </div>
-
-                    <div data-label="Status">
-                        <span class="inv-status-badge {{ $product->is_active ? 'active' : 'inactive' }}"
-                            style="font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; background-color: {{ $product->is_active ? '#e5fbeB' : '#f5f5f7' }}; color: {{ $product->is_active ? '#34c759' : '#8e8e93' }};">
-                            {{ $product->is_active ? 'Active' : 'Inactive' }}
-                        </span>
-                    </div>
-
-                    <div class="inv-action-group" data-label="Actions"
-                        style="display: flex; gap: 12px; justify-content: flex-end; align-items: center;">
-                        <button class="inv-icon-action"
-                            onclick="openViewModal({{ json_encode($product->load('category')) }})"
-                            style="color: #86868b; background: none; border: none; cursor: pointer; transition: color 0.2s;"
-                            onmouseover="this.style.color='#007aff'" onmouseout="this.style.color='#86868b'">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                        <button class="inv-icon-action" onclick="openEditModal({{ json_encode($product) }})"
-                            style="color: #86868b; background: none; border: none; cursor: pointer; transition: color 0.2s;"
-                            onmouseover="this.style.color='#ff9500'" onmouseout="this.style.color='#86868b'">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button class="inv-icon-action btn-delete-row" onclick="confirmDelete({{ $product->id }})"
-                            style="color: #86868b; background: none; border: none; cursor: pointer; transition: color 0.2s;"
-                            onmouseover="this.style.color='#ff3b30'" onmouseout="this.style.color='#86868b'">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            @empty
-                <div class="inv-card-row"
-                    style="justify-content: center; padding: 40px; background: #fff; border-radius: 12px; margin-bottom: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
-                    <div style="text-align: center;">
-                        <i class="fa-solid fa-box-open"
-                            style="font-size: 48px; color: #e5e5ea; margin-bottom: 16px;"></i>
-                        <div class="inv-text-sub" style="font-size: 16px;">No products found</div>
-                    </div>
-                </div>
-            @endforelse
-
-            {{-- Pagination --}}
-            {{ $products->links('vendor.pagination.apple') }}
+                {{-- Pagination --}}
+                {{ $products->onEachSide(1)->links('vendor.pagination.apple') }}
+            </div>
 
         </div>
 
@@ -768,7 +781,6 @@
 
             // --- Bulk Actions Logic ---
             const selectAll = document.getElementById('select-all');
-            const checkboxes = document.querySelectorAll('.item-checkbox');
             const bulkActions = document.getElementById('bulk-actions');
             const selectedCountSpan = document.getElementById('selected-count');
 
@@ -784,24 +796,75 @@
                 }
             }
 
-            if (selectAll) {
-                selectAll.addEventListener('change', function() {
-                    const isChecked = this.checked;
-                    document.querySelectorAll('.item-checkbox').forEach(cb => {
-                        cb.checked = isChecked;
-                    });
-                    updateBulkActions();
+            function initializeBulkListeners() {
+                const selectAll = document.getElementById('select-all');
+
+                if (selectAll) {
+                    selectAll.onchange = function() {
+                        const isChecked = this.checked;
+                        document.querySelectorAll('.item-checkbox').forEach(cb => {
+                            cb.checked = isChecked;
+                        });
+                        updateBulkActions();
+                    };
+                }
+
+                document.querySelectorAll('.item-checkbox').forEach(cb => {
+                    cb.onchange = function() {
+                        updateBulkActions();
+                        if (selectAll) {
+                            const allChecked = document.querySelectorAll('.item-checkbox:checked').length ===
+                                document
+                                .querySelectorAll('.item-checkbox').length;
+                            selectAll.checked = allChecked;
+                        }
+                    };
                 });
             }
 
-            document.querySelectorAll('.item-checkbox').forEach(cb => {
-                cb.addEventListener('change', function() {
-                    updateBulkActions();
-                    const allChecked = document.querySelectorAll('.item-checkbox:checked').length === document
-                        .querySelectorAll('.item-checkbox').length;
-                    if (selectAll) selectAll.checked = allChecked;
+            // Initial bind
+            initializeBulkListeners();
+
+            // --- Real-time Search ---
+            const searchInput = document.getElementById('search-input');
+            let searchTimeout;
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    const query = this.value;
+                    const url = new URL(window.location.href);
+
+                    if (query.length > 0) {
+                        url.searchParams.set('search', query);
+                        url.searchParams.delete('page'); // Reset to page 1
+                    } else {
+                        url.searchParams.delete('search');
+                    }
+
+                    window.history.pushState({}, '', url);
+
+                    searchTimeout = setTimeout(() => {
+                        fetch(url, {
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            })
+                            .then(response => response.text())
+                            .then(html => {
+                                const parser = new DOMParser();
+                                const doc = parser.parseFromString(html, 'text/html');
+                                // Replace the list view
+                                const newContent = doc.getElementById('view-list').innerHTML;
+                                document.getElementById('view-list').innerHTML = newContent;
+
+                                // Re-initialize listeners
+                                initializeBulkListeners();
+                            })
+                            .catch(err => console.error('Search error:', err));
+                    }, 400); // 400ms debounce
                 });
-            });
+            }
 
             function confirmBulkDelete() {
                 const checked = document.querySelectorAll('.item-checkbox:checked');

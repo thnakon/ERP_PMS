@@ -20,8 +20,8 @@
                 <div class="sr-header">
                     <div class="sr-header-left">
                         <p class="sr-breadcrumb">
-    Dashboard / <span style="color: #3a3a3c; font-weight: 600;">Point of Sale</span>
-</p>
+                            Dashboard / <span style="color: #3a3a3c; font-weight: 600;">Point of Sale</span>
+                        </p>
 
                         <h2 class="sr-page-title">Point of Sale (POS)</h2>
                     </div>
@@ -105,7 +105,8 @@
                         <div class="pos-add-btn">+</div>
                     </div>
                     <!-- 6 -->
-                    <div class="pos-product-card" data-category="medicine" onclick="addToCart('Vitamin C 1000mg', 300)">
+                    <div class="pos-product-card" data-category="medicine"
+                        onclick="addToCart('Vitamin C 1000mg', 300)">
                         <div class="pos-prod-img-wrapper"><i class="fa-solid fa-lemon"
                                 style="font-size: 3rem; color: #facc15;"></i></div>
                         <div class="pos-prod-name">Vitamin C 1000mg</div>
@@ -210,8 +211,8 @@
                 <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 10px;">Payment Type</div>
                 <div class="pos-methods-grid">
                     <div class="pos-method-card selected" data-method="cash" onclick="selectMethod(this)">
-    <i class="fa-solid fa-money-bill-wave" style="color: #28a745;"></i>
-</div>
+                        <i class="fa-solid fa-money-bill-wave" style="color: #28a745;"></i>
+                    </div>
 
                     <!-- [!!! METHOD: CREDIT CARD !!!] -->
                     <div class="pos-method-card" data-method="credit" onclick="selectMethod(this)"><i

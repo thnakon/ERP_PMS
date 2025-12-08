@@ -203,7 +203,7 @@
             <!-- Comments -->
             <a href="#" class="menu-item open-support-modal-btn">
                 <div class="menu-item-content">
-                    <i class="fa-solid fa-comment"></i>
+                    <i class="fa-solid fa-comments"></i>
                     <span>Comments</span>
                 </div>
             </a>
