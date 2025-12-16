@@ -41,11 +41,9 @@ Route::middleware('auth')->group(function () {
     //setting
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
 
-    // [!!! อัปเดตส่วนของ Reports !!!]
-    // สมมติว่าคุณมี ReportsController ที่จะจัดการ view()
-    // และเปลี่ยน 'index' (ของเดิม) ให้ชี้ไปที่ 'sales' เพื่อความชัดเจน
+    // Support
+    Route::post('/support/report-bug', [\App\Http\Controllers\SupportController::class, 'reportBug'])->name('support.report-bug');
 
-    // Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index'); // <-- ของเดิม
 
     //Inventory
     Route::get('/inventorys/manage-products', [InventoryController::class, 'manageProducts'])->name('inventorys.manage-products');
@@ -82,7 +80,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/peoples/patients/bulk-delete', [PeoplesController::class, 'bulkDelete'])->name('peoples.patients.bulk-delete');
 
     Route::get('/peoples/staff-user', [PeoplesController::class, 'staffuser'])->name('peoples.staff-user');
+    Route::post('/peoples/staff-user', [PeoplesController::class, 'storeStaff'])->name('peoples.staff-user.store');
+    Route::put('/peoples/staff-user/{id}', [PeoplesController::class, 'updateStaff'])->name('peoples.staff-user.update');
+    Route::delete('/peoples/staff-user/{id}', [PeoplesController::class, 'destroyStaff'])->name('peoples.staff-user.destroy');
+    Route::post('/peoples/staff-user/bulk-delete', [PeoplesController::class, 'bulkDeleteStaff'])->name('peoples.staff-user.bulk-delete');
     Route::get('/peoples/recent', [PeoplesController::class, 'recent'])->name('peoples.recent');
+    Route::get('/peoples/recent/export', [PeoplesController::class, 'exportLogs'])->name('peoples.recent.export');
 
     //Purchasing subpages
     Route::get('/purchasing/suppliers', [PurchaseController::class, 'suppliers'])->name('purchasing.suppliers');

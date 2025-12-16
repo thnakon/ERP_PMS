@@ -256,7 +256,7 @@
 
                     <div class="w-full md:w-auto">
                         <p class="sr-breadcrumb text-sm mb-2 text-[#86868B]">
-                            Dashboard / <span style="color: #3a3a3c; font-weight: 600;">Profile</span>
+                            Dashboard / People / <span style="color: #3a3a3c; font-weight: 600;">Profile</span>
                         </p>
                         <h1 class="text-[32px] font-bold tracking-tight text-[#1D1D1F]">
                             Patients <span
@@ -586,7 +586,7 @@
                             <!-- Details List -->
                             <div class="space-y-4 text-sm">
                                 <div class="flex justify-between items-center">
-                                    <span class="text-[#86868B]">E-mail / IDLine</span>
+                                    <span class="texçt-[#86868B]">E-mail / IDLine</span>
                                     <span class="font-medium text-[#1D1D1F]" id="p-email">-</span>
                                 </div>
                                 <div class="flex justify-between items-center">
@@ -597,7 +597,7 @@
                                     <span class="text-[#86868B]">Age</span>
                                     <span class="font-medium text-[#1D1D1F]" id="p-age">45 Years</span>
                                 </div>
-                                <div class="flex justify-between items-center">
+                                <div class="flex justify-between items-center">ßß
                                     <span class="text-[#86868B]">Gender</span>
                                     <span class="font-medium text-[#1D1D1F]" id="p-gender">Male</span>
                                 </div>

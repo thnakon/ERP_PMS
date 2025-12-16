@@ -1,7 +1,7 @@
 @if ($paginator->hasPages())
     <div class="flex flex-col items-end ">
         <!-- Pagination Container -->
-        <div class="inline-flex items-center gap-1 bg-white p-1.5 rounded-full border border-gray-200 shadow-sm">
+        <div class="inline-flex items-center gap-1 bg-white p-1.5 rounded-full   shadow-sm">
 
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())

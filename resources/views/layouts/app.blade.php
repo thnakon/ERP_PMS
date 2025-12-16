@@ -53,56 +53,7 @@
 
 
 
-    {{-- Modal แนะนำการใช้งานระบบ --}}
-    <div id="helpModalOverlay" class="help-modal-overlay">
-        <div id="helpModal" class="help-modal">
 
-            <div class="help-modal-header">
-                <h2><i class="fa-solid fa-book"></i> คู่มือการใช้งานระบบ</h2>
-                <button id="closeHelpModal" class="help-modal-close-btn">&times;</button>
-            </div>
-
-            <div class="help-modal-content">
-                <h3>ยินดีต้อนรับสู่ Oboun ERP</h3>
-                <p>ระบบบริหารจัดการร้านขายยา (Pharmacy Management System)
-                    ที่ออกแบบมาเพื่อช่วยให้การจัดการร้านขายยาของคุณเป็นเรื่องง่าย, มีประสิทธิภาพ,
-                    และลดข้อผิดพลาดในการทำงาน</p>
-                <p>ระบบของเราครอบคลุมทุกกระบวนการสำคัญ ตั้งแต่การขายหน้าร้าน (POS), การจัดการสต็อกยาและเวชภัณฑ์,
-                    การติดตามวันหมดอายุ, การจัดซื้อ, ไปจนถึงการออกรายงานสรุปยอดขาย</p>
-
-                <h4>1. การเริ่มต้นใช้งาน</h4>
-                <p><strong>1.1 การเข้าสู่ระบบ (Login)<br></strong> ใช้ชื่อผู้ใช้และรหัสผ่านเพื่อเข้าสู่หน้าจอหลัก</p>
-                <p><strong>1.2 หน้าแดชบอร์ด (Dashboard)<br></strong> หน้าสรุปภาพรวมที่สำคัญของร้าน เช่น ยอดขาย,
-                    ยาใกล้หมดอายุ, และสินค้าใกล้หมดสต็อก</p>
-
-                <h4>2. คู่มือการใช้งานเมนูหลัก</h4>
-                <p><i class="fa-solid fa-cash-register"></i> <strong>2.1 ระบบขายหน้าร้าน (POS)</strong><br>
-                    หัวใจหลักสำหรับการขาย ค้นหาสินค้า, เพิ่มลงตะกร้า, ชำระเงิน, และพิมพ์ใบเสร็จ</p>
-
-                <p><i class="fa-solid fa-receipt"></i> <strong>2.2 ประวัติการขาย (Orders / Sales)</strong><br>
-                    ดูรายการบิลย้อนหลัง, ค้นหาบิลเก่า, หรือทำการคืนสินค้า</p>
-
-                <p><i class="fa-solid fa-boxes-stacked"></i> <strong>2.3 การจัดการคลังสินค้า (Inventory)</strong><br>
-                    ส่วนสำคัญในการบริหารสต็อก (จัดการสินค้า, หมวดหมู่, และการจัดการวันหมดอายุ)</p>
-
-                <p><i class="fa-solid fa-truck-moving"></i> <strong>2.4 การจัดซื้อ (Purchasing)</strong><br>
-                    จัดการกระบวนการสั่งซื้อ (ซัพพลายเออร์, สร้างใบสั่งซื้อ, รับสินค้าเข้า)</p>
-
-                <p><i class="fa-solid fa-users"></i> <strong>2.5 การจัดการบุคคล (People)</strong><br>
-                    บันทึกประวัติลูกค้า/ผู้ป่วย และจัดการบัญชีผู้ใช้งาน</p>
-
-                <p><i class="fa-solid fa-chart-pie"></i> <strong>2.6 รายงาน (Reports)</strong><br>
-                    ดูข้อมูลสรุปยอดขาย, สินค้าคงคลัง, และกำไร-ขาดทุน</p>
-
-                <h4>3. การตั้งค่า และ การออกจากระบบ</h4>
-                <p><i class="fa-solid fa-gear"></i> <strong>3.1 การตั้งค่า (Settings)<br></strong>
-                    ตั้งค่าข้อมูลพื้นฐานของร้าน</p>
-                <p><i class="fa-solid fa-right-from-bracket"></i> <strong>3.2 การออกจากระบบ (Log Out)<br></strong>
-                    คลิกที่ปุ่ม Log out เมื่อใช้งานเสร็จสิ้น</p>
-            </div>
-
-        </div>
-    </div>
 
     {{-- Confirm Logout Modal --}}
     <div id="logoutModal" class="apple-modal-overlay">

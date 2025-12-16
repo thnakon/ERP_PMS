@@ -368,7 +368,7 @@
                         <i class="fa-solid fa-headset absolute -bottom-4 -right-4 text-8xl text-white opacity-10"></i>
                         <h3 class="font-bold text-lg mb-2">Need Help?</h3>
                         <p class="text-white/80 text-sm mb-4">Contact IT Support for urgent system issues.</p>
-                        <button
+                        <button onclick="openHelpSupportModalForce()"
                             class="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white px-4 py-2 rounded-lg text-sm font-medium transition w-full border border-white/20">
                             Call Support
                         </button>

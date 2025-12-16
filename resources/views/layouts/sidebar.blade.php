@@ -219,7 +219,7 @@
             </a>
 
             <!-- Support -->
-            <a href="#" class="menu-item open-support-modal-btn">
+            <a href="#" class="menu-item open-support-modal-btn" title="Help & Support" id="showHelpModalButton">
                 <div class="menu-item-content">
                     <i class="fa-solid fa-headset"></i>
                     <span>Support</span>

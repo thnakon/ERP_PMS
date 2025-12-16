@@ -41,10 +41,11 @@
 
     <div class="header-user-actions">
 
-        <!-- Help/Support Button (ปุ่มหลัก: ID ใหม่) -->
-        <button class="header-action-btn" title="Help & Support" id="showHelpModalButton">
-            <i class="fa-solid fa-comment-medical"></i>
-            <span class="help-badge">!</span>
+
+
+        <!-- Help/Support Button (NEW - Direct Trigger) -->
+        <button class="header-action-btn" title="Help & Support (New)" onclick="openHelpSupportModalForce()">
+            <i class="fa-solid fa-headset"></i>
         </button>
 
         <!-- Notification Button -->
@@ -242,8 +243,9 @@
 </header>
 
 <!-- === Minimal Apple Modal Structure (Support) === -->
-<div id="appleModalOverlay" class="apple-modal-overlay">
-    <div id="appleModal" class="apple-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<div id="helpSupportModalOverlay" class="help-support-modal-overlay">
+    <div id="helpSupportModal" class="help-support-modal" role="dialog" aria-modal="true"
+        aria-labelledby="modalTitle">
         <div class="modal-header">
             <h3 id="modalTitle" class="modal-title">Help & Support</h3>
             <button class="modal-close-btn" id="closeModalBtn" type="button" title="Close">
@@ -255,16 +257,152 @@
             <p class="modal-description">We are here to assist you. Please select an option below or type your question
                 to find answers.</p>
 
-            <div class="modal-actions">
-                <a href="#" class="modal-action-link primary">
+            <div id="support-options" class="modal-actions">
+                <a href="javascript:void(0)" class="modal-action-link primary" onclick="toggleContactSupport()">
                     <i class="fa-solid fa-headset"></i> Contact Support
                 </a>
-                <a href="#" class="modal-action-link">
+                <a href="javascript:void(0)" class="modal-action-link" onclick="toggleUserManual()">
                     <i class="fa-solid fa-book-open"></i> User Manual (Docs)
                 </a>
-                <a href="#" class="modal-action-link">
+                <a href="javascript:void(0)" class="modal-action-link" onclick="toggleBugReportForm()">
                     <i class="fa-solid fa-bug"></i> Report a Bug
                 </a>
+            </div>
+
+            <!-- Bug Report Form -->
+            <div id="bugReportForm" style="display: none; margin-top: 15px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                    <h4 style="font-weight: 600; font-size: 15px; color: #1D1D1F;">Report a Bug</h4>
+                    <button onclick="toggleBugReportForm()" class="back-btn-animated"
+                        style="color: #86868B; background: none; border: none; font-size: 13px; cursor: pointer;">
+                        <i class="fa-solid fa-chevron-left" style="font-size: 10px;"></i> Back
+                    </button>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="text" id="bug_title" placeholder="Summary of the issue"
+                        style="width: 100%; background: #F5F5F7; border: none; border-radius: 12px; padding: 12px 16px; font-size: 14px; outline: none;">
+
+                    <textarea id="bug_description" rows="3" placeholder="Describe what happened..."
+                        style="width: 100%; background: #F5F5F7; border: none; border-radius: 12px; padding: 12px 16px; font-size: 14px; outline: none; resize: none; font-family: inherit;"></textarea>
+
+                    <select id="bug_priority"
+                        style="width: 100%; background: #F5F5F7; border: none; border-radius: 12px; padding: 12px 16px; font-size: 14px; outline: none; cursor: pointer;">
+                        <option value="low">Low Priority</option>
+                        <option value="medium" selected>Medium Priority</option>
+                        <option value="high">High Priority</option>
+                        <option value="critical">Critical</option>
+                    </select>
+
+                    <button onclick="submitBugReport()" id="submit_bug_btn"
+                        style="width: 100%; background: #007AFF; color: white; border: none; border-radius: 12px; padding: 12px; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 5px; box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2); transition: all 0.2s;">
+                        Submit Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contact Support View -->
+            <div id="contactSupportView" style="display: none; margin-top: 15px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                    <h4 style="font-weight: 600; font-size: 15px; color: #1D1D1F;">Contact Support</h4>
+                    <button onclick="toggleContactSupport()" class="back-btn-animated"
+                        style="color: #86868B; background: none; border: none; font-size: 13px; cursor: pointer;">
+                        <i class="fa-solid fa-chevron-left" style="font-size: 10px;"></i> Back
+                    </button>
+                </div>
+                <div style="background: #F5F5F7; border-radius: 16px; padding: 20px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div
+                            style="width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                            <i class="fa-solid fa-phone" style="color: #34C759; font-size: 18px;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; color: #86868B; margin-bottom: 2px;">Hotline (24/7)</div>
+                            <div style="font-size: 15px; font-weight: 600; color: #1D1D1F;">02-123-4567</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div
+                            style="width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                            <i class="fa-solid fa-envelope" style="color: #007AFF; font-size: 18px;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; color: #86868B; margin-bottom: 2px;">Email Support</div>
+                            <div style="font-size: 15px; font-weight: 600; color: #1D1D1F;">support@oboun.com</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div
+                            style="width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                            <i class="fa-brands fa-line" style="color: #06C755; font-size: 20px;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; color: #86868B; margin-bottom: 2px;">Line Official</div>
+                            <div style="font-size: 15px; font-weight: 600; color: #1D1D1F;">@oboun_erp</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Manual View -->
+            <div id="userManualView" style="display: none; margin-top: 15px;">
+                <!-- List of Manuals -->
+                <div id="manualList">
+                    <div
+                        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                        <h4 style="font-weight: 600; font-size: 15px; color: #1D1D1F;">User Manual</h4>
+                        <button onclick="toggleUserManual()" class="back-btn-animated"
+                            style="color: #86868B; background: none; border: none; font-size: 13px; cursor: pointer;">
+                            <i class="fa-solid fa-chevron-left" style="font-size: 10px;"></i> Back
+                        </button>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div onclick="showManualDetail('getting-started')" class="manual-item"
+                            style="display: flex; align-items: center; padding: 12px 16px; background: #F5F5F7; border-radius: 12px; color: #1D1D1F; cursor: pointer; transition: background 0.2s;">
+                            <i class="fa-solid fa-rocket"
+                                style="color: #FF9500; font-size: 16px; margin-right: 12px;"></i>
+                            <span style="flex: 1; font-size: 14px; font-weight: 500;">Getting Started Guide</span>
+                            <i class="fa-solid fa-chevron-right" style="color: #C7C7CC; font-size: 12px;"></i>
+                        </div>
+                        <div onclick="showManualDetail('inventory')" class="manual-item"
+                            style="display: flex; align-items: center; padding: 12px 16px; background: #F5F5F7; border-radius: 12px; color: #1D1D1F; cursor: pointer; transition: background 0.2s;">
+                            <i class="fa-solid fa-box"
+                                style="color: #34C759; font-size: 16px; margin-right: 12px;"></i>
+                            <span style="flex: 1; font-size: 14px; font-weight: 500;">Inventory Management</span>
+                            <i class="fa-solid fa-chevron-right" style="color: #C7C7CC; font-size: 12px;"></i>
+                        </div>
+                        <div onclick="showManualDetail('sales')" class="manual-item"
+                            style="display: flex; align-items: center; padding: 12px 16px; background: #F5F5F7; border-radius: 12px; color: #1D1D1F; cursor: pointer; transition: background 0.2s;">
+                            <i class="fa-solid fa-cash-register"
+                                style="color: #007AFF; font-size: 16px; margin-right: 12px;"></i>
+                            <span style="flex: 1; font-size: 14px; font-weight: 500;">Sales & POS System</span>
+                            <i class="fa-solid fa-chevron-right" style="color: #C7C7CC; font-size: 12px;"></i>
+                        </div>
+                        <div onclick="showManualDetail('staff')" class="manual-item"
+                            style="display: flex; align-items: center; padding: 12px 16px; background: #F5F5F7; border-radius: 12px; color: #1D1D1F; cursor: pointer; transition: background 0.2s;">
+                            <i class="fa-solid fa-users"
+                                style="color: #AF52DE; font-size: 16px; margin-right: 12px;"></i>
+                            <span style="flex: 1; font-size: 14px; font-weight: 500;">Staff Management</span>
+                            <i class="fa-solid fa-chevron-right" style="color: #C7C7CC; font-size: 12px;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail View (Hidden by default) -->
+                <div id="manualDetail" style="display: none;">
+                    <div
+                        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                        <h4 id="manualDetailTitle" style="font-weight: 600; font-size: 15px; color: #1D1D1F;">Detail
+                        </h4>
+                        <button onclick="hideManualDetail()" class="back-btn-animated"
+                            style="color: #86868B; background: none; border: none; font-size: 13px; cursor: pointer;">
+                            <i class="fa-solid fa-chevron-left" style="font-size: 10px;"></i> Back
+                        </button>
+                    </div>
+                    <div id="manualDetailContent"
+                        style="font-size: 13px; color: #424245; line-height: 1.6; background: #F5F5F7; padding: 16px; border-radius: 12px; max-height: 300px; overflow-y: auto;">
+                        <!-- Content will be injected via JS -->
+                    </div>
+                </div>
             </div>
 
             <div class="modal-footer-info">
@@ -372,6 +510,7 @@
 
     /* Toast Styling */
     .mac-toast {
+        position: relative;
         pointer-events: auto;
         width: 320px;
         background: rgba(255, 255, 255, 0.85);
@@ -495,11 +634,11 @@
                 <div class="mac-toast-icon">
                     <img src="${userAvatar}" class="w-full h-full object-cover rounded-[10px]" alt="Avatar">
                 </div>
-                <div class="mac-toast-content">
+                <div class="mac-toast-content" style="position: relative; padding-right: 50px;">
                     <div class="mac-toast-title">${userName}</div>
                     <div class="mac-toast-message">${notification.description}</div>
-                    <div style="font-size: 11px; color: #8e8e93; margin-top: 4px;">${new Date(notification.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
                 </div>
+                <div style="position: absolute; top: 12px; right: 40px; font-size: 11px; color: #8e8e93;">${new Date(notification.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
                 <button class="mac-toast-close" onclick="this.parentElement.remove()">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -856,9 +995,405 @@
             }
         });
     });
+    // Bug Report Functions
+    // Support Toggles
+    window.toggleContactSupport = function() {
+        const options = document.getElementById('support-options');
+        const view = document.getElementById('contactSupportView');
+        if (view.style.display === 'none') {
+            options.style.display = 'none';
+            view.style.display = 'block';
+        } else {
+            view.style.display = 'none';
+            options.style.display = '';
+        }
+    };
+
+    window.toggleUserManual = function() {
+        const options = document.getElementById('support-options');
+        const view = document.getElementById('userManualView');
+        if (view.style.display === 'none') {
+            options.style.display = 'none';
+            view.style.display = 'block';
+        } else {
+            view.style.display = 'none';
+            options.style.display = '';
+        }
+    };
+
+    window.toggleBugReportForm = function() {
+        const options = document.getElementById('support-options');
+        const form = document.getElementById('bugReportForm');
+
+        if (form.style.display === 'none') {
+            options.style.display = 'none';
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+            options.style.display = ''; // Revert to original CSS
+        }
+    };
+
+    window.submitBugReport = function() {
+        const title = document.getElementById('bug_title').value;
+        const description = document.getElementById('bug_description').value;
+        const priority = document.getElementById('bug_priority').value;
+        const submitBtn = document.getElementById('submit_bug_btn');
+
+        if (!title || !description) {
+            alert('Please fill in both summary and description.');
+            return;
+        }
+
+        // Disable button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+        submitBtn.style.opacity = '0.7';
+
+        fetch('{{ route('support.report-bug') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: title,
+                    description: description,
+                    priority: priority
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const formContainer = document.getElementById('bugReportForm');
+                const originalContent = formContainer.innerHTML;
+
+                formContainer.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <div style="width: 60px; height: 60px; background: #E8F5E9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                            <i class="fa-solid fa-check" style="color: #34C759; font-size: 30px;"></i>
+                        </div>
+                        <h4 style="font-weight: 600; font-size: 18px; margin-bottom: 10px; color: #1D1D1F;">Thank You!</h4>
+                        <p style="color: #86868B; font-size: 15px;">Your bug report has been submitted successfully.</p>
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    // Start closing animation
+                    const modalOverlay = document.getElementById('helpSupportModalOverlay');
+                    if (modalOverlay) {
+                        modalOverlay.classList.add('modal-closing');
+
+                        // Wait for animation to finish before hiding
+                        setTimeout(() => {
+                            modalOverlay.style.display = 'none';
+                            modalOverlay.classList.remove('modal-closing');
+
+                            // Reset form state
+                            formContainer.innerHTML = originalContent;
+                            toggleBugReportForm(); // Switch back to options view
+                        }, 300);
+                    }
+                }, 1500);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the report. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Report';
+                submitBtn.style.opacity = '1';
+            });
+    };
+</script>
+<script>
+    // Global function to force open modal (Backup Trigger)
+    window.openHelpSupportModalForce = function() {
+        const modalOverlay = document.getElementById('helpSupportModalOverlay');
+        if (modalOverlay) {
+            modalOverlay.style.display = 'flex';
+
+            // Reset views to default state
+            const options = document.getElementById('support-options');
+            if (options) options.style.display = '';
+
+            ['contactSupportView', 'userManualView', 'bugReportForm'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+        } else {
+            console.error('Help Modal Overlay not found!');
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle Help/Support Modal
+        const helpBtn = document.getElementById('showHelpModalButton');
+        const modalOverlay = document.getElementById('helpSupportModalOverlay');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        if (helpBtn && modalOverlay) {
+            helpBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                modalOverlay.style.display = 'flex';
+                // Reset views
+                document.getElementById('support-options').style.display =
+                    'grid'; // Note: check css, usually flex or grid
+                document.getElementById('support-options').style.display = ''; // Reset to css default
+                document.getElementById('contactSupportView').style.display = 'none';
+                document.getElementById('userManualView').style.display = 'none';
+                document.getElementById('bugReportForm').style.display = 'none';
+            });
+        }
+
+        if (closeModalBtn && modalOverlay) {
+            closeModalBtn.addEventListener('click', function() {
+                modalOverlay.style.display = 'none';
+            });
+        }
+
+        // Close on outside click
+        if (modalOverlay) {
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    modalOverlay.style.display = 'none';
+                }
+            });
+        }
+    });
+
+    // Manual Content Data
+    const manualData = {
+        'getting-started': {
+            title: 'Getting Started Guide',
+            content: `
+                <p>Welcome to Oboun ERP! This guide helps you set up your account and basic settings.</p>
+                <ul style="margin-left: 20px; list-style-type: disc; margin-top: 10px;">
+                    <li><strong>Dashboard:</strong> Overview of your business stats.</li>
+                    <li><strong>Settings:</strong> Configure company info and preferences.</li>
+                    <li><strong>Users:</strong> Invite your team members.</li>
+                </ul>
+            `
+        },
+        'inventory': {
+            title: 'Inventory Management',
+            content: `
+                <p>Manage your stock efficiently with these features:</p>
+                <ul style="margin-left: 20px; list-style-type: disc; margin-top: 10px;">
+                    <li><strong>Add Products:</strong> Create new items with barcodes.</li>
+                    <li><strong>Stock Adjustment:</strong> Update quantities manually.</li>
+                    <li><strong>Low Stock Alerts:</strong> Get notified when items run low.</li>
+                </ul>
+            `
+        },
+        'sales': {
+            title: 'Sales & POS System',
+            content: `
+                <p>Process transactions quickly and easily:</p>
+                <ul style="margin-left: 20px; list-style-type: disc; margin-top: 10px;">
+                    <li><strong>New Sale:</strong> Add items to cart and checkout.</li>
+                    <li><strong>Receipts:</strong> Print or email receipts to customers.</li>
+                    <li><strong>Daily Report:</strong> View sales summary at end of day.</li>
+                </ul>
+            `
+        },
+        'staff': {
+            title: 'Staff Management',
+            content: `
+                <p>Control access and manage your team:</p>
+                <ul style="margin-left: 20px; list-style-type: disc; margin-top: 10px;">
+                    <li><strong>Roles:</strong> Assign Admin, Manager, or Staff roles.</li>
+                    <li><strong>Permissions:</strong> Limit access to sensitive data.</li>
+                    <li><strong>Activity Log:</strong> Monitor staff actions.</li>
+                </ul>
+            `
+        }
+    };
+
+    window.showManualDetail = function(key) {
+        const data = manualData[key];
+        if (!data) return;
+
+        document.getElementById('manualList').style.display = 'none';
+
+        const detailView = document.getElementById('manualDetail');
+        document.getElementById('manualDetailTitle').innerText = data.title;
+        document.getElementById('manualDetailContent').innerHTML = data.content;
+
+        detailView.style.display = 'block';
+        detailView.classList.add('manual-slide-enter');
+    };
+
+    window.hideManualDetail = function() {
+        document.getElementById('manualDetail').style.display = 'none';
+        document.getElementById('manualList').style.display = 'block';
+        // reset animation class so it plays again next time
+        document.getElementById('manualDetail').classList.remove('manual-slide-enter');
+    };
 </script>
 
 <style>
+    /* Apple Support Modal Styles */
+    .help-support-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        display: none;
+        /* Hidden by default */
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .help-support-modal {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        width: 100%;
+        max-width: 500px;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        max-height: 85vh;
+        animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    .modal-title {
+        font-size: 17px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin: 0;
+    }
+
+    .modal-close-btn {
+        background: #f2f2f7;
+        border: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #86868b;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .modal-close-btn:hover {
+        background: #e5e5ea;
+        color: #1d1d1f;
+    }
+
+    .modal-body {
+        padding: 24px;
+        overflow-y: auto;
+    }
+
+    .modal-greeting {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1d1d1f;
+        margin-bottom: 8px;
+    }
+
+    .modal-description {
+        font-size: 15px;
+        color: #86868b;
+        margin-bottom: 24px;
+        line-height: 1.5;
+    }
+
+    .modal-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .modal-action-link {
+        display: flex;
+        align-items: center;
+        padding: 16px;
+        background: #f5f5f7;
+        border-radius: 12px;
+        text-decoration: none;
+        color: #1d1d1f;
+        font-weight: 500;
+        font-size: 15px;
+        transition: all 0.2s;
+    }
+
+    .modal-action-link:hover {
+        background: #e5e5ea;
+        transform: scale(1.02);
+    }
+
+    .modal-action-link i {
+        font-size: 20px;
+        margin-right: 14px;
+        width: 24px;
+        text-align: center;
+    }
+
+    .modal-action-link.primary {
+        background: #007aff;
+        color: white;
+    }
+
+    .modal-action-link.primary:hover {
+        background: #0062cc;
+    }
+
+    .modal-action-link.primary i {
+        color: white;
+    }
+
+    .modal-action-link .fa-headset {
+        color: #007aff;
+    }
+
+    .modal-action-link.primary .fa-headset {
+        color: white;
+    }
+
+    .modal-action-link .fa-book-open {
+        color: #ff9500;
+    }
+
+    .modal-action-link .fa-bug {
+        color: #ff3b30;
+    }
+
+    .modal-footer-info {
+        text-align: center;
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        color: #86868b;
+        font-size: 12px;
+    }
+
     /* AI Search Modal Styles */
     .ai-modal-overlay {
         position: fixed;
@@ -874,6 +1409,36 @@
         align-items: center;
         z-index: 10001;
         animation: fadeIn 0.2s ease;
+    }
+
+    /* Back Button Animation */
+    .back-btn-animated {
+        transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .back-btn-animated:hover {
+        transform: translateX(-4px);
+        color: #007AFF !important;
+    }
+
+    /* Manual Slide Animation */
+    .manual-slide-enter {
+        animation: slideInRightManual 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideInRightManual {
+        from {
+            transform: translateX(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
     }
 
     .ai-modal {
@@ -956,5 +1521,36 @@
     .ai-modal-footer input:focus {
         border-color: #007aff;
         box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+    }
+
+    /* Modal Closing Animation */
+    .modal-closing {
+        animation: fadeOut 0.3s ease forwards !important;
+    }
+
+    .modal-closing .help-support-modal {
+        animation: scaleOut 0.3s cubic-bezier(0.32, 0, 0.67, 0) forwards !important;
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+        }
+    }
+
+    @keyframes scaleOut {
+        from {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        to {
+            transform: scale(0.95);
+            opacity: 0;
+        }
     }
 </style>
