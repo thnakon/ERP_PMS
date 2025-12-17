@@ -71,16 +71,11 @@
 }
 
 #globalSearch::placeholder {
-    background: linear-gradient(90deg,
-        #007aff,
-        #7d22ff,
-        #d31aff,
-        #ff3b30,
-        #ff9500
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 600;
+    color: #8a8a8e; /* Flat gray color matching other placeholder texts */
+    background: transparent;
+    -webkit-background-clip: border-box;
+    -webkit-text-fill-color: initial;
+    font-weight: normal;
 }
 
 

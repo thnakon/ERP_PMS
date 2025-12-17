@@ -141,8 +141,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Logic Placeholder Animation (เดิม)
         const phrasesToType = [
             "Search...",
-            "✨ Ai search...",
-            "Search or ✨ Ai search"
+            "Ai search...",
+            "Search or Ai search"
         ];
         let phraseIndex = 0;
         let charIndex = 0;

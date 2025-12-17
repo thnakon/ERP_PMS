@@ -62,11 +62,12 @@ main.main-content {
 
 /* === 3. Login Box (กล่องล็อกอิน) === */
 .login-container {
-    background-color: #ffffff;
+
     padding: 40px;
     width: 100%;
     max-width: 420px;
     text-align: center;
+  
 }
 
 
