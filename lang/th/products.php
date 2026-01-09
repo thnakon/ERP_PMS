@@ -1,0 +1,56 @@
+<?php
+
+return [
+    'search_placeholder' => 'ค้นหาตามชื่อ, รหัส, หรือชื่อสามัญ...',
+    'all_categories' => 'ทุกหมวดหมู่',
+    'add_product' => 'เพิ่มสินค้า',
+    'edit_product' => 'แก้ไขสินค้า',
+    'all_products' => 'รายการสินค้าทั้งหมด',
+    'name' => 'ชื่อสินค้า (ภาษาอังกฤษ)',
+    'name_th' => 'ชื่อสินค้า (ภาษาไทย)',
+    'generic_name' => 'ชื่อสามัญ / ตัวยาสำคัญ',
+    'category' => 'หมวดหมู่',
+    'select_category' => 'เลือกหมวดหมู่',
+    'price' => 'ราคาขาย',
+    'cost' => 'ราคาทุน',
+    'stock' => 'สต็อกคงเหลือ',
+    'min_stock' => 'สต็อกขั้นต่ำ (แจ้งเตือน)',
+    'no_products' => 'ไม่พบสินค้า',
+    'requires_prescription' => 'ต้องใช้ใบสั่งแพทย์',
+    'created' => 'เพิ่มสินค้าสำเร็จ',
+    'updated' => 'อัพเดทสินค้าสำเร็จ',
+    'deleted' => 'ลบสินค้าสำเร็จ',
+
+    // Additional fields
+    'sku' => 'รหัสสินค้า (SKU)',
+    'barcode' => 'บาร์โค้ด',
+    'drug_class' => 'ประเภทผลิตภัณฑ์',
+    'manufacturer' => 'ผู้ผลิต / บริษัทผู้แทนจำหน่าย',
+    'description' => 'รายละเอียด / สรรพคุณ',
+    'member_price' => 'ราคาสมาชิก',
+    'vat_applicable' => 'คิดภาษีมูลค่าเพิ่ม',
+    'base_unit' => 'หน่วยนับ (เช่น เม็ด, แผง, กล่อง)',
+    'shelf_location' => 'ตำแหน่งที่จัดเก็บ',
+    'precautions' => 'ข้อควรระวัง / คำเตือน',
+    'side_effects' => 'ผลข้างเคียง',
+    'instructions' => 'วิธีใช้ / คำแนะนำ',
+    'reorder_point' => 'จุดสั่งซื้อใหม่',
+    'max_stock' => 'ระดับสต็อกสูงสุด',
+    'fda_registration_no' => 'เลขทะเบียน อย.',
+    'drug_schedule' => 'ประเภทประเภทยา (Schedule)',
+    'is_active' => 'สถานะการใช้งาน',
+
+    // Drug Classes
+    'class_general' => 'ยาสามัญประจำบ้าน',
+    'class_dangerous' => 'ยาอันตราย',
+    'class_special' => 'ยาควบคุมพิเศษ',
+    'class_supplement' => 'อาหารเสริม',
+    'class_medical_supply' => 'เวชภัณฑ์',
+
+    // Sections
+    'english_info' => 'ข้อมูลภาษาอังกฤษ',
+    'thai_info' => 'ข้อมูลภาษาไทย',
+    'pricing_inventory' => 'ราคาและสต็อกสินค้า',
+    'clinical_regulatory' => 'ข้อมูลทางคลินิกและกฎหมาย',
+    'system_meta' => 'ข้อมูลทางเทคนิคและรหัส',
+];

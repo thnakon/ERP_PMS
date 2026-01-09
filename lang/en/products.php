@@ -1,0 +1,56 @@
+<?php
+
+return [
+    'search_placeholder' => 'Search by name, SKU, or generic name...',
+    'all_categories' => 'All Categories',
+    'add_product' => 'Add Product',
+    'edit_product' => 'Edit Product',
+    'all_products' => 'All Products',
+    'name' => 'Product Name (English)',
+    'name_th' => 'Product Name (Thai)',
+    'generic_name' => 'Generic Name / Active Ingredients',
+    'category' => 'Category',
+    'select_category' => 'Select Category',
+    'price' => 'Selling Price',
+    'cost' => 'Cost Price',
+    'stock' => 'Current Stock',
+    'min_stock' => 'Min Stock (Alert)',
+    'no_products' => 'No products found',
+    'requires_prescription' => 'Requires Prescription',
+    'created' => 'Product created successfully',
+    'updated' => 'Product updated successfully',
+    'deleted' => 'Product deleted successfully',
+
+    // Additional fields
+    'sku' => 'SKU / Item Code',
+    'barcode' => 'Barcode',
+    'drug_class' => 'Drug Classification',
+    'manufacturer' => 'Manufacturer / Producer',
+    'description' => 'Description / Indications',
+    'member_price' => 'Member Price',
+    'vat_applicable' => 'VAT Applicable',
+    'base_unit' => 'Unit (e.g. Box, Tablet)',
+    'shelf_location' => 'Storage Location',
+    'precautions' => 'Precautions / Warnings',
+    'side_effects' => 'Side Effects',
+    'instructions' => 'How to use / Instructions',
+    'reorder_point' => 'Reorder Point',
+    'max_stock' => 'Max Stock Level',
+    'fda_registration_no' => 'FDA Registration No.',
+    'drug_schedule' => 'Drug Schedule',
+    'is_active' => 'Active Status',
+
+    // Drug Classes
+    'class_general' => 'General Medicine',
+    'class_dangerous' => 'Dangerous Medicine',
+    'class_special' => 'Special Controlled Medicine',
+    'class_supplement' => 'Supplement',
+    'class_medical_supply' => 'Medical Supply',
+
+    // Sections
+    'english_info' => 'English Information',
+    'thai_info' => 'Thai Information',
+    'pricing_inventory' => 'Pricing & Inventory',
+    'clinical_regulatory' => 'Clinical & Regulatory',
+    'system_meta' => 'System & Identifiers',
+];

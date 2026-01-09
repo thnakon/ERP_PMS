@@ -3,49 +3,79 @@
 namespace App\Traits;
 
 use App\Models\ActivityLog;
+use Illuminate\Database\Eloquent\Model;
 
 trait LogsActivity
 {
     /**
-     * Log an activity to the system
-     *
-     * @param string $action Short description of what happened
-     * @param string $category One of: sales, inventory, system, security, user
-     * @param string|null $description Detailed description
-     * @param string $status One of: success, error, warning
-     * @return ActivityLog
+     * Boot the trait
      */
-    protected function logActivity($action, $category = 'system', $description = null, $status = 'success')
+    protected static function bootLogsActivity()
     {
-        return ActivityLog::log(
-            $action,
-            $category,
-            $description,
-            get_class($this),
-            null,
-            $status
-        );
+        // Log when model is created
+        static::created(function (Model $model) {
+            ActivityLog::log(
+                action: 'create',
+                module: static::getActivityModule(),
+                description: static::getActivityDescription('create', $model),
+                model: $model,
+                newValues: $model->getAttributes()
+            );
+        });
+
+        // Log when model is updated
+        static::updated(function (Model $model) {
+            $oldValues = $model->getOriginal();
+            $newValues = $model->getChanges();
+
+            // Remove timestamps from changes
+            unset($newValues['updated_at']);
+
+            if (!empty($newValues)) {
+                ActivityLog::log(
+                    action: 'update',
+                    module: static::getActivityModule(),
+                    description: static::getActivityDescription('update', $model),
+                    model: $model,
+                    oldValues: array_intersect_key($oldValues, $newValues),
+                    newValues: $newValues
+                );
+            }
+        });
+
+        // Log when model is deleted
+        static::deleted(function (Model $model) {
+            ActivityLog::log(
+                action: 'delete',
+                module: static::getActivityModule(),
+                description: static::getActivityDescription('delete', $model),
+                model: $model,
+                oldValues: $model->getAttributes()
+            );
+        });
     }
 
     /**
-     * Log a model-related activity
-     *
-     * @param string $action Short description
-     * @param object $model The model being acted upon
-     * @param string $category Category
-     * @param string|null $description Detailed description
-     * @param string $status Status
-     * @return ActivityLog
+     * Get the module name for activity logging
      */
-    protected function logModelActivity($action, $model, $category = 'system', $description = null, $status = 'success')
+    protected static function getActivityModule(): string
     {
-        return ActivityLog::log(
-            $action,
-            $category,
-            $description,
-            get_class($model),
-            $model->id ?? null,
-            $status
-        );
+        return class_basename(static::class);
+    }
+
+    /**
+     * Get the description for activity logging
+     */
+    protected static function getActivityDescription(string $action, Model $model): string
+    {
+        $modelName = class_basename($model);
+        $identifier = $model->name ?? $model->title ?? $model->id;
+
+        return match ($action) {
+            'create' => "สร้าง {$modelName}: {$identifier}",
+            'update' => "แก้ไข {$modelName}: {$identifier}",
+            'delete' => "ลบ {$modelName}: {$identifier}",
+            default => "{$action} {$modelName}: {$identifier}",
+        };
     }
 }

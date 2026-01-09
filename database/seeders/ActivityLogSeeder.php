@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Carbon\Carbon;
 
 class ActivityLogSeeder extends Seeder
 {
@@ -15,77 +14,59 @@ class ActivityLogSeeder extends Seeder
     public function run(): void
     {
         $users = User::all();
+        $actions = ['login', 'logout', 'create', 'update', 'delete', 'view', 'print', 'export'];
+        $modules = ['Products', 'Customers', 'Orders', 'Inventory', 'Users', 'Settings', 'POS', 'Categories', 'Suppliers'];
 
-        if ($users->isEmpty()) {
-            $this->command->warn('No users found. Creating a sample user first.');
-            $user = User::create([
-                'first_name' => 'Admin',
-                'last_name' => 'User',
-                'email' => 'admin@pharmacy.com',
-                'password' => bcrypt('password'),
-                'role' => 'admin',
-            ]);
-            $users = collect([$user]);
-        }
-
-        $activities = [
-            // Sales Activities
-            ['action' => 'Created Invoice #INV-2025-001', 'category' => 'sales', 'description' => 'Sold: Paracetamol 500mg x10, Vitamin C x5'],
-            ['action' => 'Created Invoice #INV-2025-002', 'category' => 'sales', 'description' => 'Sold: Amoxicillin x2, Ibuprofen x3'],
-            ['action' => 'Void Invoice #INV-2024-998', 'category' => 'sales', 'description' => 'Customer requested refund'],
-            ['action' => 'Payment Received', 'category' => 'sales', 'description' => 'Received 2,500 baht cash payment for Invoice #INV-2025-001'],
-
-            // Inventory Activities
-            ['action' => 'Stock Adjustment', 'category' => 'inventory', 'description' => "Updated Tylenol 500mg qty: 50 -> 45 (Damaged)"],
-            ['action' => 'Stock Received', 'category' => 'inventory', 'description' => 'Received 100 units of Paracetamol from Supplier ABC'],
-            ['action' => 'Low Stock Alert', 'category' => 'inventory', 'description' => "Aspirin 100mg stock is below minimum threshold (5 remaining)", 'status' => 'warning'],
-            ['action' => 'Stock Transfer', 'category' => 'inventory', 'description' => 'Transferred 20 units of Vitamin B to Branch 2'],
-            ['action' => 'Expiry Alert', 'category' => 'inventory', 'description' => '15 products expiring within 30 days', 'status' => 'warning'],
-
-            // User Activities
-            ['action' => 'New Patient Registered', 'category' => 'user', 'description' => "Added Mrs. Malee Jaiyen to system"],
-            ['action' => 'Patient Updated', 'category' => 'user', 'description' => "Updated allergy info for Mr. Somchai"],
-            ['action' => 'New Employee Added', 'category' => 'user', 'description' => "Added Wipawee S. as Pharmacist Assistant"],
-            ['action' => 'Employee Role Changed', 'category' => 'user', 'description' => "Changed Napat K. role from Staff to Pharmacist"],
-
-            // System Activities
-            ['action' => 'Daily Backup Completed', 'category' => 'system', 'description' => 'Database backup file generated (24MB)'],
-            ['action' => 'System Update', 'category' => 'system', 'description' => 'Updated to version 2.5.1'],
-            ['action' => 'Report Generated', 'category' => 'system', 'description' => 'Monthly Sales Report - November 2024 generated'],
-            ['action' => 'Email Sent', 'category' => 'system', 'description' => 'Sent expiry notification to suppliers'],
-
-            // Security Activities
-            ['action' => 'Login Successful', 'category' => 'security', 'description' => 'User logged in from 192.168.1.100'],
-            ['action' => 'Failed Login Attempt', 'category' => 'security', 'description' => 'Incorrect password entered 3 times', 'status' => 'error'],
-            ['action' => 'Password Changed', 'category' => 'security', 'description' => 'User changed their password'],
-            ['action' => 'Logout', 'category' => 'security', 'description' => 'User logged out'],
-            ['action' => 'Session Expired', 'category' => 'security', 'description' => 'User session timed out after 30 minutes', 'status' => 'warning'],
+        $descriptions = [
+            'login' => ['เข้าสู่ระบบสำเร็จ', 'Login successful', 'เข้าสู่ระบบจากอุปกรณ์ใหม่'],
+            'logout' => ['ออกจากระบบ', 'Logout successful', 'Session timeout'],
+            'create' => ['เพิ่มสินค้าใหม่: พาราเซตามอล 500mg', 'สร้างใบสั่งซื้อ PO-2026-001', 'เพิ่มลูกค้าใหม่: คุณสมชาย', 'เพิ่มหมวดหมู่: ยาแก้ปวด'],
+            'update' => ['แก้ไขราคาสินค้า: พาราเซตามอล', 'อัปเดตข้อมูลลูกค้า', 'แก้ไขสถานะใบสั่งซื้อ', 'เปลี่ยนรหัสผ่านผู้ใช้'],
+            'delete' => ['ลบสินค้า: ยาหมดอายุ', 'ลบข้อมูลลูกค้า', 'ยกเลิกใบสั่งซื้อ'],
+            'view' => ['ดูรายละเอียดสินค้า', 'ดูประวัติการสั่งซื้อ', 'ดูรายงานยอดขาย'],
+            'print' => ['พิมพ์ใบเสร็จ #ORD-2026-001', 'พิมพ์รายงานสต็อก', 'พิมพ์ใบสั่งซื้อ'],
+            'export' => ['ส่งออกรายงาน Excel', 'Export ข้อมูลสินค้า', 'ส่งออกรายชื่อลูกค้า'],
         ];
 
-        // Create logs over the past week
-        $now = Carbon::now();
+        $ipAddresses = ['192.168.1.100', '192.168.1.101', '10.0.0.50', '127.0.0.1', '192.168.0.15'];
+        $userAgents = [
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15',
+            'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15',
+        ];
 
-        foreach ($activities as $index => $activity) {
-            // Spread activities across the past 7 days
-            $daysAgo = $index % 7;
-            $hoursAgo = rand(0, 23);
-            $minutesAgo = rand(0, 59);
+        // Create logs for the past 30 days
+        for ($i = 0; $i < 150; $i++) {
+            $user = $users->random();
+            $action = $actions[array_rand($actions)];
+            $module = $modules[array_rand($modules)];
+            $description = $descriptions[$action][array_rand($descriptions[$action])] ?? null;
 
-            $createdAt = $now->copy()->subDays($daysAgo)->subHours($hoursAgo)->subMinutes($minutesAgo);
+            $loggedAt = now()->subDays(rand(0, 30))->subHours(rand(0, 23))->subMinutes(rand(0, 59));
+
+            $oldValues = null;
+            $newValues = null;
+
+            if ($action === 'update') {
+                $oldValues = ['price' => rand(10, 100), 'stock' => rand(50, 200)];
+                $newValues = ['price' => rand(10, 100), 'stock' => rand(50, 200)];
+            }
 
             ActivityLog::create([
-                'user_id' => $users->random()->id,
-                'action' => $activity['action'],
-                'category' => $activity['category'],
-                'description' => $activity['description'],
-                'status' => $activity['status'] ?? 'success',
-                'ip_address' => '192.168.1.' . rand(1, 254),
-                'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-                'created_at' => $createdAt,
-                'updated_at' => $createdAt,
+                'logged_at' => $loggedAt,
+                'ip_address' => $ipAddresses[array_rand($ipAddresses)],
+                'user_agent' => $userAgents[array_rand($userAgents)],
+                'user_id' => $user->id,
+                'user_name' => $user->name,
+                'action' => $action,
+                'module' => $module,
+                'description' => $description,
+                'old_values' => $oldValues,
+                'new_values' => $newValues,
             ]);
         }
 
-        $this->command->info('Created ' . count($activities) . ' activity log entries.');
+        $this->command->info('Created 150 activity logs!');
     }
 }

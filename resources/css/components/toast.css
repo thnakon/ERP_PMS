@@ -1,0 +1,55 @@
+/**
+ * Oboun ERP - Toast Styles
+ */
+
+/* ============================================
+   Toast Container
+   ============================================ */
+.toast-container {
+    @apply fixed top-6 left-0 w-full z-[100];
+    @apply pointer-events-none flex flex-col items-center gap-2;
+}
+
+/* ============================================
+   Toast Item
+   ============================================ */
+.toast {
+    @apply flex items-center gap-3 px-6 py-3.5 rounded-full;
+    @apply shadow-floating border border-gray-100/50 bg-white;
+    @apply pointer-events-auto backdrop-blur-xl;
+    @apply animate-slide-down transform transition-all duration-300;
+}
+
+.toast-icon {
+    @apply text-xl;
+}
+
+.toast-message {
+    @apply font-medium text-sm text-gray-900;
+}
+
+/* ============================================
+   Toast Types
+   ============================================ */
+.toast-success .toast-icon {
+    @apply text-ios-green;
+}
+
+.toast-error .toast-icon {
+    @apply text-ios-red;
+}
+
+.toast-warning .toast-icon {
+    @apply text-yellow-500;
+}
+
+.toast-info .toast-icon {
+    @apply text-ios-blue;
+}
+
+/* ============================================
+   Toast Animations
+   ============================================ */
+.toast-exit {
+    @apply animate-fade-out;
+}

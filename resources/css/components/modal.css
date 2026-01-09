@@ -1,0 +1,113 @@
+/**
+ * Oboun ERP - Modal Styles
+ */
+
+/* ============================================
+   Modal Backdrop
+   ============================================ */
+.modal-backdrop {
+    @apply fixed inset-0 z-[70] bg-gray-900/30 backdrop-blur-sm;
+    @apply flex items-center justify-center;
+    @apply transition-opacity duration-300;
+}
+
+.modal-backdrop-hidden {
+    @apply hidden opacity-0;
+}
+
+.modal-backdrop-visible {
+    @apply opacity-100;
+}
+
+/* ============================================
+   Modal Panel
+   ============================================ */
+.modal-panel {
+    @apply bg-white w-full max-w-md mx-4 rounded-3xl shadow-2xl p-8;
+    @apply transform transition-all duration-300;
+}
+
+.modal-panel-hidden {
+    @apply scale-95 opacity-0;
+}
+
+.modal-panel-visible {
+    @apply scale-100 opacity-100;
+}
+
+.modal-panel-lg {
+    @apply max-w-lg;
+}
+
+.modal-panel-xl {
+    @apply max-w-xl;
+}
+
+/* ============================================
+   Modal Content
+   ============================================ */
+.modal-icon {
+    @apply w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4;
+}
+
+.modal-icon-blue {
+    @apply bg-ios-blue/10 text-ios-blue;
+}
+
+.modal-icon-red {
+    @apply bg-red-100 text-red-500;
+}
+
+.modal-icon-green {
+    @apply bg-green-100 text-green-500;
+}
+
+.modal-icon-orange {
+    @apply bg-orange-100 text-orange-500;
+}
+
+.modal-title {
+    @apply text-2xl font-bold text-gray-900 mb-2;
+}
+
+.modal-desc {
+    @apply text-gray-500 mb-8 leading-relaxed;
+}
+
+/* ============================================
+   Modal Actions
+   ============================================ */
+.modal-actions {
+    @apply grid grid-cols-2 gap-3;
+}
+
+.modal-btn-cancel {
+    @apply w-full py-3 rounded-xl font-semibold;
+    @apply text-gray-600 bg-gray-100 hover:bg-gray-200 transition active-scale;
+}
+
+.modal-btn-confirm {
+    @apply w-full py-3 rounded-xl font-semibold;
+    @apply text-white bg-ios-blue hover:brightness-110 transition active-scale;
+}
+
+.modal-btn-danger {
+    @apply w-full py-3 rounded-xl font-semibold;
+    @apply text-white bg-ios-red hover:brightness-110 transition active-scale shadow-lg shadow-red-500/20;
+}
+
+/* ============================================
+   Delete Modal Specific
+   ============================================ */
+.delete-modal-icon {
+    @apply w-14 h-14 bg-red-100 text-red-500 rounded-full;
+    @apply flex items-center justify-center mx-auto mb-4;
+}
+
+.delete-modal-title {
+    @apply text-xl font-bold text-gray-900 mb-2;
+}
+
+.delete-modal-desc {
+    @apply text-gray-500 mb-6 text-sm leading-relaxed;
+}

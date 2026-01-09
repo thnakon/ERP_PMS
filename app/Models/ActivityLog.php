@@ -2,127 +2,178 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 class ActivityLog extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'user_id',
-        'action',
-        'category',
-        'description',
+        'logged_at',
         'ip_address',
         'user_agent',
-        'status',
-        'subject_type',
-        'subject_id',
+        'user_id',
+        'user_name',
+        'action',
+        'module',
+        'model_type',
+        'model_id',
+        'description',
+        'old_values',
+        'new_values',
+        'metadata',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'logged_at' => 'datetime',
+            'old_values' => 'array',
+            'new_values' => 'array',
+            'metadata' => 'array',
+        ];
+    }
+
     /**
-     * The user who performed the action
+     * Get the user who performed the action
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
     /**
-     * Get the related subject model (polymorphic)
+     * Get the related model
      */
     public function subject()
     {
-        if ($this->subject_type && $this->subject_id) {
-            return $this->morphTo('subject', 'subject_type', 'subject_id');
+        if ($this->model_type && $this->model_id) {
+            return $this->model_type::find($this->model_id);
         }
         return null;
     }
 
     /**
-     * Scope to filter by category
+     * Get action icon
      */
-    public function scopeCategory($query, $category)
+    public function getActionIconAttribute(): string
     {
-        if ($category && $category !== 'all') {
-            return $query->where('category', $category);
-        }
-        return $query;
-    }
-
-    /**
-     * Scope to filter by status
-     */
-    public function scopeStatus($query, $status)
-    {
-        if ($status) {
-            return $query->where('status', $status);
-        }
-        return $query;
-    }
-
-    /**
-     * Scope for search
-     */
-    public function scopeSearch($query, $search)
-    {
-        if ($search) {
-            return $query->where(function ($q) use ($search) {
-                $q->where('action', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%")
-                    ->orWhereHas('user', function ($uq) use ($search) {
-                        $uq->where('first_name', 'like', "%{$search}%")
-                            ->orWhere('last_name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
-                    });
-            });
-        }
-        return $query;
-    }
-
-    /**
-     * Helper to log an activity
-     */
-    public static function log($action, $category = 'system', $description = null, $subjectType = null, $subjectId = null, $status = 'success')
-    {
-        return self::create([
-            'user_id' => auth()->id(),
-            'action' => $action,
-            'category' => $category,
-            'description' => $description,
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-            'status' => $status,
-            'subject_type' => $subjectType,
-            'subject_id' => $subjectId,
-        ]);
-    }
-
-    /**
-     * Get category badge color
-     */
-    public function getCategoryBadgeAttribute()
-    {
-        return match ($this->category) {
-            'sales' => ['bg' => '#E5F1FF', 'color' => '#007AFF', 'icon' => 'fa-basket-shopping'],
-            'inventory' => ['bg' => '#FFF7E6', 'color' => '#FF9500', 'icon' => 'fa-boxes-stacked'],
-            'security' => ['bg' => '#FFF5F5', 'color' => '#FF3B30', 'icon' => 'fa-shield-halved'],
-            'user' => ['bg' => '#E8F8F0', 'color' => '#34C759', 'icon' => 'fa-user'],
-            default => ['bg' => '#F2F2F7', 'color' => '#86868B', 'icon' => 'fa-gears'],
+        return match ($this->action) {
+            'login' => 'ph-fill ph-sign-in',
+            'logout' => 'ph-fill ph-sign-out',
+            'create' => 'ph-fill ph-plus-circle',
+            'update' => 'ph-fill ph-pencil-simple',
+            'delete' => 'ph-fill ph-trash',
+            'print' => 'ph-fill ph-printer',
+            'export' => 'ph-fill ph-file-arrow-down',
+            'view' => 'ph-fill ph-eye',
+            default => 'ph-fill ph-activity',
         };
     }
 
     /**
-     * Get status icon
+     * Get action color class
      */
-    public function getStatusIconAttribute()
+    public function getActionColorAttribute(): string
     {
-        return match ($this->status) {
-            'success' => ['icon' => 'fa-circle-check', 'color' => '#34C759'],
-            'error' => ['icon' => 'fa-circle-exclamation', 'color' => '#FF3B30'],
-            'warning' => ['icon' => 'fa-circle-exclamation', 'color' => '#FF9500'],
-            default => ['icon' => 'fa-circle-info', 'color' => '#007AFF'],
+        return match ($this->action) {
+            'login' => 'text-green-500 bg-green-100',
+            'logout' => 'text-gray-500 bg-gray-100',
+            'create' => 'text-blue-500 bg-blue-100',
+            'update' => 'text-orange-500 bg-orange-100',
+            'delete' => 'text-red-500 bg-red-100',
+            'print' => 'text-purple-500 bg-purple-100',
+            'export' => 'text-teal-500 bg-teal-100',
+            'view' => 'text-indigo-500 bg-indigo-100',
+            default => 'text-gray-500 bg-gray-100',
+        };
+    }
+
+    /**
+     * Get module icon
+     */
+    public function getModuleIconAttribute(): string
+    {
+        return match ($this->module) {
+            'Inventory', 'Products' => 'ph-fill ph-package',
+            'POS', 'Sales' => 'ph-fill ph-storefront',
+            'Settings' => 'ph-fill ph-gear',
+            'Users' => 'ph-fill ph-users',
+            'Customers' => 'ph-fill ph-users-three',
+            'Suppliers' => 'ph-fill ph-truck',
+            'Categories' => 'ph-fill ph-squares-four',
+            'Orders' => 'ph-fill ph-receipt',
+            'Auth' => 'ph-fill ph-shield-check',
+            default => 'ph-fill ph-folder',
+        };
+    }
+
+    /**
+     * Static helper to log activity
+     */
+    public static function log(
+        string $action,
+        string $module,
+        ?string $description = null,
+        ?Model $model = null,
+        ?array $oldValues = null,
+        ?array $newValues = null,
+        ?array $metadata = null
+    ): self {
+        $user = Auth::user();
+
+        return self::create([
+            'logged_at' => now(),
+            'ip_address' => Request::ip(),
+            'user_agent' => Request::userAgent(),
+            'user_id' => $user?->id,
+            'user_name' => $user?->name,
+            'action' => $action,
+            'module' => $module,
+            'model_type' => $model ? get_class($model) : null,
+            'model_id' => $model?->id,
+            'description' => $description,
+            'old_values' => $oldValues,
+            'new_values' => $newValues,
+            'metadata' => $metadata,
+        ]);
+    }
+
+    /**
+     * Get formatted changes for display
+     */
+    public function getFormattedChangesAttribute(): array
+    {
+        $changes = [];
+
+        if ($this->old_values && $this->new_values) {
+            foreach ($this->new_values as $key => $newValue) {
+                $oldValue = $this->old_values[$key] ?? null;
+                if ($oldValue !== $newValue) {
+                    $changes[] = [
+                        'field' => $key,
+                        'old' => $oldValue,
+                        'new' => $newValue,
+                    ];
+                }
+            }
+        }
+
+        return $changes;
+    }
+
+    /**
+     * Scope for filtering by date range
+     */
+    public function scopeInDateRange($query, string $range)
+    {
+        return match ($range) {
+            '7days' => $query->where('logged_at', '>=', now()->subDays(7)),
+            '30days', 'month' => $query->where('logged_at', '>=', now()->subDays(30)),
+            'today' => $query->whereDate('logged_at', today()),
+            'week' => $query->where('logged_at', '>=', now()->startOfWeek()),
+            default => $query,
         };
     }
 }

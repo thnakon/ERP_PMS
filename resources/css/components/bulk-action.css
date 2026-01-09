@@ -1,0 +1,45 @@
+/**
+ * Oboun ERP - Bulk Action Bar Styles
+ */
+
+/* ============================================
+   Bulk Action Bar
+   ============================================ */
+.bulk-action-bar {
+    @apply fixed bottom-10 left-1/2 -translate-x-1/2 z-[90];
+}
+
+.bulk-action-bar-hidden {
+    @apply hidden;
+}
+
+.bulk-action-bar-inner {
+    @apply bg-gray-900/90 backdrop-blur-xl text-white;
+    @apply px-6 py-3 rounded-full shadow-floating;
+    @apply flex items-center gap-6 border border-white/10;
+}
+
+.bulk-action-count {
+    @apply text-sm font-medium whitespace-nowrap;
+}
+
+.bulk-action-divider {
+    @apply h-4 w-px bg-white/20;
+}
+
+.bulk-action-buttons {
+    @apply flex items-center gap-4;
+}
+
+.bulk-action-btn {
+    @apply text-gray-300 hover:text-white transition-colors active-scale;
+}
+
+.bulk-action-btn-icon {
+    @apply text-lg;
+}
+
+.bulk-action-btn-delete {
+    @apply text-red-400 hover:text-red-300 transition-colors font-medium text-sm;
+    @apply flex items-center gap-1 active-scale;
+}

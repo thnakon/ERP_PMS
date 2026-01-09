@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'sales_operations' => 'การขาย',
+    'dashboard' => 'แดชบอร์ด',
+    'pos' => 'ขายหน้าร้าน',
+    'orders' => 'รายการขาย',
+    'stock_adjustments' => 'ปรับปรุงสต็อก',
+    'purchasing' => 'การจัดซื้อ',
+    'suppliers' => 'ซัพพลายเออร์',
+    'purchase_orders' => 'ใบสั่งซื้อ',
+    'goods_received' => 'รับสินค้า',
+    'people_logs' => 'บุคคลและบันทึก',
+    'patients_customers' => 'คนไข้ | ลูกค้า',
+    'staff_users' => 'พนักงาน | ผู้ใช้',
+    'recent' => 'กิจกรรมล่าสุด',
+    'reports_analytics' => 'รายงานและวิเคราะห์',
+    'sales_report' => 'รายงานการขาย',
+    'inventory_report' => 'รายงานคลังสินค้า',
+    'finance_report' => 'รายงานการเงิน',
+    'settings' => 'ตั้งค่า',
+    'general' => 'ตั้งค่าทั่วไป',
+    'hardware_printing' => 'พิมพ์และฮาร์ดแวร์',
+    'database_backup' => 'ฐานข้อมูลและสำรอง',
+    'profile' => 'โปรไฟล์ส่วนตัว',
+    'support' => 'ช่วยเหลือและสนับสนุน',
+];

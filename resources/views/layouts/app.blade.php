@@ -6,109 +6,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Oboun ERP') }} - @yield('title', 'Dashboard')</title>
 
-    <!-- Fonts -->
-
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&display=swap"rel="stylesheet">
-
-    {{-- Icons --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-    <!-- Stylesheets  + js -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/main.css', 'resources/js/main.js', 'resources/css/app.css', 'resources/js/app.js', 'resources/css/sidebar.css', 'resources/js/dashboard.js', 'resources/js/sidebar.js', 'resources/css/header.css', 'resources/js/header.js', 'resources/css/settings.css', 'resources/js/setting.js', 'resources/css/modal.css', 'resources/js/modal.js', 'resources/css/dashboard.css', 'resources/css/sale-report.css', 'resources/js/sale-report.js', 'resources/css/footer.css', 'resources/js/footer.js', 'resources/css/people.css', 'resources/js/people.js', 'resources/css/purchasing.css', 'resources/js/purchasing.js', 'resources/css/orders-sales.css', 'resources/js/orders-sales.js', 'resources/css/inventorys.css', 'resources/js/inventorys.js', 'resources/css/pos.css', 'resources/js/pos.js'])
+    <!-- Favicon -->
+    @php
+        $favicon = \App\Models\Setting::get('store_favicon');
+    @endphp
+    @if ($favicon)
+        <link rel="icon" type="image/png" href="{{ Storage::url($favicon) }}">
     @else
-        {{-- Fallback for when Vite build is missing --}}
-        <link rel="stylesheet" href="{{ asset('resources/css/main.css') }}">
-        <link rel="stylesheet" href="{{ asset('resources/css/app.css') }}">
-        <link rel="stylesheet" href="{{ asset('resources/css/sidebar.css') }}">
-        <link rel="stylesheet" href="{{ asset('resources/css/header.css') }}">
-        <link rel="stylesheet" href="{{ asset('resources/css/purchasing.css') }}">
-        <link rel="stylesheet" href="{{ asset('resources/css/modal.css') }}">
-        {{-- Add other necessary CSS files here if needed --}}
+        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     @endif
 
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    @vite(['resources/css/app.css'])
+    @stack('styles')
 </head>
 
-<body class="apple-dashboard">
-    @include('layouts.page-loader')
-    @include('layouts.sidebar')
-    @include('layouts.header')
-    @include('layouts.madal-support')
+<body class="bg-ios-bg font-sans" style="font-family: 'Inter', sans-serif;">
 
-    <!-- Page Content -->
-    <main class="main-content-wrapper">
-        {{ $slot }}
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
 
-
-        @include('layouts.footer')
-    </main>
-
-
-
-
-
-
-    {{-- Confirm Logout Modal --}}
-    <div id="logoutModal" class="apple-modal-overlay">
-        <div class="apple-modal-content">
-            <div class="apple-modal-header">
-                <h3>{{ __('Confirm Logout') }}</h3>
-            </div>
-            <div class="apple-modal-body">
-                <p>{{ __('Are you sure you want to log out?') }}</p>
-            </div>
-            <div class="apple-modal-footer">
-                <button type="button" class="apple-button cancel-button" id="cancelLogout">
-                    {{ __('Cancel') }}
+    <!-- Bulk Action Floating Bar -->
+    <div id="bulk-action-bar" class="bulk-action-bar bulk-action-bar-hidden">
+        <div class="bulk-action-bar-inner">
+            <span class="bulk-action-count">
+                <span id="selected-count">0</span> {{ __('general.selected') }}
+            </span>
+            <div class="bulk-action-divider"></div>
+            <div class="bulk-action-buttons">
+                <button onclick="ProductsPage.openBulkCategoryModal()" class="bulk-action-btn"
+                    title="{{ __('change_category') }}">
+                    <i class="ph ph-archive bulk-action-btn-icon"></i>
                 </button>
-                <button type="button" class="apple-button confirm-button" id="confirmLogout">
-                    {{ __('Log Out') }}
+                <button onclick="deleteSelected()" class="bulk-action-btn-delete">
+                    <i class="ph ph-trash bulk-action-btn-icon"></i> {{ __('general.delete') }}
                 </button>
             </div>
         </div>
     </div>
 
+    <div class="main-wrapper">
+        <!-- Sidebar Navigation -->
+        @include('components.sidebar')
 
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Mobile Header -->
+            @include('components.header-mobile')
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script>
-        // ตรวจสอบว่า Laravel ส่งข้อความ 'success' มาหรือไม่ และต้องไม่มีการระงับ (suppress)
-        @if (session('success') && !session('suppress_global_toast'))
-            Toastify({
-                // [!!! 1. แก้ไข text !!!]
-                // เราจะใส่โค้ด SVG และห่อด้วย Wrapper ที่เราสร้างใน CSS
-                text: `
-                <div class='toastify-content-wrapper'>
-                    <svg class="toast-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
-                        <path class="checkmark-check" fill="none" d="M14 27l10 10L38 23"/>
-                    </svg>
-                    <span>{{ session('success') }}</span>
+            <!-- Desktop Header -->
+            @include('components.header')
+
+            <!-- Page Content -->
+            <div class="content-area">
+                <div class="max-w-[1800px] px-2 lg:px-4">
+                    <header class="content-header mb-8 flex items-center justify-between">
+                        <h1 class="content-title text-3xl font-bold text-gray-900">
+                            @yield('page-title', 'Dashboard')
+                        </h1>
+                        <div class="header-actions">
+                            @yield('header-actions')
+                        </div>
+                    </header>
+                    @yield('content')
                 </div>
-            `,
+            </div>
+        </main>
+    </div>
 
-                // [!!! 2. เพิ่มอันนี้ !!!]
-                escapeMarkup: false, // สำคัญ: เพื่อให้แสดง HTML/SVG ได้
+    <!-- Drawer Overlay -->
+    @include('components.drawer')
 
-                duration: 3000,
-                gravity: "bottom",
-                position: "center",
-                stopOnFocus: true,
-                style: {
-                    // ...
-                }
-            }).showToast();
-        @endif
-    </script>
+    <!-- Modal Overlays -->
+    @include('components.modal')
+    @include('components.delete-modal')
 
+    <!-- Apple Style Loading Animation -->
+    <div id="pill-loading" class="pill-loading-overlay">
+        <div class="apple-spinner">
+            <div class="apple-spinner-blade"></div>
+            <div class="apple-spinner-blade"></div>
+            <div class="apple-spinner-blade"></div>
+            <div class="apple-spinner-blade"></div>
+            <div class="apple-spinner-blade"></div>
+            <div class="apple-spinner-blade"></div>
+            <div class="apple-spinner-blade"></div>
+            <div class="apple-spinner-blade"></div>
+            <div class="apple-spinner-blade"></div>
+            <div class="apple-spinner-blade"></div>
+            <div class="apple-spinner-blade"></div>
+            <div class="apple-spinner-blade"></div>
+        </div>
+        <div class="loading-text">{{ __('loading') }}</div>
+    </div>
+
+    <!-- Scripts -->
+    @vite(['resources/js/app.js'])
     @stack('scripts')
+
+    {{-- Flash Messages as Toasts --}}
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof showToast === 'function') {
+                    showToast(@json(session('success')), 'success');
+                }
+            });
+        </script>
+    @endif
+    @if (session('warning'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof showToast === 'function') {
+                    showToast(@json(session('warning')), 'warning');
+                }
+            });
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof showToast === 'function') {
+                    showToast(@json(session('error')), 'error');
+                }
+            });
+        </script>
+    @endif
 </body>
 
 </html>

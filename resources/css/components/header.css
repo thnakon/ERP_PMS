@@ -1,0 +1,138 @@
+/**
+ * Oboun ERP - Header Styles
+ */
+
+/* ============================================
+   Header Container
+   ============================================ */
+.header {
+    @apply sticky top-0 z-30 glass;
+    @apply px-8 py-4 hidden md:flex items-center justify-between;
+    @apply border-b border-gray-200/50;
+}
+
+.header-mobile {
+    @apply sticky top-0 z-30 glass;
+    @apply px-6 py-4 flex md:hidden items-center justify-between;
+}
+
+.header-title {
+    @apply text-xl font-bold text-gray-900 tracking-tight flex items-center gap-2;
+}
+
+/* ============================================
+   Header Actions
+   ============================================ */
+.header-actions {
+    @apply flex items-center gap-3;
+}
+
+.header-divider {
+    @apply h-6 w-px bg-gray-200 mx-1;
+}
+
+/* ============================================
+   Language Toggle
+   ============================================ */
+.lang-toggle {
+    @apply flex bg-gray-100 rounded-lg p-1 relative;
+}
+
+.lang-btn {
+    @apply px-3 py-1 text-xs font-medium rounded-md transition-all z-10;
+}
+
+.lang-btn-active {
+    @apply bg-white shadow-sm text-gray-900 font-semibold;
+}
+
+.lang-btn-inactive {
+    @apply text-gray-500 hover:text-gray-900;
+}
+
+/* ============================================
+   Notification Bell
+   ============================================ */
+.notification-btn {
+    @apply w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200;
+    @apply flex items-center justify-center transition-colors active-scale relative;
+}
+
+.notification-icon {
+    @apply text-xl text-gray-500 group-hover:text-gray-900 transition-colors;
+}
+
+.notification-badge {
+    @apply absolute -top-1 -right-1 flex h-5 min-w-[1.25rem];
+    @apply items-center justify-center px-1.5 rounded-full;
+    @apply bg-ios-red text-white text-[10px] font-bold border-2 border-white shadow-sm;
+}
+
+/* ============================================
+   User Menu
+   ============================================ */
+.user-btn {
+    @apply w-10 h-10 rounded-full bg-gray-100;
+    @apply hover:ring-4 hover:ring-gray-100 transition-all active-scale;
+    @apply overflow-hidden border border-gray-200 relative;
+}
+
+.user-btn-avatar {
+    @apply w-full h-full object-cover;
+}
+
+.user-btn-dot {
+    @apply absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white;
+}
+
+/* ============================================
+   User Dropdown
+   ============================================ */
+.user-dropdown {
+    @apply absolute right-0 mt-3 w-72 bg-white/80 backdrop-blur-2xl;
+    @apply rounded-[1.5rem] shadow-floating border border-white/40;
+    @apply origin-top-right transform transition-all duration-200 z-50 p-2;
+}
+
+.user-dropdown-hidden {
+    @apply hidden opacity-0 scale-95;
+}
+
+.user-dropdown-visible {
+    @apply opacity-100 scale-100;
+}
+
+.user-dropdown-info {
+    @apply p-3 mb-2 bg-white/50 rounded-2xl border border-white/50;
+}
+
+.user-dropdown-avatar {
+    @apply w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600;
+    @apply text-white flex items-center justify-center text-lg font-bold shadow-sm;
+}
+
+.user-dropdown-name {
+    @apply font-bold text-gray-900 text-sm;
+}
+
+.user-dropdown-email {
+    @apply text-xs text-gray-500 font-medium;
+}
+
+.user-dropdown-link {
+    @apply flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700;
+    @apply rounded-xl hover:bg-ios-blue hover:text-white transition-all;
+}
+
+.user-dropdown-link-icon {
+    @apply text-lg text-gray-500 group-hover:text-white transition-colors;
+}
+
+.user-dropdown-divider {
+    @apply h-px bg-gray-200/50 my-1 mx-2;
+}
+
+.user-dropdown-signout {
+    @apply w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium;
+    @apply text-red-500 rounded-xl hover:bg-red-50 transition-colors text-left;
+}

@@ -34,7 +34,18 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-     'gemini' => [
+
+    'line_notify' => [
+        'token' => env('LINE_NOTIFY_TOKEN'),
+    ],
+
+    'line_messaging' => [
+        'channel_access_token' => env('LINE_CHANNEL_ACCESS_TOKEN'),
+        'channel_secret' => env('LINE_CHANNEL_SECRET'),
+        'user_id' => env('LINE_USER_ID'),
+    ],
+
+    'gemini' => [
         'api_key' => env('GEMINI_API_KEY'),
     ],
 

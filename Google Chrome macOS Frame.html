@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Chrome macOS Frame (Toggle Mode)</title>
+    <style>
+        /* ตั้งค่าพื้นฐาน */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            transition: background-color 0.3s;
+        }
+
+        /* --- สไตล์สำหรับปุ่ม Toggle Switch --- */
+        .toggle-container {
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(24px);
+            -ms-transform: translateX(24px);
+            transform: translateX(24px);
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        /* ตัวคอนเทนเนอร์หลัก (กรอบหน้าต่าง) - Default Light Mode */
+        .browser-window {
+            width: 800px;
+            max-width: 90%;
+            background-color: #fff;
+            border-radius: 10px;
+            /* เพิ่ม Outline (Border) และปรับเงา */
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* ส่วนหัวของหน้าต่าง (Title bar) */
+        .browser-header {
+            background-color: #dfe1e5; /* สีเทา Light */
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            height: 37px;
+            transition: background-color 0.3s;
+            border-bottom: 1px solid transparent;
+        }
+
+        /* ปุ่ม macOS (แดง เหลือง เขียว) */
+        .window-controls {
+            display: flex;
+            gap: 8px;
+            padding-left: 5px;
+        }
+
+        .control-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background-color: #ff5f57; border: 1px solid #e0443e; }
+        .dot-yellow { background-color: #febc2e; border: 1px solid #dba525; }
+        .dot-green { background-color: #28c840; border: 1px solid #1aab29; }
+
+        /* Mascot มุมขวาบน */
+        .header-mascot {
+            height: 30px;
+            margin-left: auto;
+            margin-right: 20px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .header-mascot:hover {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        /* พื้นที่แสดงรูปภาพ (Content) */
+        .browser-content {
+            width: 100%;
+            height: 430px;
+            background-color: #202124;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .browser-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- Dark Mode Styles (Activated by JS) --- */
+        body.dark-mode-active {
+            background-color: #202124;
+        }
+
+        body.dark-mode-active .toggle-container {
+            background-color: #35363a;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        body.dark-mode-active .toggle-label {
+            color: #e8eaed;
+        }
+
+        .browser-window.dark-theme {
+            background-color: #35363a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        .browser-window.dark-theme .browser-header {
+            background-color: #202124;
+            border-bottom: 1px solid #000;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- ปุ่ม Toggle -->
+    <div class="toggle-container">
+        <label class="switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round"></span>
+        </label>
+        <span class="toggle-label" id="toggle-text">Dark Mode</span>
+    </div>
+
+    <!-- กรอบ Browser -->
+    <div class="browser-window" id="browser-frame">
+        <div class="browser-header">
+            <div class="window-controls">
+                <div class="control-dot dot-red"></div>
+                <div class="control-dot dot-yellow"></div>
+                <div class="control-dot dot-green"></div>
+            </div>
+            <!-- Mascot -->
+            <img src="image_9a5727.png" alt="Mascot" class="header-mascot">
+        </div>
+        <div class="browser-content">
+            <img src="/Users/admin/Desktop/obounerp/Dashboard.png" alt="Uploaded Photo">
+        </div>
+    </div>
+
+    <script>
+        const toggleSwitch = document.getElementById('theme-toggle');
+        const browserFrame = document.getElementById('browser-frame');
+        const body = document.body;
+        const toggleText = document.getElementById('toggle-text');
+
+        toggleSwitch.addEventListener('change', function() {
+            if (this.checked) {
+                // เปิด Dark Mode
+                browserFrame.classList.add('dark-theme');
+                body.classList.add('dark-mode-active');
+                toggleText.textContent = "Light Mode";
+            } else {
+                // ปิด Dark Mode (กลับเป็น Light)
+                browserFrame.classList.remove('dark-theme');
+                body.classList.remove('dark-mode-active');
+                toggleText.textContent = "Dark Mode";
+            }
+        });
+    </script>
+
+</body>
+</html>

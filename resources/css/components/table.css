@@ -1,0 +1,165 @@
+/**
+ * Oboun ERP - Table Styles
+ */
+
+/* ============================================
+   Table Container
+   ============================================ */
+.table-container {
+    @apply bg-white rounded-[2rem] shadow-soft border border-ios-border overflow-hidden;
+}
+
+.table-header {
+    @apply p-6 border-b border-gray-100 flex justify-between items-center;
+}
+
+.table-title {
+    @apply text-lg font-bold text-gray-900;
+}
+
+.table-actions {
+    @apply flex gap-2;
+}
+
+.table-action-btn {
+    @apply w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200;
+    @apply flex items-center justify-center transition-colors;
+}
+
+.table-action-btn-icon {
+    @apply text-gray-600;
+}
+
+/* ============================================
+   Table
+   ============================================ */
+.table-ios {
+    @apply w-full text-left border-collapse;
+}
+
+.table-ios thead tr {
+    @apply bg-gray-50/50 border-b border-gray-100;
+    @apply text-xs uppercase tracking-wide text-gray-500;
+}
+
+.table-ios th {
+    @apply px-6 py-4 font-semibold;
+}
+
+.table-ios th:first-child {
+    @apply pl-6 w-12;
+}
+
+.table-ios th:last-child {
+    @apply pr-6 text-right;
+}
+
+/* ============================================
+   Table Body
+   ============================================ */
+.table-ios tbody {
+    @apply divide-y divide-gray-100 text-sm;
+}
+
+.table-ios tbody tr {
+    @apply hover:bg-gray-50 transition-colors cursor-default;
+}
+
+.table-ios tbody tr.selected {
+    @apply bg-blue-50;
+}
+
+.table-ios td {
+    @apply px-6 py-4;
+}
+
+.table-ios td:first-child {
+    @apply pl-6;
+}
+
+.table-ios td:last-child {
+    @apply pr-6 text-right;
+}
+
+/* ============================================
+   Table Checkbox
+   ============================================ */
+.table-checkbox {
+    @apply accent-ios w-4 h-4 rounded border-gray-300 cursor-pointer;
+}
+
+/* ============================================
+   Table User Cell
+   ============================================ */
+.table-user-cell {
+    @apply flex items-center gap-3;
+}
+
+.table-user-avatar {
+    @apply w-8 h-8 rounded-full;
+}
+
+.table-user-name {
+    @apply font-medium text-gray-900;
+}
+
+.table-user-email {
+    @apply text-gray-400 text-xs;
+}
+
+/* ============================================
+   Table Row Actions
+   ============================================ */
+.table-row-actions {
+    @apply flex items-center justify-end gap-1;
+}
+
+.table-row-btn {
+    @apply w-8 h-8 rounded-full flex items-center justify-center transition-colors;
+}
+
+.table-row-btn-view {
+    @apply hover:bg-gray-200 text-gray-500 hover:text-ios-blue;
+}
+
+.table-row-btn-edit {
+    @apply hover:bg-gray-200 text-gray-500 hover:text-orange-500;
+}
+
+.table-row-btn-delete {
+    @apply hover:bg-red-50 text-gray-500 hover:text-red-500;
+}
+
+/* ============================================
+   Table Pagination
+   ============================================ */
+.table-pagination {
+    @apply px-6 py-4 border-t border-gray-100 bg-gray-50/50;
+    @apply flex items-center justify-between;
+}
+
+.table-pagination-info {
+    @apply text-sm text-gray-500;
+}
+
+.table-pagination-info-bold {
+    @apply font-medium text-gray-900;
+}
+
+.table-pagination-nav {
+    @apply flex items-center gap-2;
+}
+
+.table-pagination-btn {
+    @apply w-8 h-8 rounded-lg bg-white border border-gray-200;
+    @apply flex items-center justify-center text-gray-600;
+    @apply hover:bg-gray-50 hover:border-gray-300 transition-all;
+}
+
+.table-pagination-btn:disabled {
+    @apply opacity-50 cursor-not-allowed;
+}
+
+.table-pagination-btn-active {
+    @apply bg-ios-blue text-white border-ios-blue shadow-sm;
+}

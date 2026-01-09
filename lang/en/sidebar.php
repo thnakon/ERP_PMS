@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'sales_operations' => 'Sales Operations',
+    'dashboard' => 'Dashboard',
+    'pos' => 'Point of Sale',
+    'orders' => 'Orders / Sales',
+    'stock_adjustments' => 'Stock Adjustments',
+    'purchasing' => 'Purchasing',
+    'suppliers' => 'Suppliers',
+    'purchase_orders' => 'Purchase Orders',
+    'goods_received' => 'Goods Received',
+    'people_logs' => 'People & Logs',
+    'patients_customers' => 'Patients | Customers',
+    'staff_users' => 'Staff | Users',
+    'recent' => 'Recent Activity',
+    'reports_analytics' => 'Reports & Analytics',
+    'sales_report' => 'Sales Report',
+    'inventory_report' => 'Inventory Report',
+    'finance_report' => 'Finance Report',
+    'settings' => 'Settings',
+    'general' => 'General Settings',
+    'hardware_printing' => 'Hardware & Printing',
+    'database_backup' => 'Database & Backup',
+    'profile' => 'User Profile',
+    'support' => 'Help & Support',
+];

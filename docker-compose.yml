@@ -1,0 +1,67 @@
+services:
+  # Laravel Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: obounerp_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - obounerp_network
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=obounerp_db
+      - DB_USERNAME=obounerp_user
+      - DB_PASSWORD=obounerp_secret
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: obounerp_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: obounerp_db
+      MYSQL_USER: obounerp_user
+      MYSQL_PASSWORD: obounerp_secret
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - obounerp_dbdata:/var/lib/mysql
+    networks:
+      - obounerp_network
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: obounerp_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: obounerp_user
+      PMA_PASSWORD: obounerp_secret
+    depends_on:
+      - db
+    networks:
+      - obounerp_network
+
+networks:
+  obounerp_network:
+    driver: bridge
+
+volumes:
+  obounerp_dbdata:
+    driver: local

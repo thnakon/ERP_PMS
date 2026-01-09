@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple UI Design System</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: [
+                            '-apple-system',        /* San Francisco (iOS/macOS) */
+                            'BlinkMacSystemFont',   /* Chrome on macOS */
+                            '"Sukhumvit Set"',      /* Apple Thai Modern */
+                       
+                            '"SF Pro Text"',        /* Explicit SF */
+                            '"Helvetica Neue"',     /* Older macOS */
+                            'Inter',                /* Best open-source alternative */
+                            'sans-serif'
+                        ],
+                    },
+                    colors: {
+                        ios: {
+                            blue: '#007AFF',
+                            green: '#34C759',
+                            red: '#FF3B30',
+                            orange: '#FF9500',
+                            yellow: '#FFCC00',
+                            gray: '#8E8E93',
+                            bg: '#F5F5F7',
+                            card: '#FFFFFF',
+                            border: '#E5E5EA',
+                            text: '#1C1C1E',
+                            textSec: '#8E8E93'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px rgba(0, 0, 0, 0.05)',
+                        'inner-soft': 'inset 0 2px 4px rgba(0,0,0,0.02)',
+                        'floating': '0 8px 30px rgba(0,0,0,0.12)',
+                    },
+                    borderRadius: {
+                        'ios': '14px', // Standard iOS curvature
+                    },
+                    animation: {
+                        'slide-down': 'slideDown 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards',
+                        'fade-out': 'fadeOut 0.3s ease-in forwards',
+                        'slide-in-right': 'slideInRight 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards',
+                        'slide-out-right': 'slideOutRight 0.3s ease-in forwards',
+                        'pop-in': 'popIn 0.3s cubic-bezier(0.19, 1, 0.22, 1) forwards',
+                        'slide-up-fade': 'slideUpFade 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards',
+                        'slide-down-fade-out': 'slideDownFadeOut 0.3s cubic-bezier(0.19, 1, 0.22, 1) forwards',
+                    },
+                    keyframes: {
+                        slideDown: {
+                            '0%': { transform: 'translateY(-100%) scale(0.9)', opacity: '0' },
+                            '100%': { transform: 'translateY(0) scale(1)', opacity: '1' },
+                        },
+                        fadeOut: {
+                            '0%': { opacity: '1', transform: 'scale(1)' },
+                            '100%': { opacity: '0', transform: 'scale(0.95)' },
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        },
+                        slideOutRight: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(100%)' },
+                        },
+                        popIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        slideUpFade: {
+                            '0%': { transform: 'translate(-50%, 100%)', opacity: '0' },
+                            '100%': { transform: 'translate(-50%, 0)', opacity: '1' },
+                        },
+                        slideDownFadeOut: {
+                            '0%': { transform: 'translate(-50%, 0)', opacity: '1' },
+                            '100%': { transform: 'translate(-50%, 100%)', opacity: '0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F5F5F7;
+            -webkit-font-smoothing: antialiased;
+            color: #1C1C1E;
+        }
+
+        /* Smooth Click */
+        .active-scale:active {
+            transform: scale(0.97);
+            transition: transform 0.1s;
+        }
+
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #D1D1D6;
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #8E8E93; }
+
+        /* iOS Toggle */
+        .toggle-checkbox:checked { right: 0; border-color: #34C759; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #34C759; }
+        .toggle-checkbox:checked + .toggle-label:before { transform: translateX(100%); }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Chart Bars Animation */
+        .chart-bar { transition: height 1s ease-out; }
+        
+        /* Checkbox Accent Color */
+        input[type="checkbox"].accent-ios {
+            accent-color: #007AFF;
+        }
+
+        /* Accordion Transition */
+        .accordion-content {
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-6 left-0 w-full z-[100] pointer-events-none flex flex-col items-center gap-2"></div>
+
+    <!-- Bulk Action Floating Bar -->
+    <div id="bulk-action-bar" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[90] hidden">
+        <div class="bg-gray-900/90 backdrop-blur-xl text-white px-6 py-3 rounded-full shadow-floating flex items-center gap-6 border border-white/10">
+            <span class="text-sm font-medium whitespace-nowrap"><span id="selected-count">0</span> Selected</span>
+            <div class="h-4 w-px bg-white/20"></div>
+            <div class="flex items-center gap-4">
+                <button class="text-gray-300 hover:text-white transition-colors active-scale">
+                    <i class="ph ph-archive text-lg"></i>
+                </button>
+                <button onclick="deleteSelected()" class="text-red-400 hover:text-red-300 transition-colors font-medium text-sm flex items-center gap-1 active-scale">
+                    <i class="ph ph-trash text-lg"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col h-full overflow-y-auto custom-scroll shrink-0">
+        <div class="p-6 sticky top-0 bg-white z-10">
+            <div class="flex items-center gap-2 text-gray-900">
+                <i class="ph-fill ph-apple-logo text-2xl"></i>
+                <span class="font-bold text-lg tracking-tight">Design System</span>
+            </div>
+        </div>
+        
+        <nav class="px-4 pb-6 space-y-8">
+            <div>
+                <h3 class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">1. Foundations</h3>
+                <ul class="space-y-1">
+                    <li><a href="#typography" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">Typography</a></li>
+                    <li><a href="#colors" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">Color System</a></li>
+                    <li><a href="#spacing" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">Spacing & Radius</a></li>
+                    <li><a href="#icons" class="block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">Iconography</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">2. Components</h3>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="#buttons" class="flex justify-between items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                            Buttons
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#inputs" class="flex justify-between items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                            Inputs & Forms
+                            <span class="bg-ios-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">3</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#selection" class="flex justify-between items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                            Selection Controls
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#nav-controls" class="flex justify-between items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                            Navigation & Tabs
+                            <span class="bg-gray-200 text-gray-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full group-hover:bg-gray-300 transition-colors">New</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#feedback" class="flex justify-between items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                            Feedback & Status
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">3. Data Display</h3>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="#tables" class="flex justify-between items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                            Tables & Multi-Select
+                            <span class="bg-ios-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">9+</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#dashboard" class="flex justify-between items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                            Dashboard Widgets
+                        </a>
+                    </li>
+                </ul>
+            </div>
+             <div>
+                <h3 class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">4. Overlays</h3>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="#overlays" class="flex justify-between items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors group">
+                            Modal & Drawer
+                            <span class="bg-ios-blue text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">Updated</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 h-full overflow-y-auto custom-scroll relative bg-ios-bg scroll-smooth">
+        
+        <!-- Mobile Header (Visible on Mobile) -->
+        <header class="sticky top-0 z-30 glass px-6 py-4 flex md:hidden items-center justify-between">
+            <span class="font-bold text-lg flex items-center gap-2">
+                <!-- Apple Intelligence Icon (Mobile) -->
+                <div class="relative flex items-center justify-center w-6 h-6">
+                    <i class="ph-fill ph-sparkle text-xl absolute text-transparent bg-clip-text bg-gradient-to-tr from-blue-400 via-purple-500 to-orange-400 animate-pulse"></i>
+                </div>
+                Apple UI Kit
+            </span>
+            <button onclick="toggleSidebar()" class="w-8 h-8 flex items-center justify-center text-gray-600 active-scale">
+                <i class="ph ph-list text-2xl"></i>
+            </button>
+        </header>
+
+        <!-- Desktop Header (Visible on Desktop) -->
+         <header class="sticky top-0 z-30 glass px-8 py-4 hidden md:flex items-center justify-between border-b border-gray-200/50">
+            <h1 class="text-xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+                <!-- Apple Intelligence Icon (Desktop) -->
+                <div class="relative flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-blue-50 via-purple-50 to-orange-50 border border-white/50 shadow-sm">
+                    <i class="ph-fill ph-sparkle text-xl text-transparent bg-clip-text bg-gradient-to-tr from-blue-500 via-purple-500 to-orange-500"></i>
+                </div>
+                Apple UI Kit
+            </h1>
+            
+            <div class="flex items-center gap-3">
+                <!-- Language Toggle -->
+                <div class="flex bg-gray-100 rounded-lg p-1 relative">
+                    <button onclick="toggleLang('en', this)" class="px-3 py-1 text-xs font-semibold rounded-md bg-white shadow-sm text-gray-900 transition-all z-10 lang-btn" data-lang="en">EN</button>
+                    <button onclick="toggleLang('th', this)" class="px-3 py-1 text-xs font-medium text-gray-500 hover:text-gray-900 transition-all z-10 lang-btn" data-lang="th">TH</button>
+                </div>
+
+                <div class="h-6 w-px bg-gray-200 mx-1"></div>
+
+                <!-- Notification Bell -->
+                <button class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors active-scale relative group" onclick="showToast('You have 9+ new notifications', 'info')">
+                    <i class="ph-fill ph-bell text-xl text-gray-500 group-hover:text-gray-900 transition-colors"></i>
+                    <!-- Badge 9+ -->
+                    <span class="absolute -top-1 -right-1 flex h-5 min-w-[1.25rem] items-center justify-center px-1.5 rounded-full bg-ios-red text-white text-[10px] font-bold border-2 border-white shadow-sm">
+                        9+
+                    </span>
+                </button>
+
+                <!-- User Icon with Dropdown -->
+                <div class="relative" id="user-menu-container">
+                    <button onclick="toggleUserMenu()" class="w-10 h-10 rounded-full bg-gray-100 hover:ring-4 hover:ring-gray-100 transition-all active-scale overflow-hidden border border-gray-200 relative group">
+                        <img src="https://ui-avatars.com/api/?name=Guest+User&background=007AFF&color=fff" alt="User" class="w-full h-full object-cover">
+                        <!-- Notification dot -->
+                        <div class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></div>
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
+                    <div id="user-dropdown" class="absolute right-0 mt-3 w-72 bg-white/80 backdrop-blur-2xl rounded-[1.5rem] shadow-floating border border-white/40 hidden origin-top-right transform transition-all duration-200 opacity-0 scale-95 z-50 p-2">
+                        
+                        <!-- User Info Section -->
+                        <div class="p-3 mb-2 bg-white/50 rounded-2xl border border-white/50">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white flex items-center justify-center text-lg font-bold shadow-sm">
+                                    GU
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 text-sm">Guest User</h4>
+                                    <p class="text-xs text-gray-500 font-medium">guest@apple.com</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Menu Items -->
+                        <div class="space-y-0.5">
+                            <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 rounded-xl hover:bg-ios-blue hover:text-white transition-all group">
+                                <i class="ph ph-user-circle text-lg group-hover:text-white text-gray-500 transition-colors"></i>
+                                My Profile
+                            </a>
+                            <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 rounded-xl hover:bg-ios-blue hover:text-white transition-all group">
+                                <i class="ph ph-gear text-lg group-hover:text-white text-gray-500 transition-colors"></i>
+                                Settings
+                                <span class="ml-auto bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full group-hover:bg-white group-hover:text-red-500 transition-colors">2</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 rounded-xl hover:bg-ios-blue hover:text-white transition-all group">
+                                <i class="ph ph-credit-card text-lg group-hover:text-white text-gray-500 transition-colors"></i>
+                                Billing
+                            </a>
+                            
+                            <div class="h-px bg-gray-200/50 my-1 mx-2"></div>
+                            
+                            <button onclick="showToast('Logged out successfully', 'info'); toggleUserMenu()" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-500 rounded-xl hover:bg-red-50 transition-colors text-left group">
+                                <i class="ph ph-sign-out text-lg group-hover:translate-x-1 transition-transform"></i>
+                                Sign Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-5xl mx-auto px-6 py-10 space-y-16">
+
+            <!-- 1.2 Typography -->
+            <section id="typography">
+                <div class="mb-6 pb-2 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-900">Typography</h2>
+                    <p class="text-gray-500 mt-1">Inter font family mimicking San Francisco (with Sukhumvit Set for Thai).</p>
+                </div>
+                <div class="bg-white rounded-3xl p-8 shadow-soft border border-ios-border space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                        <span class="text-gray-400 text-sm">Display</span>
+                        <h1 class="col-span-3 text-5xl font-bold tracking-tight text-gray-900">สวัสดี ชาวโลก</h1>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                        <span class="text-gray-400 text-sm">H1 Header</span>
+                        <h1 class="col-span-3 text-4xl font-bold tracking-tight text-gray-900">The quick brown fox</h1>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                        <span class="text-gray-400 text-sm">H2 Header</span>
+                        <h2 class="col-span-3 text-3xl font-semibold tracking-tight text-gray-900">การออกแบบสไตล์ Apple</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                        <span class="text-gray-400 text-sm">Body</span>
+                        <p class="col-span-3 text-base text-gray-600 leading-relaxed">
+                            Apple design is not just what it looks like and feels like. Design is how it works. Clarity, deference, and depth are the three guiding principles.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1.1 Colors -->
+            <section id="colors">
+                <div class="mb-6 pb-2 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-900">Color System</h2>
+                    <p class="text-gray-500 mt-1">Semantic and functional palette.</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <div class="space-y-2"><div class="h-20 w-full bg-ios-blue rounded-2xl shadow-sm"></div><div class="px-1"><p class="font-medium text-sm">Blue</p><p class="text-xs text-gray-400">#007AFF</p></div></div>
+                    <div class="space-y-2"><div class="h-20 w-full bg-ios-green rounded-2xl shadow-sm"></div><div class="px-1"><p class="font-medium text-sm">Green</p><p class="text-xs text-gray-400">#34C759</p></div></div>
+                    <div class="space-y-2"><div class="h-20 w-full bg-ios-red rounded-2xl shadow-sm"></div><div class="px-1"><p class="font-medium text-sm">Red</p><p class="text-xs text-gray-400">#FF3B30</p></div></div>
+                    <div class="space-y-2"><div class="h-20 w-full bg-ios-orange rounded-2xl shadow-sm"></div><div class="px-1"><p class="font-medium text-sm">Orange</p><p class="text-xs text-gray-400">#FF9500</p></div></div>
+                    <div class="space-y-2"><div class="h-20 w-full bg-ios-gray rounded-2xl shadow-sm"></div><div class="px-1"><p class="font-medium text-sm">Gray</p><p class="text-xs text-gray-400">#8E8E93</p></div></div>
+                    <div class="space-y-2"><div class="h-20 w-full bg-white border border-gray-200 rounded-2xl shadow-sm"></div><div class="px-1"><p class="font-medium text-sm">Surface</p><p class="text-xs text-gray-400">#FFFFFF</p></div></div>
+                </div>
+            </section>
+
+            <!-- 1.3 Spacing & Radius -->
+            <section id="spacing">
+                <div class="mb-6 pb-2 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-900">Spacing & Radius</h2>
+                    <p class="text-gray-500 mt-1">The spatial system that defines rhythm and rounding.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-soft border border-ios-border space-y-10">
+                    <!-- Radius -->
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Corner Radius</h3>
+                        <div class="flex flex-wrap gap-4 items-end">
+                            <div class="w-16 h-16 bg-ios-blue/10 border-2 border-ios-blue rounded-md flex items-center justify-center text-xs text-ios-blue font-mono">md</div>
+                            <div class="w-16 h-16 bg-ios-blue/10 border-2 border-ios-blue rounded-lg flex items-center justify-center text-xs text-ios-blue font-mono">lg</div>
+                            <div class="w-16 h-16 bg-ios-blue/10 border-2 border-ios-blue rounded-xl flex items-center justify-center text-xs text-ios-blue font-mono">xl</div>
+                            <div class="w-16 h-16 bg-ios-blue/10 border-2 border-ios-blue rounded-2xl flex items-center justify-center text-xs text-ios-blue font-mono">2xl</div>
+                            <div class="w-16 h-16 bg-ios-blue/10 border-2 border-ios-blue rounded-3xl flex items-center justify-center text-xs text-ios-blue font-mono">3xl</div>
+                            <div class="w-16 h-16 bg-ios-blue/10 border-2 border-ios-blue rounded-full flex items-center justify-center text-xs text-ios-blue font-mono">Full</div>
+                        </div>
+                    </div>
+                    <!-- Spacing -->
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Spacing Scale (4pt Baseline)</h3>
+                        <div class="flex flex-wrap items-end gap-2">
+                            <div class="w-1 bg-ios-red/80 h-8 rounded-sm" title="4px"></div>
+                            <div class="w-2 bg-ios-red/80 h-8 rounded-sm" title="8px"></div>
+                            <div class="w-3 bg-ios-red/80 h-8 rounded-sm" title="12px"></div>
+                            <div class="w-4 bg-ios-red/80 h-8 rounded-sm" title="16px"></div>
+                            <div class="w-6 bg-ios-red/80 h-8 rounded-sm" title="24px"></div>
+                            <div class="w-8 bg-ios-red/80 h-8 rounded-sm" title="32px"></div>
+                            <div class="w-12 bg-ios-red/80 h-8 rounded-sm" title="48px"></div>
+                            <div class="w-16 bg-ios-red/80 h-8 rounded-sm" title="64px"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1.4 Iconography -->
+            <section id="icons">
+                <div class="mb-6 pb-2 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-900">Iconography</h2>
+                    <p class="text-gray-500 mt-1">Phosphor Icons: A flexible icon family for interfaces.</p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-3xl shadow-soft border border-ios-border space-y-10">
+                    <!-- Weights -->
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Weights</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-6 gap-6 text-center">
+                            <div class="space-y-2">
+                                <div class="w-16 h-16 mx-auto bg-gray-50 rounded-xl flex items-center justify-center text-3xl text-gray-900">
+                                    <i class="ph-thin ph-heart"></i>
+                                </div>
+                                <span class="text-xs text-gray-500">Thin</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="w-16 h-16 mx-auto bg-gray-50 rounded-xl flex items-center justify-center text-3xl text-gray-900">
+                                    <i class="ph-light ph-heart"></i>
+                                </div>
+                                <span class="text-xs text-gray-500">Light</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="w-16 h-16 mx-auto bg-gray-50 rounded-xl flex items-center justify-center text-3xl text-gray-900">
+                                    <i class="ph-regular ph-heart"></i>
+                                </div>
+                                <span class="text-xs text-gray-500">Regular</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="w-16 h-16 mx-auto bg-gray-50 rounded-xl flex items-center justify-center text-3xl text-gray-900">
+                                    <i class="ph-bold ph-heart"></i>
+                                </div>
+                                <span class="text-xs text-gray-500">Bold</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="w-16 h-16 mx-auto bg-gray-50 rounded-xl flex items-center justify-center text-3xl text-gray-900">
+                                    <i class="ph-fill ph-heart"></i>
+                                </div>
+                                <span class="text-xs text-gray-500">Fill</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="w-16 h-16 mx-auto bg-gray-50 rounded-xl flex items-center justify-center text-3xl text-gray-900">
+                                    <i class="ph-duotone ph-heart"></i>
+                                </div>
+                                <span class="text-xs text-gray-500">Duotone</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Examples -->
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Common Actions</h3>
+                        <div class="grid grid-cols-4 md:grid-cols-8 gap-4">
+                            <div class="flex flex-col items-center gap-2 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                                <i class="ph ph-house text-2xl text-gray-700"></i>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                                <i class="ph ph-magnifying-glass text-2xl text-gray-700"></i>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                                <i class="ph ph-gear text-2xl text-gray-700"></i>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                                <i class="ph ph-bell text-2xl text-gray-700"></i>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                                <i class="ph ph-envelope text-2xl text-gray-700"></i>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                                <i class="ph ph-image text-2xl text-gray-700"></i>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                                <i class="ph ph-trash text-2xl text-gray-700"></i>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                                <i class="ph ph-pencil-simple text-2xl text-gray-700"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2.1 Buttons -->
+            <section id="buttons">
+                <div class="mb-6 pb-2 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-900">Buttons</h2>
+                    <p class="text-gray-500 mt-1">Interactive elements for actions.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-soft border border-ios-border space-y-8">
+                    <!-- Styles -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-4">Styles</h4>
+                        <div class="flex flex-wrap gap-4">
+                            <button class="bg-ios-blue text-white px-6 py-2.5 rounded-full font-medium hover:brightness-110 transition active-scale shadow-sm">Primary</button>
+                            <button class="bg-gray-100 text-gray-900 px-6 py-2.5 rounded-full font-medium hover:bg-gray-200 transition active-scale">Secondary</button>
+                            <button class="border border-gray-300 text-gray-700 px-6 py-2.5 rounded-full font-medium hover:bg-gray-50 transition active-scale">Outline</button>
+                            <button class="text-ios-blue px-6 py-2.5 rounded-full font-medium hover:bg-blue-50 transition active-scale">Ghost</button>
+                            <button class="bg-ios-red text-white px-6 py-2.5 rounded-full font-medium hover:brightness-110 transition active-scale shadow-sm">Destructive</button>
+                        </div>
+                    </div>
+                    <!-- States -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-4">States</h4>
+                        <div class="flex flex-wrap gap-4 items-center">
+                            <button disabled class="bg-ios-blue/50 text-white px-6 py-2.5 rounded-full font-medium cursor-not-allowed">Disabled</button>
+                            <button class="bg-ios-blue text-white px-6 py-2.5 rounded-full font-medium flex items-center gap-2 cursor-wait">
+                                <i class="ph-bold ph-spinner animate-spin"></i> Loading
+                            </button>
+                            <button class="w-10 h-10 rounded-full bg-gray-100 text-gray-900 flex items-center justify-center hover:bg-gray-200 transition active-scale">
+                                <i class="ph-bold ph-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2.2 Advanced Inputs -->
+            <section id="inputs">
+                <div class="mb-6 pb-2 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-900">Advanced Forms</h2>
+                    <p class="text-gray-500 mt-1">OTP, Date Pickers, and File Uploads.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-soft border border-ios-border grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <!-- OTP Input -->
+                    <div class="space-y-3">
+                        <label class="text-sm font-semibold text-gray-500">Security Code (OTP)</label>
+                        <div class="flex gap-3">
+                            <input type="text" maxlength="1" class="w-12 h-14 text-center text-2xl font-bold bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-ios-blue focus:bg-white transition-all shadow-inner-soft otp-input">
+                            <input type="text" maxlength="1" class="w-12 h-14 text-center text-2xl font-bold bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-ios-blue focus:bg-white transition-all shadow-inner-soft otp-input">
+                            <input type="text" maxlength="1" class="w-12 h-14 text-center text-2xl font-bold bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-ios-blue focus:bg-white transition-all shadow-inner-soft otp-input">
+                            <input type="text" maxlength="1" class="w-12 h-14 text-center text-2xl font-bold bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-ios-blue focus:bg-white transition-all shadow-inner-soft otp-input">
+                        </div>
+                    </div>
+
+                    <!-- Date Picker -->
+                    <div class="space-y-3">
+                        <label class="text-sm font-semibold text-gray-500">Select Date</label>
+                        <div class="relative group">
+                            <i class="ph ph-calendar-blank absolute left-4 top-3.5 text-gray-400 text-lg pointer-events-none"></i>
+                            <input type="date" class="w-full bg-gray-50 border-none text-gray-900 rounded-xl py-3 pl-11 pr-4 focus:ring-2 focus:ring-ios-blue/50 focus:bg-white transition-all shadow-inner-soft outline-none appearance-none font-sans">
+                        </div>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="col-span-1 md:col-span-2 space-y-3">
+                        <label class="text-sm font-semibold text-gray-500">Upload Documents</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-2xl p-8 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors cursor-pointer group relative">
+                            <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            <div class="w-12 h-12 bg-ios-blue/10 text-ios-blue rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                <i class="ph ph-cloud-arrow-up text-2xl"></i>
+                            </div>
+                            <h4 class="font-medium text-gray-900">Click or Drag file to upload</h4>
+                            <p class="text-xs text-gray-400 mt-1">SVG, PNG, JPG or GIF (max. 3MB)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2.3 Selection Controls (New) -->
+            <section id="selection">
+                <div class="mb-6 pb-2 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-900">Selection Controls</h2>
+                    <p class="text-gray-500 mt-1">Toggles, Radios, and Checkboxes mimicking iOS.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-soft border border-ios-border space-y-8">
+                    <!-- Toggles -->
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+                        <div>
+                            <div class="font-medium text-gray-900">Airplane Mode</div>
+                            <div class="text-xs text-gray-500">Disable all wireless connections</div>
+                        </div>
+                        <div class="relative inline-block w-12 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle" id="toggle-demo" class="toggle-checkbox absolute block w-7 h-7 rounded-full bg-white border-4 appearance-none cursor-pointer border-transparent shadow-sm translate-x-0 transition-transform duration-300 ease-spring"/>
+                            <label for="toggle-demo" class="toggle-label block overflow-hidden h-7 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300"></label>
+                        </div>
+                    </div>
+
+                    <!-- Radios & Checkboxes -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 mb-3">Radio Group</h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <div class="relative flex items-center justify-center">
+                                        <input type="radio" name="plan" class="peer sr-only" checked>
+                                        <div class="w-5 h-5 border border-gray-300 rounded-full peer-checked:border-ios-blue peer-checked:border-[6px] transition-all"></div>
+                                    </div>
+                                    <span class="text-gray-700 font-medium group-hover:text-gray-900">Personal Plan</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <div class="relative flex items-center justify-center">
+                                        <input type="radio" name="plan" class="peer sr-only">
+                                        <div class="w-5 h-5 border border-gray-300 rounded-full peer-checked:border-ios-blue peer-checked:border-[6px] transition-all"></div>
+                                    </div>
+                                    <span class="text-gray-700 font-medium group-hover:text-gray-900">Business Plan</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 mb-3">Checkbox Group</h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <div class="relative">
+                                        <input type="checkbox" class="peer sr-only accent-ios" checked>
+                                        <div class="w-5 h-5 border border-gray-300 rounded-[6px] peer-checked:bg-ios-blue peer-checked:border-ios-blue transition-all flex items-center justify-center">
+                                            <i class="ph-bold ph-check text-white text-xs scale-0 peer-checked:scale-100 transition-transform"></i>
+                                        </div>
+                                    </div>
+                                    <span class="text-gray-700 font-medium group-hover:text-gray-900">Notifications</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <div class="relative">
+                                        <input type="checkbox" class="peer sr-only accent-ios">
+                                        <div class="w-5 h-5 border border-gray-300 rounded-[6px] peer-checked:bg-ios-blue peer-checked:border-ios-blue transition-all flex items-center justify-center">
+                                            <i class="ph-bold ph-check text-white text-xs scale-0 peer-checked:scale-100 transition-transform"></i>
+                                        </div>
+                                    </div>
+                                    <span class="text-gray-700 font-medium group-hover:text-gray-900">Auto-update</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <!-- New Section: Navigation & Disclosure (Tabs & Accordion) -->
+             <section id="nav-controls">
+                <div class="mb-6 pb-2 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-900">Navigation & Disclosure</h2>
+                    <p class="text-gray-500 mt-1">Sliding segments and collapsible content.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Sliding Tabs (Segmented Control) -->
+                    <div class="bg-white p-8 rounded-3xl shadow-soft border border-ios-border space-y-6">
+                        <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Sliding Segment</h4>
+                        <div class="bg-gray-100 p-1.5 rounded-xl relative flex items-center w-full max-w-sm mx-auto">
+                            <!-- Sliding Background -->
+                            <div id="segment-bg" class="absolute h-[calc(100%-0.75rem)] w-[calc(33.33%-0.5rem)] bg-white rounded-lg shadow-sm transition-all duration-300 ease-out left-1.5 top-1.5"></div>
+                            
+                            <button onclick="moveSegment(0, this)" class="relative z-10 w-1/3 py-2 text-sm font-semibold text-gray-900 transition-colors text-center" data-active="true">
+                                Day
+                            </button>
+                            <button onclick="moveSegment(1, this)" class="relative z-10 w-1/3 py-2 text-sm font-medium text-gray-500 transition-colors text-center">
+                                Week
+                            </button>
+                            <button onclick="moveSegment(2, this)" class="relative z-10 w-1/3 py-2 text-sm font-medium text-gray-500 transition-colors text-center">
+                                Month
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-400 text-center pt-2">Click to animate the background pill.</p>
+                    </div>
+
+                    <!-- Accordion (FAQ) -->
+                    <div class="bg-white p-8 rounded-3xl shadow-soft border border-ios-border space-y-4">
+                        <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Accordion Group</h4>
+                        
+                        <!-- Item 1 -->
+                        <div class="border-b border-gray-100 pb-2">
+                            <button onclick="toggleAccordion('acc-1')" class="flex justify-between items-center w-full py-3 text-left group">
+                                <span class="font-medium text-gray-900">What is Apple UI Kit?</span>
+                                <i id="icon-acc-1" class="ph-bold ph-caret-down text-gray-400 group-hover:text-ios-blue transition-transform duration-300"></i>
+                            </button>
+                            <div id="acc-1" class="accordion-content">
+                                <p class="text-gray-500 text-sm leading-relaxed pb-3">
+                                    It's a comprehensive design system mirroring the aesthetics of iOS and macOS, focusing on clarity, depth, and rounded geometry.
+                                </p>
+                            </div>
+                        </div>
+
+                         <!-- Item 2 -->
+                         <div class="border-b border-gray-100 pb-2">
+                            <button onclick="toggleAccordion('acc-2')" class="flex justify-between items-center w-full py-3 text-left group">
+                                <span class="font-medium text-gray-900">Can I use this for commercial?</span>
+                                <i id="icon-acc-2" class="ph-bold ph-caret-down text-gray-400 group-hover:text-ios-blue transition-transform duration-300"></i>
+                            </button>
+                            <div id="acc-2" class="accordion-content">
+                                <p class="text-gray-500 text-sm leading-relaxed pb-3">
+                                    Yes, this is a Tailwind CSS based template. You can modify and use it freely for your projects.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5.1 & 5.2 Feedback & Status -->
+            <section id="feedback">
+                <div class="mb-6 pb-2 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-900">Feedback & Status</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Progress & Skeletons -->
+                    <div class="bg-white p-6 rounded-3xl shadow-soft border border-ios-border space-y-8">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-600">Downloading...</span>
+                                <span class="text-sm font-medium text-ios-blue">75%</span>
+                            </div>
+                            <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                                <div class="bg-ios-blue h-2 rounded-full transition-all duration-500" style="width: 75%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Skeleton Loader -->
+                        <div class="space-y-4 animate-pulse">
+                            <div class="flex items-center space-x-4">
+                                <div class="rounded-full bg-gray-200 h-12 w-12"></div>
+                                <div class="flex-1 space-y-2 py-1">
+                                    <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                                </div>
+                            </div>
+                            <div class="h-32 bg-gray-200 rounded-2xl"></div>
+                        </div>
+                    </div>
+
+                    <!-- Toasts & Alerts -->
+                    <div class="bg-white p-6 rounded-3xl shadow-soft border border-ios-border flex flex-col justify-center gap-4">
+                        <button onclick="showToast('Action completed', 'success')" class="w-full py-3 rounded-xl bg-ios-green/10 text-ios-green font-medium hover:bg-ios-green/20 transition active-scale flex items-center justify-center gap-2">
+                            <i class="ph-fill ph-check-circle"></i> Trigger Success Toast
+                        </button>
+                        <button onclick="showToast('Connection lost', 'error')" class="w-full py-3 rounded-xl bg-ios-red/10 text-ios-red font-medium hover:bg-ios-red/20 transition active-scale flex items-center justify-center gap-2">
+                            <i class="ph-fill ph-warning-circle"></i> Trigger Error Toast
+                        </button>
+                        <button onclick="showToast('System update available', 'info')" class="w-full py-3 rounded-xl bg-ios-blue/10 text-ios-blue font-medium hover:bg-ios-blue/20 transition active-scale flex items-center justify-center gap-2">
+                            <i class="ph-fill ph-info"></i> Trigger Info Toast
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Data Display (Table & Dashboard) -->
+            <section id="tables">
+                <div class="mb-6 pb-2 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-900">Data Display & Bulk Actions</h2>
+                    <p class="text-gray-500 mt-1">Multi-select tables with floating action bar.</p>
+                </div>
+                
+                <div class="bg-white rounded-[2rem] shadow-soft border border-ios-border overflow-hidden relative">
+                    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-gray-900">Recent Transactions</h3>
+                        <div class="flex gap-2">
+                            <button class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                <i class="ph ph-funnel text-gray-600"></i>
+                            </button>
+                            <button class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                <i class="ph ph-download-simple text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse" id="transaction-table">
+                            <thead>
+                                <tr class="bg-gray-50/50 border-b border-gray-100 text-xs uppercase tracking-wide text-gray-500">
+                                    <th class="pl-6 py-4 w-12">
+                                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)" class="accent-ios w-4 h-4 rounded border-gray-300 cursor-pointer">
+                                    </th>
+                                    <th class="px-6 py-4 font-semibold">User</th>
+                                    <th class="px-6 py-4 font-semibold">Status</th>
+                                    <th class="px-6 py-4 font-semibold">Date</th>
+                                    <th class="px-6 py-4 font-semibold text-right">Amount</th>
+                                    <th class="px-6 py-4 font-semibold text-right">Actions</th> <!-- New Column -->
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 text-sm">
+                                <tr class="hover:bg-gray-50 transition-colors cursor-default" id="row-1">
+                                    <td class="pl-6 py-4">
+                                        <input type="checkbox" onchange="updateBulkBar()" class="row-checkbox accent-ios w-4 h-4 rounded border-gray-300 cursor-pointer">
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://ui-avatars.com/api/?name=John+Doe&background=007AFF&color=fff&rounded=true" class="w-8 h-8 rounded-full">
+                                            <div>
+                                                <div class="font-medium text-gray-900">John Doe</div>
+                                                <div class="text-gray-400 text-xs">john@apple.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Completed
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-500">Dec 30, 2024</td>
+                                    <td class="px-6 py-4 text-right font-medium text-gray-900">$1,290.00</td>
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-1">
+                                            <button onclick="showToast('Viewing details for John', 'info')" class="w-8 h-8 rounded-full hover:bg-gray-200 text-gray-500 hover:text-ios-blue transition-colors flex items-center justify-center" title="View">
+                                                <i class="ph-bold ph-eye text-lg"></i>
+                                            </button>
+                                            <button onclick="showToast('Editing John', 'info')" class="w-8 h-8 rounded-full hover:bg-gray-200 text-gray-500 hover:text-orange-500 transition-colors flex items-center justify-center" title="Edit">
+                                                <i class="ph-bold ph-pencil-simple text-lg"></i>
+                                            </button>
+                                            <button onclick="deleteRow(this)" class="w-8 h-8 rounded-full hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors flex items-center justify-center" title="Delete">
+                                                <i class="ph-bold ph-trash text-lg"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors cursor-default" id="row-2">
+                                    <td class="pl-6 py-4">
+                                        <input type="checkbox" onchange="updateBulkBar()" class="row-checkbox accent-ios w-4 h-4 rounded border-gray-300 cursor-pointer">
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://ui-avatars.com/api/?name=Alice+Smith&background=FF9500&color=fff&rounded=true" class="w-8 h-8 rounded-full">
+                                            <div>
+                                                <div class="font-medium text-gray-900">Alice Smith</div>
+                                                <div class="text-gray-400 text-xs">alice@icloud.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pending
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-500">Dec 29, 2024</td>
+                                    <td class="px-6 py-4 text-right font-medium text-gray-900">$840.50</td>
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-1">
+                                            <button onclick="showToast('Viewing details for Alice', 'info')" class="w-8 h-8 rounded-full hover:bg-gray-200 text-gray-500 hover:text-ios-blue transition-colors flex items-center justify-center" title="View">
+                                                <i class="ph-bold ph-eye text-lg"></i>
+                                            </button>
+                                            <button onclick="showToast('Editing Alice', 'info')" class="w-8 h-8 rounded-full hover:bg-gray-200 text-gray-500 hover:text-orange-500 transition-colors flex items-center justify-center" title="Edit">
+                                                <i class="ph-bold ph-pencil-simple text-lg"></i>
+                                            </button>
+                                            <button onclick="deleteRow(this)" class="w-8 h-8 rounded-full hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors flex items-center justify-center" title="Delete">
+                                                <i class="ph-bold ph-trash text-lg"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors cursor-default" id="row-3">
+                                    <td class="pl-6 py-4">
+                                        <input type="checkbox" onchange="updateBulkBar()" class="row-checkbox accent-ios w-4 h-4 rounded border-gray-300 cursor-pointer">
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://ui-avatars.com/api/?name=Bob+Wilson&background=FF3B30&color=fff&rounded=true" class="w-8 h-8 rounded-full">
+                                            <div>
+                                                <div class="font-medium text-gray-900">Bob Wilson</div>
+                                                <div class="text-gray-400 text-xs">bob@icloud.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Failed
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-500">Dec 28, 2024</td>
+                                    <td class="px-6 py-4 text-right font-medium text-gray-900">$45.00</td>
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-1">
+                                            <button onclick="showToast('Viewing details for Bob', 'info')" class="w-8 h-8 rounded-full hover:bg-gray-200 text-gray-500 hover:text-ios-blue transition-colors flex items-center justify-center" title="View">
+                                                <i class="ph-bold ph-eye text-lg"></i>
+                                            </button>
+                                            <button onclick="showToast('Editing Bob', 'info')" class="w-8 h-8 rounded-full hover:bg-gray-200 text-gray-500 hover:text-orange-500 transition-colors flex items-center justify-center" title="Edit">
+                                                <i class="ph-bold ph-pencil-simple text-lg"></i>
+                                            </button>
+                                            <button onclick="deleteRow(this)" class="w-8 h-8 rounded-full hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors flex items-center justify-center" title="Delete">
+                                                <i class="ph-bold ph-trash text-lg"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination (New) -->
+                    <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                        <span class="text-sm text-gray-500">Showing <span class="font-medium text-gray-900">1-3</span> of <span class="font-medium text-gray-900">12</span></span>
+                        <div class="flex items-center gap-2">
+                            <button class="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:border-gray-300 transition-all disabled:opacity-50" disabled>
+                                <i class="ph-bold ph-caret-left"></i>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg bg-ios-blue text-white flex items-center justify-center text-sm font-medium shadow-sm transition-all">1</button>
+                            <button class="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-600 text-sm font-medium hover:bg-gray-50 hover:border-gray-300 transition-all">2</button>
+                            <button class="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-600 text-sm font-medium hover:bg-gray-50 hover:border-gray-300 transition-all">3</button>
+                            <button class="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:border-gray-300 transition-all">
+                                <i class="ph-bold ph-caret-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. Advanced Dashboard -->
+            <section id="dashboard">
+                <div class="mb-6 pb-2 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-900">Dashboard</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- KPI Card 1 -->
+                    <div class="bg-white p-6 rounded-[2rem] shadow-soft border border-ios-border flex flex-col justify-between h-40 relative overflow-hidden group">
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-50 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                        <div>
+                            <span class="text-gray-500 text-sm font-medium">Total Revenue</span>
+                            <h3 class="text-3xl font-bold text-gray-900 mt-1">$45,231</h3>
+                        </div>
+                        <div class="flex items-center gap-1 text-sm font-medium text-green-600">
+                            <i class="ph-bold ph-trend-up"></i> +20.1%
+                        </div>
+                    </div>
+
+                    <!-- KPI Card 2 -->
+                    <div class="bg-white p-6 rounded-[2rem] shadow-soft border border-ios-border flex flex-col justify-between h-40">
+                         <div>
+                            <span class="text-gray-500 text-sm font-medium">Active Users</span>
+                            <h3 class="text-3xl font-bold text-gray-900 mt-1">2,405</h3>
+                        </div>
+                        <div class="flex -space-x-2 overflow-hidden py-1">
+                             <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="https://ui-avatars.com/api/?name=A&background=random" alt=""/>
+                             <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="https://ui-avatars.com/api/?name=B&background=random" alt=""/>
+                             <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="https://ui-avatars.com/api/?name=C&background=random" alt=""/>
+                             <div class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600 ring-2 ring-white">+4k</div>
+                        </div>
+                    </div>
+
+                    <!-- Simple Chart Card -->
+                    <div class="bg-white p-6 rounded-[2rem] shadow-soft border border-ios-border md:col-span-1">
+                        <div class="flex justify-between items-end h-full w-full gap-2 pt-6">
+                             <div class="w-full bg-gray-100 rounded-t-lg h-12 chart-bar hover:bg-ios-blue/60 cursor-pointer relative group">
+                                <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">Mon</div>
+                             </div>
+                             <div class="w-full bg-gray-100 rounded-t-lg h-24 chart-bar hover:bg-ios-blue/60 cursor-pointer bg-ios-blue/20"></div>
+                             <div class="w-full bg-ios-blue rounded-t-lg h-32 chart-bar hover:bg-ios-blue/80 cursor-pointer shadow-lg shadow-blue-500/30"></div>
+                             <div class="w-full bg-gray-100 rounded-t-lg h-20 chart-bar hover:bg-ios-blue/60 cursor-pointer bg-ios-blue/20"></div>
+                             <div class="w-full bg-gray-100 rounded-t-lg h-16 chart-bar hover:bg-ios-blue/60 cursor-pointer"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <!-- 6. Overlays (Drawer & Modal) -->
+             <section id="overlays" class="pb-20">
+                <div class="mb-6 pb-2 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-900">Overlays</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Drawer Trigger -->
+                    <div class="bg-gray-900 rounded-[2.5rem] p-10 text-center relative overflow-hidden group">
+                         <div class="absolute top-0 left-0 w-full h-full opacity-30">
+                             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500 rounded-full blur-3xl group-hover:bg-purple-500 transition-colors duration-1000"></div>
+                         </div>
+                         <div class="relative z-10">
+                             <h3 class="text-2xl font-bold text-white mb-2">Drawer</h3>
+                             <p class="text-gray-400 mb-6">Side panel slide-over.</p>
+                             <button onclick="toggleDrawer(true)" class="bg-white text-black px-8 py-3 rounded-full font-semibold hover:scale-105 transition-transform active:scale-95 shadow-lg shadow-white/10">
+                                 Open Drawer
+                             </button>
+                         </div>
+                    </div>
+                    
+                    <!-- Modal Trigger (NEW) -->
+                    <div class="bg-white border border-gray-200 rounded-[2.5rem] p-10 text-center relative overflow-hidden group shadow-soft">
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Modal</h3>
+                            <p class="text-gray-500 mb-6">Standard centered popup.</p>
+                            <button onclick="toggleModal(true)" class="bg-gray-900 text-white px-8 py-3 rounded-full font-semibold hover:scale-105 transition-transform active:scale-95 shadow-lg shadow-black/10">
+                                Open Modal
+                            </button>
+                        </div>
+                   </div>
+                </div>
+             </section>
+
+        </div>
+    </main>
+
+    <!-- 6. Drawer Overlay (Right Side) -->
+    <div id="drawer-backdrop" class="fixed inset-0 z-[60] bg-gray-900/20 backdrop-blur-sm hidden transition-opacity duration-300 opacity-0" onclick="toggleDrawer(false)"></div>
+    <div id="drawer-panel" class="fixed inset-y-0 right-0 z-[61] w-full max-w-sm bg-white shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-10">
+            <h2 class="text-xl font-bold text-gray-900">Settings</h2>
+            <button onclick="toggleDrawer(false)" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                <i class="ph-bold ph-x text-gray-600"></i>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-6 space-y-8">
+            <div>
+                <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Account</h4>
+                <div class="flex items-center gap-4 mb-6">
+                     <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-2xl">👤</div>
+                     <div>
+                         <div class="font-bold text-gray-900 text-lg">Guest User</div>
+                         <div class="text-gray-500 text-sm">guest@example.com</div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. Modal Overlay (Center) -->
+    <div id="modal-backdrop" class="fixed inset-0 z-[70] bg-gray-900/30 backdrop-blur-sm hidden flex items-center justify-center transition-opacity duration-300 opacity-0" onclick="toggleModal(false)">
+        <div id="modal-panel" class="bg-white w-full max-w-md mx-4 rounded-3xl shadow-2xl p-8 transform scale-95 transition-all duration-300 opacity-0" onclick="event.stopPropagation()">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-ios-blue/10 text-ios-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ph-fill ph-shield-check text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Action Required</h3>
+                <p class="text-gray-500 mb-8 leading-relaxed">
+                    This is a standard modal dialog. It catches focus and requires user interaction before returning to the main view.
+                </p>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="toggleModal(false)" class="w-full py-3 rounded-xl font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition active-scale">
+                        Cancel
+                    </button>
+                    <button onclick="toggleModal(false); showToast('Confirmed!', 'success')" class="w-full py-3 rounded-xl font-semibold text-white bg-ios-blue hover:brightness-110 transition active-scale">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. Delete Confirmation Modal (New) -->
+    <div id="delete-modal-backdrop" class="fixed inset-0 z-[80] bg-gray-900/30 backdrop-blur-sm hidden flex items-center justify-center transition-opacity duration-300 opacity-0" onclick="closeDeleteModal()">
+        <div id="delete-modal-panel" class="bg-white w-full max-w-sm mx-4 rounded-[2rem] shadow-2xl p-6 transform scale-95 transition-all duration-300 opacity-0" onclick="event.stopPropagation()">
+            <div class="text-center">
+                <div class="w-14 h-14 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ph-fill ph-trash text-2xl"></i>
+                </div>
+                <h3 id="delete-title" class="text-xl font-bold text-gray-900 mb-2">Delete Item?</h3>
+                <p id="delete-desc" class="text-gray-500 mb-6 text-sm leading-relaxed">
+                    Are you sure you want to delete this? This action cannot be undone.
+                </p>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="closeDeleteModal()" class="w-full py-3 rounded-xl font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition active-scale">
+                        Cancel
+                    </button>
+                    <button onclick="executeDelete()" class="w-full py-3 rounded-xl font-semibold text-white bg-ios-red hover:brightness-110 transition active-scale shadow-lg shadow-red-500/20">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Logic -->
+    <script>
+        // --- 1. Toast System ---
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const styles = {
+                success: { bg: 'bg-white', text: 'text-gray-900', icon: 'ph-check-circle', iconColor: 'text-ios-green' },
+                error: { bg: 'bg-white', text: 'text-gray-900', icon: 'ph-warning-circle', iconColor: 'text-ios-red' },
+                warning: { bg: 'bg-white', text: 'text-gray-900', icon: 'ph-warning', iconColor: 'text-yellow-500' },
+                info: { bg: 'bg-white', text: 'text-gray-900', icon: 'ph-info', iconColor: 'text-ios-blue' }
+            };
+            const style = styles[type] || styles.info;
+
+            const toast = document.createElement('div');
+            toast.className = `flex items-center gap-3 px-6 py-3.5 rounded-full shadow-floating border border-gray-100/50 ${style.bg} pointer-events-auto backdrop-blur-xl animate-slide-down transform transition-all duration-300`;
+            toast.innerHTML = `<i class="ph-fill ${style.icon} ${style.iconColor} text-xl"></i><span class="font-medium text-sm ${style.text}">${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.replace('animate-slide-down', 'animate-fade-out');
+                toast.addEventListener('animationend', () => toast.remove());
+            }, 3000);
+        }
+
+        // --- 2. Drawer Logic ---
+        function toggleDrawer(show) {
+            const backdrop = document.getElementById('drawer-backdrop');
+            const panel = document.getElementById('drawer-panel');
+
+            if (show) {
+                backdrop.classList.remove('hidden');
+                // Force reflow
+                void backdrop.offsetWidth;
+                backdrop.classList.remove('opacity-0');
+                panel.classList.remove('translate-x-full');
+            } else {
+                backdrop.classList.add('opacity-0');
+                panel.classList.add('translate-x-full');
+                setTimeout(() => backdrop.classList.add('hidden'), 300);
+            }
+        }
+
+        // --- 3. Modal Logic ---
+        function toggleModal(show) {
+            const backdrop = document.getElementById('modal-backdrop');
+            const panel = document.getElementById('modal-panel');
+
+            if (show) {
+                backdrop.classList.remove('hidden');
+                // Force reflow
+                void backdrop.offsetWidth;
+                backdrop.classList.remove('opacity-0');
+                panel.classList.remove('opacity-0');
+                panel.classList.remove('scale-95');
+                panel.classList.add('scale-100');
+            } else {
+                backdrop.classList.add('opacity-0');
+                panel.classList.add('opacity-0');
+                panel.classList.add('scale-95');
+                panel.classList.remove('scale-100');
+                setTimeout(() => backdrop.classList.add('hidden'), 300);
+            }
+        }
+
+        // --- 4. OTP Auto-Focus Logic ---
+        const otpInputs = document.querySelectorAll('.otp-input');
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && e.target.value.length === 0 && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+        });
+
+        // --- 5. Mobile Sidebar Logic ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('absolute');
+            sidebar.classList.toggle('inset-y-0');
+            sidebar.classList.toggle('left-0');
+            sidebar.classList.toggle('z-40');
+            sidebar.classList.toggle('shadow-2xl');
+        }
+
+        // --- 6. Bulk Selection Logic ---
+        function toggleSelectAll(source) {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = source.checked;
+                // Highlight row effect
+                const row = cb.closest('tr');
+                if(source.checked) {
+                    row.classList.add('bg-blue-50');
+                } else {
+                    row.classList.remove('bg-blue-50');
+                }
+            });
+            updateBulkBar();
+        }
+
+        function updateBulkBar() {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            const selectedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const bar = document.getElementById('bulk-action-bar');
+            const countSpan = document.getElementById('selected-count');
+            const selectAll = document.getElementById('selectAll');
+
+            // Update row highlights individually if triggered by single checkbox
+            checkboxes.forEach(cb => {
+                const row = cb.closest('tr');
+                if(cb.checked) row.classList.add('bg-blue-50');
+                else row.classList.remove('bg-blue-50');
+            });
+
+            // Update Header Checkbox State
+            if (selectedCount === 0) {
+                selectAll.checked = false;
+                selectAll.indeterminate = false;
+            } else if (selectedCount === checkboxes.length) {
+                selectAll.checked = true;
+                selectAll.indeterminate = false;
+            } else {
+                selectAll.checked = false;
+                selectAll.indeterminate = true;
+            }
+
+            // Show/Hide Floating Bar
+            countSpan.textContent = selectedCount;
+            if (selectedCount > 0) {
+                bar.classList.remove('hidden');
+                bar.classList.add('animate-slide-up-fade');
+                bar.classList.remove('animate-slide-down-fade-out');
+            } else {
+                bar.classList.add('animate-slide-down-fade-out');
+                bar.classList.remove('animate-slide-up-fade');
+                // Wait for animation to finish before hiding (optional, handled by CSS)
+            }
+        }
+
+        // Variable to store what to delete
+        let targetToDelete = null; // can be 'bulk' or specific row element
+
+        // TRIGGER: Bulk Delete
+        function deleteSelected() {
+            const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+            if (checkboxes.length > 0) {
+                targetToDelete = 'bulk';
+                openDeleteModal(checkboxes.length);
+            }
+        }
+
+        // TRIGGER: Single Row Delete
+        function deleteRow(btn) {
+            targetToDelete = btn.closest('tr');
+            openDeleteModal(1);
+        }
+
+        // --- Delete Modal Logic ---
+        function openDeleteModal(count) {
+            const backdrop = document.getElementById('delete-modal-backdrop');
+            const panel = document.getElementById('delete-modal-panel');
+            const title = document.getElementById('delete-title');
+            const desc = document.getElementById('delete-desc');
+
+            // Update text based on count
+            if (count > 1) {
+                title.innerText = `Delete ${count} Items?`;
+                desc.innerText = `Are you sure you want to delete these ${count} items? This action cannot be undone.`;
+            } else {
+                title.innerText = 'Delete Item?';
+                desc.innerText = 'Are you sure you want to delete this item? This action cannot be undone.';
+            }
+
+            // Show Modal
+            backdrop.classList.remove('hidden');
+            void backdrop.offsetWidth; // Force reflow
+            backdrop.classList.remove('opacity-0');
+            panel.classList.remove('opacity-0', 'scale-95');
+            panel.classList.add('scale-100');
+        }
+
+        function closeDeleteModal() {
+            const backdrop = document.getElementById('delete-modal-backdrop');
+            const panel = document.getElementById('delete-modal-panel');
+
+            backdrop.classList.add('opacity-0');
+            panel.classList.remove('scale-100');
+            panel.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                backdrop.classList.add('hidden');
+                targetToDelete = null; // Reset target
+            }, 300);
+        }
+
+        function executeDelete() {
+            closeDeleteModal();
+
+            // Wait for modal to close slightly before animating deletion
+            setTimeout(() => {
+                if (targetToDelete === 'bulk') {
+                    // Bulk Delete Logic
+                    const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+                    const count = checkboxes.length;
+                    
+                    checkboxes.forEach(cb => {
+                        const row = cb.closest('tr');
+                        row.style.transition = 'all 0.3s ease';
+                        row.style.opacity = '0';
+                        row.style.transform = 'translateX(20px)';
+                        setTimeout(() => row.remove(), 300);
+                    });
+
+                    // Reset UI
+                    document.getElementById('bulk-action-bar').classList.add('hidden');
+                    document.getElementById('selectAll').checked = false;
+                    showToast(`Deleted ${count} items successfully`, 'success');
+
+                } else if (targetToDelete) {
+                    // Single Row Delete Logic
+                    const row = targetToDelete;
+                    row.style.transition = 'all 0.3s ease';
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateX(20px)';
+                    
+                    setTimeout(() => {
+                        row.remove();
+                        updateBulkBar(); // Update count if it was checked
+                        showToast('Item deleted successfully', 'success');
+                    }, 300);
+                }
+            }, 150);
+        }
+
+        // --- 7. Accordion Logic ---
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            
+            // Toggle Logic
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+                icon.style.transform = 'rotate(0deg)';
+                icon.classList.remove('text-ios-blue');
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.style.transform = 'rotate(180deg)';
+                icon.classList.add('text-ios-blue');
+            }
+        }
+
+        // --- 8. Sliding Segment Logic ---
+        function moveSegment(index, btn) {
+            const bg = document.getElementById('segment-bg');
+            // Assuming 3 items, width is approx 33.33% with margin
+            // Calculate left position based on index
+            // left-1.5 is 6px. Each item is 33.33%.
+            // Simple logic for this specific demo layout
+            const positions = ['1.5', '33.33', '66.66']; 
+            
+            // Note: In real app, use offsetLeft/Width. Here using CSS estimates for simplicity in one-file demo
+            if(index === 0) bg.style.left = '0.375rem'; // 1.5 tailwind spacing
+            if(index === 1) bg.style.left = '33.33%';
+            if(index === 2) bg.style.left = '66.66%';
+
+            // Update Text Colors
+            const siblings = btn.parentElement.querySelectorAll('button');
+            siblings.forEach(s => {
+                s.classList.remove('font-semibold', 'text-gray-900');
+                s.classList.add('font-medium', 'text-gray-500');
+            });
+            btn.classList.remove('font-medium', 'text-gray-500');
+            btn.classList.add('font-semibold', 'text-gray-900');
+        }
+
+        // --- 9. Language Toggle Logic ---
+        function toggleLang(lang, btn) {
+            // Update UI state
+            document.querySelectorAll('.lang-btn').forEach(b => {
+                b.classList.remove('bg-white', 'shadow-sm', 'text-gray-900', 'font-semibold');
+                b.classList.add('text-gray-500', 'font-medium');
+            });
+            
+            btn.classList.remove('text-gray-500', 'font-medium');
+            btn.classList.add('bg-white', 'shadow-sm', 'text-gray-900', 'font-semibold');
+
+            // Show toast feedback
+            const label = lang === 'th' ? 'เปลี่ยนเป็นภาษาไทย' : 'Switched to English';
+            showToast(label, 'info');
+        }
+
+        // --- 10. User Menu Logic ---
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('user-dropdown');
+            
+            if (dropdown.classList.contains('hidden')) {
+                // Open
+                dropdown.classList.remove('hidden');
+                // Force reflow
+                void dropdown.offsetWidth;
+                dropdown.classList.remove('opacity-0', 'scale-95');
+                dropdown.classList.add('opacity-100', 'scale-100');
+            } else {
+                // Close
+                dropdown.classList.remove('opacity-100', 'scale-100');
+                dropdown.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    dropdown.classList.add('hidden');
+                }, 200);
+            }
+        }
+
+        // Close User Menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const container = document.getElementById('user-menu-container');
+            const dropdown = document.getElementById('user-dropdown');
+            
+            // Check if click is outside the container and menu is open
+            if (container && !container.contains(event.target) && dropdown && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('opacity-100', 'scale-100');
+                dropdown.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    dropdown.classList.add('hidden');
+                }, 200);
+            }
+        });
+    </script>
+</body>
+</html>

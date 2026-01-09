@@ -1,0 +1,73 @@
+/**
+ * Oboun ERP - Drawer Styles
+ */
+
+/* ============================================
+   Drawer Backdrop
+   ============================================ */
+.drawer-backdrop {
+    @apply fixed inset-0 z-[60] bg-gray-900/20 backdrop-blur-sm;
+    @apply transition-opacity duration-300;
+}
+
+.drawer-backdrop-hidden {
+    @apply hidden opacity-0;
+}
+
+.drawer-backdrop-visible {
+    @apply opacity-100;
+}
+
+/* ============================================
+   Drawer Panel
+   ============================================ */
+.drawer-panel {
+    @apply fixed inset-y-0 right-0 z-[61];
+    @apply w-full max-w-sm bg-white shadow-2xl;
+    @apply transform transition-transform duration-300;
+    @apply flex flex-col;
+}
+
+.drawer-panel-hidden {
+    @apply translate-x-full;
+}
+
+.drawer-panel-visible {
+    @apply translate-x-0;
+}
+
+/* ============================================
+   Drawer Header
+   ============================================ */
+.drawer-header {
+    @apply p-6 border-b border-gray-100;
+    @apply flex justify-between items-center;
+    @apply bg-white/80 backdrop-blur-md sticky top-0 z-10;
+}
+
+.drawer-title {
+    @apply text-xl font-bold text-gray-900;
+}
+
+.drawer-close-btn {
+    @apply w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200;
+    @apply flex items-center justify-center transition-colors;
+}
+
+/* ============================================
+   Drawer Content
+   ============================================ */
+.drawer-content {
+    @apply flex-1 overflow-y-auto p-6 space-y-8;
+}
+
+.drawer-section-title {
+    @apply text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4;
+}
+
+/* ============================================
+   Drawer Footer
+   ============================================ */
+.drawer-footer {
+    @apply p-6 border-t border-gray-100 bg-white;
+}

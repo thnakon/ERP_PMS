@@ -2,37 +2,49 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\UnitController;
-use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\BatchController;
-use App\Http\Controllers\SaleController;
-use App\Http\Controllers\PurchaseController;
-use App\Http\Controllers\ReportController;
+use App\Http\Controllers\Api\DashboardApiController;
+use App\Http\Controllers\Api\ProductApiController;
+use App\Http\Controllers\Api\OrderApiController;
+use App\Http\Controllers\Api\CustomerApiController;
+use App\Http\Controllers\Api\ProductLotApiController;
+use App\Http\Controllers\Api\GlobalSearchController;
+use App\Http\Controllers\LineWebhookController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+*/
 
-// Master Data
-Route::apiResource('categories', CategoryController::class);
-Route::apiResource('units', UnitController::class);
-Route::apiResource('suppliers', SupplierController::class);
+// LINE Webhook (Public with signature verification)
+Route::post('/webhook/line', [LineWebhookController::class, 'handle']);
 
-// Products & Inventory
-Route::apiResource('products', ProductController::class);
-Route::get('batches', [BatchController::class, 'index']);
-Route::put('batches/{batch}', [BatchController::class, 'update']);
+Route::middleware(['auth', 'staff'])->group(function () {
+    // Global Search
+    Route::get('/global-search', [GlobalSearchController::class, 'search']);
 
-// Transactions
-Route::post('sales', [SaleController::class, 'store']);
-Route::get('sales', [SaleController::class, 'index']);
-Route::get('sales/{sale}', [SaleController::class, 'show']);
+    // Dashboard stats
+    Route::get('/dashboard/stats', [DashboardApiController::class, 'stats']);
 
-Route::post('purchases', [PurchaseController::class, 'store']);
-Route::get('purchases', [PurchaseController::class, 'index']);
+    // Products (Staff can view)
+    Route::get('/products', [ProductApiController::class, 'index']);
+    Route::get('/products/{product}', [ProductApiController::class, 'show']);
+    Route::get('/products/{product}/lots', [ProductApiController::class, 'lots']);
 
-// Reports
-Route::get('reports/daily-sales', [ReportController::class, 'dailySales']);
-Route::get('reports/low-stock', [ReportController::class, 'lowStock']);
+    // Product Lots (Expiry)
+    Route::get('/product-lots', [ProductLotApiController::class, 'index']);
+    Route::get('/product-lots/export', [ProductLotApiController::class, 'export']);
+
+    // Orders
+    Route::apiResource('orders', OrderApiController::class);
+    Route::post('/orders/{order}/refund', [OrderApiController::class, 'refund']);
+
+    // Customers
+    Route::get('/customers/search', [CustomerApiController::class, 'search']);
+    Route::apiResource('customers', CustomerApiController::class);
+
+    // Admin only API routes
+    Route::middleware(['admin'])->group(function () {
+        Route::apiResource('products', ProductApiController::class)->except(['index', 'show']);
+    });
+});

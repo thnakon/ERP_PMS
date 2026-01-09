@@ -2,86 +2,227 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    public function run()
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
     {
-        // 1. Admins (3 users)
-        $admins = [
-            ['first_name' => 'Admin', 'last_name' => 'User', 'gender' => 'male', 'email' => 'admin@example.com'],
-            ['first_name' => 'Sarah', 'last_name' => 'Connor', 'gender' => 'female', 'email' => 'sarah@example.com'],
-            ['first_name' => 'John', 'last_name' => 'Doe', 'gender' => 'male', 'email' => 'john@example.com'],
-        ];
-
-        foreach ($admins as $index => $admin) {
-            User::create([
-                'first_name' => $admin['first_name'],
-                'last_name' => $admin['last_name'],
-                'email' => $admin['email'],
+        $users = [
+            [
+                'name' => 'Admin User',
+                'username' => 'admin',
+                'email' => 'admin@oboun.local',
+                'phone' => '080-000-0000',
                 'password' => Hash::make('password'),
                 'role' => 'admin',
                 'position' => 'System Administrator',
-                'employee_id' => 'ADM-' . str_pad($index + 1, 3, '0', STR_PAD_LEFT),
-                'gender' => $admin['gender'],
-                'birthdate' => '1985-01-01',
-                'phone_number' => '081-111-111' . $index,
-                'language' => 'en',
-                'theme' => 'light',
-            ]);
-        }
-
-        // 2. Staff (4 users)
-        $staffs = [
-            ['first_name' => 'Bob', 'last_name' => 'Brown', 'gender' => 'male'],
-            ['first_name' => 'Charlie', 'last_name' => 'Davis', 'gender' => 'male'],
-            ['first_name' => 'Diana', 'last_name' => 'Evans', 'gender' => 'female'],
-            ['first_name' => 'Frank', 'last_name' => 'Green', 'gender' => 'male'],
-        ];
-
-        foreach ($staffs as $index => $staff) {
-            User::create([
-                'first_name' => $staff['first_name'],
-                'last_name' => $staff['last_name'],
-                'email' => strtolower($staff['first_name']) . '@example.com',
+                'status' => 'active',
+                'hired_date' => now(),
+            ],
+            [
+                'name' => 'Staff User',
+                'username' => 'staff',
+                'email' => 'staff@oboun.local',
+                'phone' => '080-000-0001',
                 'password' => Hash::make('password'),
                 'role' => 'staff',
-                'position' => 'Sales Staff',
-                'employee_id' => 'STF-' . str_pad($index + 1, 3, '0', STR_PAD_LEFT),
-                'gender' => $staff['gender'],
-                'birthdate' => '1995-05-15',
-                'phone_number' => '082-222-222' . $index,
-                'language' => 'th',
-                'theme' => 'light',
-            ]);
-        }
-
-        // 3. Pharmacists (3 users)
-        $pharmacists = [
-            ['first_name' => 'Alice', 'last_name' => 'Smith', 'gender' => 'female'],
-            ['first_name' => 'Grace', 'last_name' => 'Hall', 'gender' => 'female'],
-            ['first_name' => 'Henry', 'last_name' => 'King', 'gender' => 'male'],
+                'position' => 'Store Staff',
+                'status' => 'active',
+                'hired_date' => now(),
+            ],
+            [
+                'name' => 'ดร.สมชาย ใจดี',
+                'username' => 'somchai.admin',
+                'email' => 'somchai@obounerp.com',
+                'phone' => '081-234-5678',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'position' => 'เภสัชกรผู้จัดการ',
+                'pharmacist_license_no' => 'ภ.12345',
+                'license_expiry' => now()->addYears(2),
+                'status' => 'active',
+                'hired_date' => now()->subYears(5),
+                'notes' => 'ผู้ดูแลระบบหลัก มีประสบการณ์ 15 ปี',
+            ],
+            [
+                'name' => 'ภญ.สุดา รักษ์ดี',
+                'username' => 'suda.pharm',
+                'email' => 'suda@obounerp.com',
+                'phone' => '082-345-6789',
+                'password' => Hash::make('password'),
+                'role' => 'pharmacist',
+                'position' => 'เภสัชกรอาวุโส',
+                'pharmacist_license_no' => 'ภ.23456',
+                'license_expiry' => now()->addMonths(6), // Expiring soon
+                'status' => 'active',
+                'hired_date' => now()->subYears(3),
+                'notes' => 'เชี่ยวชาญด้านยาเฉพาะทาง',
+            ],
+            [
+                'name' => 'ภญ.วิภา สุขสม',
+                'username' => 'wipa.pharm',
+                'email' => 'wipa@obounerp.com',
+                'phone' => '083-456-7890',
+                'password' => Hash::make('password'),
+                'role' => 'pharmacist',
+                'position' => 'เภสัชกร',
+                'pharmacist_license_no' => 'ภ.34567',
+                'license_expiry' => now()->addYears(3),
+                'status' => 'active',
+                'hired_date' => now()->subYears(2),
+                'notes' => 'รับผิดชอบแผนกยาปฏิชีวนะ',
+            ],
+            [
+                'name' => 'นายประยุทธ์ ขยัน',
+                'username' => 'prayut.staff',
+                'email' => 'prayut@obounerp.com',
+                'phone' => '084-567-8901',
+                'password' => Hash::make('password'),
+                'role' => 'staff',
+                'position' => 'พนักงานขาย',
+                'status' => 'active',
+                'hired_date' => now()->subYear(),
+                'notes' => 'พนักงานขายประจำเคาน์เตอร์',
+            ],
+            [
+                'name' => 'นางสาวมาลี สวยงาม',
+                'username' => 'malee.staff',
+                'email' => 'malee@obounerp.com',
+                'phone' => '085-678-9012',
+                'password' => Hash::make('password'),
+                'role' => 'staff',
+                'position' => 'พนักงานขาย',
+                'status' => 'active',
+                'hired_date' => now()->subMonths(8),
+                'notes' => 'พนักงานขายกะเช้า',
+            ],
+            [
+                'name' => 'นายสมศักดิ์ เก่งกาจ',
+                'username' => 'somsak.staff',
+                'email' => 'somsak@obounerp.com',
+                'phone' => '086-789-0123',
+                'password' => Hash::make('password'),
+                'role' => 'staff',
+                'position' => 'พนักงานขาย',
+                'status' => 'suspended',
+                'hired_date' => now()->subMonths(6),
+                'notes' => 'พักงานชั่วคราว - เหตุส่วนตัว',
+            ],
+            [
+                'name' => 'นางสาวจิรา ดีมาก',
+                'username' => 'jira.resigned',
+                'email' => 'jira@obounerp.com',
+                'phone' => '087-890-1234',
+                'password' => Hash::make('password'),
+                'role' => 'staff',
+                'position' => 'พนักงานขาย (เดิม)',
+                'status' => 'resigned',
+                'hired_date' => now()->subYears(2),
+                'notes' => 'ลาออกเมื่อ 3 เดือนที่แล้ว - ย้ายไปต่างจังหวัด',
+            ],
+            [
+                'name' => 'นายวิชัย มานะ',
+                'username' => 'wichai.admin',
+                'email' => 'wichai@obounerp.com',
+                'phone' => '088-901-2345',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'position' => 'ผู้ช่วยผู้จัดการ',
+                'status' => 'active',
+                'hired_date' => now()->subYears(4),
+                'notes' => 'ดูแลระบบไอทีและสินค้าคงคลัง',
+            ],
+            [
+                'name' => 'ภญ.นารี รัตนา',
+                'username' => 'naree.pharm',
+                'email' => 'naree@obounerp.com',
+                'phone' => '089-012-3456',
+                'password' => Hash::make('password'),
+                'role' => 'pharmacist',
+                'position' => 'เภสัชกรพาร์ทไทม์',
+                'pharmacist_license_no' => 'ภ.45678',
+                'license_expiry' => now()->addDays(15), // Expiring very soon
+                'status' => 'active',
+                'hired_date' => now()->subYear(),
+            ],
+            [
+                'name' => 'นายกานต์ สุขใจ',
+                'username' => 'karn.staff',
+                'email' => 'karn@obounerp.com',
+                'phone' => '090-123-4567',
+                'password' => Hash::make('password'),
+                'role' => 'staff',
+                'position' => 'แคชเชียร์',
+                'status' => 'active',
+                'hired_date' => now()->subMonths(3),
+            ],
+            [
+                'name' => 'นางสาวเบญจา ใจเย็น',
+                'username' => 'benja.staff',
+                'email' => 'benja@obounerp.com',
+                'phone' => '091-234-5678',
+                'password' => Hash::make('password'),
+                'role' => 'staff',
+                'position' => 'แคชเชียร์',
+                'status' => 'active',
+                'hired_date' => now()->subMonths(2),
+            ],
+            [
+                'name' => 'นายฉัตรชัย รักยา',
+                'username' => 'chatchai.pharm',
+                'email' => 'chatchai@obounerp.com',
+                'phone' => '092-345-6789',
+                'password' => Hash::make('password'),
+                'role' => 'pharmacist',
+                'position' => 'เภสัชกรกะกลางคืน',
+                'pharmacist_license_no' => 'ภ.56789',
+                'license_expiry' => now()->subDays(5), // Already expired
+                'status' => 'active',
+                'hired_date' => now()->subMonths(10),
+            ],
+            [
+                'name' => 'นางสาวดวงใจ มีสุข',
+                'username' => 'duangjai.staff',
+                'email' => 'duangjai@obounerp.com',
+                'phone' => '093-456-7890',
+                'password' => Hash::make('password'),
+                'role' => 'staff',
+                'position' => 'ฝ่ายคลังสินค้า',
+                'status' => 'active',
+                'hired_date' => now()->subMonths(5),
+            ],
+            [
+                'name' => 'นายเอกพล พากเพียร',
+                'username' => 'ekapol.staff',
+                'email' => 'ekapol@obounerp.com',
+                'phone' => '094-567-8901',
+                'password' => Hash::make('password'),
+                'role' => 'staff',
+                'position' => 'ฝ่ายส่งมอบยา',
+                'status' => 'active',
+                'hired_date' => now()->subMonths(4),
+            ],
+            [
+                'name' => 'นางสาวฟ้า ใสใส',
+                'username' => 'fah.staff',
+                'email' => 'fah@obounerp.com',
+                'phone' => '095-678-9012',
+                'password' => Hash::make('password'),
+                'role' => 'staff',
+                'position' => 'ประชาสัมพันธ์',
+                'status' => 'active',
+                'hired_date' => now()->subMonths(1),
+            ],
         ];
 
-        foreach ($pharmacists as $index => $phar) {
-            User::create([
-                'first_name' => $phar['first_name'],
-                'last_name' => $phar['last_name'],
-                'email' => strtolower($phar['first_name']) . '@example.com',
-                'password' => Hash::make('password'),
-                'role' => 'pharmacist', // Assuming 'pharmacist' role exists or is handled as 'staff' with position
-                'position' => 'Pharmacist',
-                'employee_id' => 'PHM-' . str_pad($index + 1, 3, '0', STR_PAD_LEFT),
-                'pharmacist_license_id' => 'PH-' . rand(10000, 99999),
-                'gender' => $phar['gender'],
-                'birthdate' => '1990-08-20',
-                'phone_number' => '083-333-333' . $index,
-                'language' => 'th',
-                'theme' => 'light',
-            ]);
+        foreach ($users as $userData) {
+            User::create($userData);
         }
     }
 }
