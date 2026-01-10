@@ -7,8 +7,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 use App\Mail\VerificationCodeMail;
 use App\Mail\RegistrationCredentialsMail;
+use App\Mail\PasswordResetMail;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -74,9 +80,83 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        // For now, just show a success message
-        // In production, you would use Laravel's Password Broker
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            $token = Str::random(64);
+
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $request->email],
+                [
+                    'email' => $request->email,
+                    'token' => Hash::make($token),
+                    'created_at' => now()
+                ]
+            );
+
+            try {
+                Mail::to($request->email)->send(new PasswordResetMail(
+                    route('password.reset', ['token' => $token, 'email' => $request->email]),
+                    $user->name
+                ));
+            } catch (\Exception $e) {
+                Log::error('Failed to send password reset email: ' . $e->getMessage());
+            }
+        }
+
+        // Always show success message to prevent user enumeration
         return back()->with('status', 'If an account exists with this email, you will receive a password reset link shortly.');
+    }
+
+    /**
+     * Show the reset password form
+     */
+    public function showResetForm(Request $request, $token)
+    {
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $request->email
+        ]);
+    }
+
+    /**
+     * Handle the password reset
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => ['required', 'min:8', 'confirmed'],
+        ]);
+
+        $reset = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->first();
+
+        if (!$reset || !Hash::check($request->token, $reset->token)) {
+            return back()->withErrors(['email' => 'Invalid or expired reset token.']);
+        }
+
+        // Check if token is older than 60 minutes
+        if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+            return back()->withErrors(['email' => 'Reset token has expired.']);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withErrors(['email' => 'User not found.']);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Delete the token
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        return redirect()->route('login')->with('success', 'Your password has been reset successfully. Please login with your new password.');
     }
 
     /**

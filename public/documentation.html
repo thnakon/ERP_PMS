@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oboun ERP - คู่มือการใช้งานระบบ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'IBM Plex Sans Thai', sans-serif; }
+        @media print {
+            .no-print { display: none !important; }
+            .page-break { page-break-before: always; }
+            body { font-size: 12px; }
+            .print-full { width: 100% !important; max-width: 100% !important; }
+        }
+        .workflow-step { position: relative; padding-left: 2rem; }
+        .workflow-step::before { content: ''; position: absolute; left: 0.5rem; top: 1.5rem; bottom: -0.5rem; width: 2px; background: #e5e7eb; }
+        .workflow-step:last-child::before { display: none; }
+        .workflow-number { position: absolute; left: 0; width: 1.25rem; height: 1.25rem; background: #007AFF; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12 no-print">
+        <div class="max-w-5xl mx-auto px-6">
+            <h1 class="text-4xl font-bold mb-2">📘 คู่มือการใช้งาน Oboun ERP</h1>
+            <p class="text-blue-100 text-lg">ระบบบริหารจัดการร้านขายยาครบวงจร</p>
+            <button onclick="window.print()" class="mt-6 px-6 py-3 bg-white text-blue-600 rounded-xl font-bold hover:bg-blue-50 transition flex items-center gap-2">
+                <i class="ph ph-file-pdf text-xl"></i> ดาวน์โหลด PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-6 py-10 print-full">
+        <!-- Table of Contents -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm mb-8 no-print">
+            <h2 class="text-xl font-bold mb-4">📑 สารบัญ</h2>
+            <div class="grid md:grid-cols-2 gap-2 text-sm">
+                <a href="#overview" class="text-blue-600 hover:underline">1. ภาพรวมระบบ</a>
+                <a href="#roles" class="text-blue-600 hover:underline">2. บทบาท Admin vs Staff</a>
+                <a href="#pos" class="text-blue-600 hover:underline">3. ระบบขายหน้าร้าน (POS)</a>
+                <a href="#inventory" class="text-blue-600 hover:underline">4. จัดการสินค้าคลัง</a>
+                <a href="#customers" class="text-blue-600 hover:underline">5. ลูกค้าและสมาชิก</a>
+                <a href="#purchasing" class="text-blue-600 hover:underline">6. สั่งซื้อและรับสินค้า</a>
+                <a href="#reports" class="text-blue-600 hover:underline">7. รายงาน</a>
+                <a href="#settings" class="text-blue-600 hover:underline">8. ตั้งค่าระบบ</a>
+            </div>
+        </div>
+
+        <!-- Section 1: Overview -->
+        <section id="overview" class="bg-white rounded-2xl p-6 shadow-sm mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2"><i class="ph ph-info text-blue-600"></i> 1. ภาพรวมระบบ</h2>
+            <p class="mb-4">Oboun ERP เป็นระบบบริหารจัดการร้านขายยาแบบครบวงจร ออกแบบมาเพื่อร้านขายยาในประเทศไทยโดยเฉพาะ รองรับทั้งภาษาไทยและอังกฤษ</p>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-blue-50 rounded-xl p-4 text-center">
+                    <i class="ph ph-shopping-cart text-3xl text-blue-600 mb-2"></i>
+                    <div class="font-bold">POS</div>
+                    <div class="text-sm text-gray-600">ขายหน้าร้าน</div>
+                </div>
+                <div class="bg-green-50 rounded-xl p-4 text-center">
+                    <i class="ph ph-package text-3xl text-green-600 mb-2"></i>
+                    <div class="font-bold">Inventory</div>
+                    <div class="text-sm text-gray-600">คลังสินค้า</div>
+                </div>
+                <div class="bg-purple-50 rounded-xl p-4 text-center">
+                    <i class="ph ph-chart-line text-3xl text-purple-600 mb-2"></i>
+                    <div class="font-bold">Reports</div>
+                    <div class="text-sm text-gray-600">รายงาน</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Roles -->
+        <section id="roles" class="bg-white rounded-2xl p-6 shadow-sm mb-8 page-break">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2"><i class="ph ph-users text-blue-600"></i> 2. บทบาท Admin vs Staff</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-100">
+                        <tr><th class="p-3 text-left">ฟีเจอร์</th><th class="p-3 text-center">Admin</th><th class="p-3 text-center">Staff</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b"><td class="p-3">ขายหน้าร้าน (POS)</td><td class="p-3 text-center text-green-600">✓</td><td class="p-3 text-center text-green-600">✓</td></tr>
+                        <tr class="border-b"><td class="p-3">ดูรายงานยอดขาย</td><td class="p-3 text-center text-green-600">✓</td><td class="p-3 text-center text-green-600">✓</td></tr>
+                        <tr class="border-b"><td class="p-3">จัดการสินค้า (เพิ่ม/แก้ไข)</td><td class="p-3 text-center text-green-600">✓</td><td class="p-3 text-center text-red-500">✗</td></tr>
+                        <tr class="border-b"><td class="p-3">สั่งซื้อสินค้า (PO)</td><td class="p-3 text-center text-green-600">✓</td><td class="p-3 text-center text-red-500">✗</td></tr>
+                        <tr class="border-b"><td class="p-3">รับสินค้าเข้าคลัง (GRN)</td><td class="p-3 text-center text-green-600">✓</td><td class="p-3 text-center text-green-600">✓</td></tr>
+                        <tr class="border-b"><td class="p-3">จัดการผู้ใช้</td><td class="p-3 text-center text-green-600">✓</td><td class="p-3 text-center text-red-500">✗</td></tr>
+                        <tr class="border-b"><td class="p-3">ตั้งค่าร้าน</td><td class="p-3 text-center text-green-600">✓</td><td class="p-3 text-center text-red-500">✗</td></tr>
+                        <tr class="border-b"><td class="p-3">ดู Activity Logs</td><td class="p-3 text-center text-green-600">✓</td><td class="p-3 text-center text-red-500">✗</td></tr>
+                        <tr><td class="p-3">Backup ข้อมูล</td><td class="p-3 text-center text-green-600">✓</td><td class="p-3 text-center text-red-500">✗</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 3: POS -->
+        <section id="pos" class="bg-white rounded-2xl p-6 shadow-sm mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2"><i class="ph ph-storefront text-blue-600"></i> 3. ระบบขายหน้าร้าน (POS)</h2>
+            <h3 class="font-bold text-lg mb-3">Workflow การขาย</h3>
+            <div class="space-y-4 mb-6">
+                <div class="workflow-step"><span class="workflow-number">1</span><div class="bg-gray-50 rounded-xl p-4"><strong>เปิดกะ (Open Shift)</strong> - กรอกยอดเงินสดเริ่มต้น</div></div>
+                <div class="workflow-step"><span class="workflow-number">2</span><div class="bg-gray-50 rounded-xl p-4"><strong>สแกนบาร์โค้ด/ค้นหาสินค้า</strong> - เพิ่มสินค้าเข้าตะกร้า</div></div>
+                <div class="workflow-step"><span class="workflow-number">3</span><div class="bg-gray-50 rounded-xl p-4"><strong>เลือกลูกค้า (Optional)</strong> - สะสมแต้ม, ดูประวัติแพ้ยา</div></div>
+                <div class="workflow-step"><span class="workflow-number">4</span><div class="bg-gray-50 rounded-xl p-4"><strong>เลือกวิธีชำระเงิน</strong> - เงินสด, QR PromptPay, บัตรเครดิต</div></div>
+                <div class="workflow-step"><span class="workflow-number">5</span><div class="bg-gray-50 rounded-xl p-4"><strong>ปิดการขาย</strong> - พิมพ์ใบเสร็จ, อัปเดตสต็อกอัตโนมัติ</div></div>
+                <div class="workflow-step"><span class="workflow-number">6</span><div class="bg-gray-50 rounded-xl p-4"><strong>ปิดกะ (Close Shift)</strong> - สรุปยอด, ตรวจเงินสด</div></div>
+            </div>
+            <h3 class="font-bold text-lg mb-3">ฟีเจอร์เด่น</h3>
+            <ul class="list-disc list-inside text-sm space-y-1">
+                <li><strong>Hold Order:</strong> พักออเดอร์ไว้ แล้วกลับมาขายต่อได้</li>
+                <li><strong>Allergy Check:</strong> แจ้งเตือนเมื่อลูกค้ามีประวัติแพ้ยา</li>
+                <li><strong>Expiry Warning:</strong> แจ้งเตือนสินค้าใกล้หมดอายุ</li>
+                <li><strong>QR Payment:</strong> สร้าง QR PromptPay อัตโนมัติ</li>
+            </ul>
+        </section>
+
+        <!-- Section 4: Inventory -->
+        <section id="inventory" class="bg-white rounded-2xl p-6 shadow-sm mb-8 page-break">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2"><i class="ph ph-package text-blue-600"></i> 4. จัดการสินค้าคลัง</h2>
+            <h3 class="font-bold text-lg mb-3">โครงสร้างข้อมูลสินค้า</h3>
+            <div class="bg-gray-50 rounded-xl p-4 mb-4 text-sm">
+                <strong>Product</strong> → <strong>Product Lot</strong> (แบ่งตามวันหมดอายุ)<br>
+                หมวดหมู่ (Category) สามารถซ้อนกันได้หลายระดับ
+            </div>
+            <h3 class="font-bold text-lg mb-3">Workflow เพิ่มสินค้าใหม่</h3>
+            <div class="space-y-4 mb-6">
+                <div class="workflow-step"><span class="workflow-number">1</span><div class="bg-gray-50 rounded-xl p-4">ไปที่ <strong>สินค้า → เพิ่มสินค้าใหม่</strong></div></div>
+                <div class="workflow-step"><span class="workflow-number">2</span><div class="bg-gray-50 rounded-xl p-4">กรอกข้อมูล: ชื่อ, บาร์โค้ด, ราคา, หมวดหมู่</div></div>
+                <div class="workflow-step"><span class="workflow-number">3</span><div class="bg-gray-50 rounded-xl p-4">ตั้ง Min Stock สำหรับแจ้งเตือนสินค้าใกล้หมด</div></div>
+                <div class="workflow-step"><span class="workflow-number">4</span><div class="bg-gray-50 rounded-xl p-4">บันทึก → ระบบพร้อมขาย</div></div>
+            </div>
+            <h3 class="font-bold text-lg mb-3">การแจ้งเตือน</h3>
+            <ul class="list-disc list-inside text-sm space-y-1">
+                <li><strong>สินค้าใกล้หมด:</strong> แจ้งเตือนเมื่อ Stock ≤ Min Stock</li>
+                <li><strong>สินค้าหมดอายุ:</strong> แจ้งเตือนล่วงหน้า 30/60/90 วัน</li>
+            </ul>
+        </section>
+
+        <!-- Section 5: Customers -->
+        <section id="customers" class="bg-white rounded-2xl p-6 shadow-sm mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2"><i class="ph ph-user-circle text-blue-600"></i> 5. ลูกค้าและสมาชิก</h2>
+            <h3 class="font-bold text-lg mb-3">ข้อมูลที่เก็บ</h3>
+            <ul class="list-disc list-inside text-sm space-y-1 mb-4">
+                <li>ชื่อ, เบอร์โทร, อีเมล, ที่อยู่</li>
+                <li>ประวัติแพ้ยา (Allergies) - แจ้งเตือนอัตโนมัติตอนขาย</li>
+                <li>ประวัติการซื้อทั้งหมด</li>
+                <li>แต้มสะสม (Points)</li>
+            </ul>
+            <h3 class="font-bold text-lg mb-3">Workflow ลงทะเบียนสมาชิกใหม่</h3>
+            <div class="space-y-4">
+                <div class="workflow-step"><span class="workflow-number">1</span><div class="bg-gray-50 rounded-xl p-4">ที่หน้า POS คลิก <strong>+ เพิ่มลูกค้า</strong></div></div>
+                <div class="workflow-step"><span class="workflow-number">2</span><div class="bg-gray-50 rounded-xl p-4">กรอกข้อมูล + บันทึกประวัติแพ้ยา</div></div>
+                <div class="workflow-step"><span class="workflow-number">3</span><div class="bg-gray-50 rounded-xl p-4">ระบบสร้าง Member ID อัตโนมัติ</div></div>
+            </div>
+        </section>
+
+        <!-- Section 6: Purchasing -->
+        <section id="purchasing" class="bg-white rounded-2xl p-6 shadow-sm mb-8 page-break">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2"><i class="ph ph-truck text-blue-600"></i> 6. สั่งซื้อและรับสินค้า</h2>
+            <h3 class="font-bold text-lg mb-3">Workflow ครบวงจร</h3>
+            <div class="space-y-4">
+                <div class="workflow-step"><span class="workflow-number">1</span><div class="bg-gray-50 rounded-xl p-4"><strong>สร้าง Purchase Order (PO)</strong> - เลือก Supplier, เพิ่มรายการสินค้า</div></div>
+                <div class="workflow-step"><span class="workflow-number">2</span><div class="bg-gray-50 rounded-xl p-4"><strong>อนุมัติ PO</strong> - Admin ตรวจสอบและอนุมัติ</div></div>
+                <div class="workflow-step"><span class="workflow-number">3</span><div class="bg-gray-50 rounded-xl p-4"><strong>รับสินค้า (Goods Received)</strong> - ตรวจสอบจำนวน, ใส่ Lot/หมดอายุ</div></div>
+                <div class="workflow-step"><span class="workflow-number">4</span><div class="bg-gray-50 rounded-xl p-4"><strong>สต็อกอัปเดตอัตโนมัติ</strong> - พร้อมขาย</div></div>
+            </div>
+        </section>
+
+        <!-- Section 7: Reports -->
+        <section id="reports" class="bg-white rounded-2xl p-6 shadow-sm mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2"><i class="ph ph-chart-bar text-blue-600"></i> 7. รายงาน</h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="bg-blue-50 rounded-xl p-4"><strong>รายงานยอดขาย</strong><br>รายวัน/สัปดาห์/เดือน, กราฟเทรนด์</div>
+                <div class="bg-green-50 rounded-xl p-4"><strong>รายงานสต็อก</strong><br>สินค้าคงเหลือ, มูลค่าคลัง</div>
+                <div class="bg-orange-50 rounded-xl p-4"><strong>รายงานหมดอายุ</strong><br>สินค้าใกล้หมดอายุ</div>
+                <div class="bg-purple-50 rounded-xl p-4"><strong>รายงานการเงิน</strong><br>กำไร/ขาดทุน, ต้นทุน</div>
+            </div>
+        </section>
+
+        <!-- Section 8: Settings -->
+        <section id="settings" class="bg-white rounded-2xl p-6 shadow-sm mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2"><i class="ph ph-gear text-blue-600"></i> 8. ตั้งค่าระบบ (Admin Only)</h2>
+            <ul class="list-disc list-inside text-sm space-y-2">
+                <li><strong>ข้อมูลร้าน:</strong> ชื่อ, โลโก้, ที่อยู่, เบอร์โทร</li>
+                <li><strong>ผู้ใช้:</strong> เพิ่ม/ลบ/แก้ไขผู้ใช้, กำหนดสิทธิ์</li>
+                <li><strong>การแจ้งเตือน:</strong> Email, LINE Notify</li>
+                <li><strong>Backup:</strong> สำรองข้อมูลอัตโนมัติ</li>
+                <li><strong>Activity Logs:</strong> ดูประวัติการใช้งานทั้งหมด</li>
+            </ul>
+        </section>
+
+        <!-- Footer -->
+        <div class="text-center text-sm text-gray-500 py-8">
+            <p>เอกสารนี้สร้างโดยอัตโนมัติ | Oboun ERP v1.0</p>
+            <p>© 2026 Oboun ERP - All Rights Reserved</p>
+        </div>
+    </div>
+</body>
+</html>

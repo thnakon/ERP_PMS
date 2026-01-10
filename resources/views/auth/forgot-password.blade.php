@@ -52,7 +52,7 @@
         <a href="{{ route('login') }}"
             class="group flex items-center gap-2 px-4 py-2 bg-white/50 backdrop-blur-md rounded-2xl border border-white dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-white transition-all shadow-sm">
             <i class="ph ph-arrow-left group-hover:-translate-x-1 transition-transform"></i>
-            <span class="text-sm font-bold">Back to Login</span>
+            <span class="text-sm font-bold">{{ __('auth.back_to_login') }}</span>
         </a>
 
         {{-- Language Switcher --}}
@@ -89,8 +89,8 @@
                     <span class="text-white font-black text-4xl">O</span>
                 </div>
             @endif
-            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Forgot Password?</h1>
-            <p class="text-gray-500 mt-2 font-medium text-center">No worries, we'll send you reset instructions.</p>
+            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">{{ __('auth.forgot_password_title') }}</h1>
+            <p class="text-gray-500 mt-2 font-medium text-center">{{ __('auth.forgot_password_subtitle') }}</p>
         </div>
 
         {{-- Reset Password Form --}}
@@ -106,7 +106,7 @@
                             class="ph ph-envelope absolute left-5 top-1/2 -translate-y-1/2 text-xl text-gray-400/80 group-focus-within:text-ios-blue transition-colors"></i>
                         <input type="email" name="email" id="email"
                             class="input-ios has-icon @error('email') border-red-500 @enderror"
-                            placeholder="Enter your email address" required autofocus value="{{ old('email') }}">
+                            placeholder="{{ __('auth.email') }}" required autofocus value="{{ old('email') }}">
                     </div>
                     @error('email')
                         <p class="text-xs text-red-500 ml-1 mt-1 font-medium">{{ $message }}</p>
@@ -116,7 +116,7 @@
                 <button type="submit"
                     class="w-full py-3.5 bg-ios-blue text-white rounded-2xl font-bold shadow-lg shadow-blue-500/25 hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4">
                     <i class="ph ph-envelope-simple text-xl"></i>
-                    <span>Send Reset Link</span>
+                    <span>{{ __('auth.send_reset_link') }}</span>
                 </button>
             </form>
 
@@ -125,7 +125,7 @@
                 <a href="{{ route('login') }}"
                     class="text-sm text-gray-500 font-medium hover:text-ios-blue transition-colors flex items-center justify-center gap-2">
                     <i class="ph ph-arrow-left text-sm"></i>
-                    <span>Back to Login</span>
+                    <span>{{ __('auth.back_to_login') }}</span>
                 </a>
             </div>
         </div>

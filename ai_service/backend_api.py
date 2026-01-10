@@ -8,7 +8,10 @@ from typing import Optional
 import json
 
 # --- Configuration ---
-API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyCwaNXBaEwwgFV6YFTlLZhITbaJ2BQvcAA")
+API_KEY = os.environ.get("GEMINI_API_KEY")
+if not API_KEY:
+    print("⚠️ Warning: GEMINI_API_KEY not set. AI features will not work.")
+    API_KEY = "NOT_SET"
 
 # ตั้งค่า Gemini - using gemini-2.5-flash (stable and has good quota)
 genai.configure(api_key=API_KEY)

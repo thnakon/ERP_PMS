@@ -84,4 +84,14 @@ return [
     // Navigation
     'next' => 'ถัดไป',
     'back' => 'ย้อนกลับ',
+
+    // Password Reset
+    'forgot_password_title' => 'ลืมรหัสผ่าน?',
+    'forgot_password_subtitle' => 'ไม่ต้องกังวล เราจะส่งคำแนะนำในการตั้งค่าใหม่ให้คุณ',
+    'send_reset_link' => 'ส่งลิงก์ตั้งค่าใหม่',
+    'reset_password_title' => 'ตั้งรหัสผ่านใหม่',
+    'reset_password_subtitle' => 'กรุณากรอกรหัสผ่านใหม่ของคุณด้านล่าง',
+    'new_password' => 'รหัสผ่านใหม่',
+    'confirm_new_password' => 'ยืนยันรหัสผ่านใหม่',
+    'reset_password_button' => 'ตั้งรหัสผ่านใหม่',
 ];
