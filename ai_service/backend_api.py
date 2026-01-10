@@ -6,12 +6,21 @@ from pydantic import BaseModel
 import google.generativeai as genai
 from typing import Optional
 import json
+from pathlib import Path
+from dotenv import load_dotenv
+
+# --- Load .env from parent directory ---
+env_path = Path(__file__).parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
 
 # --- Configuration ---
 API_KEY = os.environ.get("GEMINI_API_KEY")
 if not API_KEY:
-    print("⚠️ Warning: GEMINI_API_KEY not set. AI features will not work.")
+    print("⚠️ Warning: GEMINI_API_KEY not set in .env file. AI features will not work.")
+    print(f"   Looking for .env at: {env_path}")
     API_KEY = "NOT_SET"
+else:
+    print(f"✅ GEMINI_API_KEY loaded successfully")
 
 # ตั้งค่า Gemini - using gemini-2.5-flash (stable and has good quota)
 genai.configure(api_key=API_KEY)

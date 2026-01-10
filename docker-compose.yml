@@ -17,6 +17,8 @@ services:
       - db
     networks:
       - obounerp_network
+    env_file:
+      - .env
     environment:
       - DB_CONNECTION=mysql
       - DB_HOST=db
@@ -24,6 +26,20 @@ services:
       - DB_DATABASE=obounerp_db
       - DB_USERNAME=obounerp_user
       - DB_PASSWORD=obounerp_secret
+
+  # AI Service (Gemini)
+  ai:
+    build:
+      context: ./ai_service
+      dockerfile: Dockerfile
+    container_name: obounerp_ai
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    networks:
+      - obounerp_network
+    env_file:
+      - .env
 
   # MySQL Database
   db:
