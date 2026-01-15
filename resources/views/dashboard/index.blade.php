@@ -13,12 +13,48 @@
 
 @section('header-actions')
     <div class="flex items-center gap-3">
-        <div
-            class="px-5 py-3 bg-white/80 backdrop-blur-md border border-gray-100 rounded-2xl shadow-sm text-base font-semibold text-gray-700 flex items-center gap-3">
-            <i class="ph-fill ph-calendar-blank text-ios-blue text-xl"></i>
-            {{ now()->translatedFormat('d F Y') }}
-        </div>
+        <form id="date-filter-form" action="{{ route('dashboard') }}" method="GET" class="flex items-center gap-2">
+            <button type="button" onclick="changeDate(-1)"
+                class="w-10 h-10 bg-white/80 backdrop-blur-md border border-gray-100 rounded-xl shadow-sm flex items-center justify-center hover:bg-gray-50 transition-colors">
+                <i class="ph ph-caret-left text-gray-600"></i>
+            </button>
+            <div class="relative">
+                <input type="date" name="date" id="dashboard-date" value="{{ $selectedDate->format('Y-m-d') }}"
+                    max="{{ now()->format('Y-m-d') }}"
+                    class="pl-12 pr-5 py-3 bg-white/80 backdrop-blur-md border border-gray-100 rounded-2xl shadow-sm text-base font-semibold text-gray-700 cursor-pointer"
+                    style="-webkit-appearance: none; -moz-appearance: none;" onchange="this.form.submit()">
+                <i
+                    class="ph-fill ph-calendar-blank text-ios-blue text-xl absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            </div>
+            <button type="button" onclick="changeDate(1)"
+                class="w-10 h-10 bg-white/80 backdrop-blur-md border border-gray-100 rounded-xl shadow-sm flex items-center justify-center hover:bg-gray-50 transition-colors {{ $selectedDate->isToday() ? 'opacity-50 cursor-not-allowed' : '' }}"
+                {{ $selectedDate->isToday() ? 'disabled' : '' }}>
+                <i class="ph ph-caret-right text-gray-600"></i>
+            </button>
+            @if (!$selectedDate->isToday())
+                <a href="{{ route('dashboard') }}"
+                    class="px-4 py-2 bg-ios-blue text-white rounded-xl text-sm font-bold hover:bg-blue-600 transition-colors flex items-center gap-2">
+                    <i class="ph ph-arrow-counter-clockwise"></i>
+                    {{ __('dashboard.today') }}
+                </a>
+            @endif
+        </form>
     </div>
+    <script>
+        function changeDate(days) {
+            const input = document.getElementById('dashboard-date');
+            const currentDate = new Date(input.value);
+            currentDate.setDate(currentDate.getDate() + days);
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (currentDate <= today) {
+                input.value = currentDate.toISOString().split('T')[0];
+                document.getElementById('date-filter-form').submit();
+            }
+        }
+    </script>
 @endsection
 
 @section('content')
@@ -37,7 +73,7 @@
                                 <i class="ph-fill ph-currency-circle-dollar text-green-600 text-2xl"></i>
                             </div>
                             <span
-                                class="text-xs font-bold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">{{ __('dashboard.today') }}</span>
+                                class="text-xs font-bold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">{{ $selectedDate->isToday() ? __('dashboard.today') : $selectedDate->format('d/m') }}</span>
                         </div>
                         <p class="text-sm font-medium text-gray-500 mb-1">{{ __('dashboard.today_revenue') }}</p>
                         <h3 class="text-3xl font-black text-gray-900 tracking-tight">
@@ -423,7 +459,8 @@
                                     <i class="ph ph-clock text-gray-400"></i>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="font-semibold text-gray-900 truncate">{{ $lot->product->name ?? 'Unknown' }}
+                                    <p class="font-semibold text-gray-900 truncate">
+                                        {{ $lot->product->name ?? 'Unknown' }}
                                     </p>
                                     <p class="text-xs text-gray-400">{{ __('dashboard.lot') }}: {{ $lot->lot_number }}
                                     </p>

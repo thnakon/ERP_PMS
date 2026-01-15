@@ -77,6 +77,11 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 Route::post('/register/verify', [AuthController::class, 'verifyEmail'])->name('register.verify');
 
+// Two-Factor Authentication Routes
+Route::get('/two-factor-challenge', [\App\Http\Controllers\TwoFactorController::class, 'challenge'])->name('two-factor.challenge');
+Route::post('/two-factor-challenge', [\App\Http\Controllers\TwoFactorController::class, 'verify'])->name('two-factor.verify');
+Route::post('/two-factor-resend', [\App\Http\Controllers\TwoFactorController::class, 'resend'])->name('two-factor.resend');
+
 /*
 |--------------------------------------------------------------------------
 | Staff Routes (All authenticated users: staff + admin)
@@ -96,6 +101,12 @@ Route::middleware(['auth', 'staff'])->group(function () {
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+    // Two-Factor Authentication Settings (Authenticated)
+    Route::get('/two-factor', [\App\Http\Controllers\TwoFactorController::class, 'settings'])->name('two-factor.settings');
+    Route::post('/two-factor/enable', [\App\Http\Controllers\TwoFactorController::class, 'enable'])->name('two-factor.enable');
+    Route::post('/two-factor/confirm', [\App\Http\Controllers\TwoFactorController::class, 'confirm'])->name('two-factor.confirm');
+    Route::delete('/two-factor/disable', [\App\Http\Controllers\TwoFactorController::class, 'disable'])->name('two-factor.disable');
 
     // Point of Sale
     Route::prefix('pos')->name('pos.')->group(function () {

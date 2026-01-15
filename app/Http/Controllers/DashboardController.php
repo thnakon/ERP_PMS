@@ -16,15 +16,25 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $today = Carbon::today();
-        $startOfWeek = Carbon::now()->startOfWeek();
-        $startOfMonth = Carbon::now()->startOfMonth();
+        // Get selected date from request or use today
+        $selectedDate = $request->has('date')
+            ? Carbon::parse($request->date)->startOfDay()
+            : Carbon::today();
+
+        // Don't allow future dates
+        if ($selectedDate->isFuture()) {
+            $selectedDate = Carbon::today();
+        }
+
+        $today = $selectedDate;
+        $startOfWeek = $selectedDate->copy()->startOfWeek();
+        $startOfMonth = $selectedDate->copy()->startOfMonth();
 
         // === KPI Statistics ===
         $stats = [
-            // Today's Performance
+            // Selected Date's Performance
             'today_revenue' => Order::whereDate('created_at', $today)
                 ->where('status', 'completed')
                 ->sum('total_amount'),
@@ -244,7 +254,8 @@ class DashboardController extends Controller
             'pharmacistOnDuty',
             'isAdmin',
             'todaysTasks',
-            'recentShiftNotes'
+            'recentShiftNotes',
+            'selectedDate'
         ));
     }
 }

@@ -39,9 +39,43 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        // First verify credentials without logging in
+        $user = \App\Models\User::where('email', $credentials['email'])->first();
+
+        if (!$user || !\Illuminate\Support\Facades\Hash::check($credentials['password'], $user->password)) {
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ])->onlyInput('email');
+        }
+
+        // Check if 2FA is enabled
+        if ($user->two_factor_enabled) {
+            // Generate 2FA code
+            $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+            // Store in session
+            session([
+                '2fa_user_id' => $user->id,
+                '2fa_code' => $code,
+                '2fa_expires_at' => now()->addMinutes(5),
+                '2fa_remember' => $request->boolean('remember'),
+            ]);
+
+            // Send code via email
+            try {
+                \Illuminate\Support\Facades\Mail::to($user->email)->send(
+                    new \App\Mail\TwoFactorCodeMail($code, $user->name)
+                );
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('2FA email failed: ' . $e->getMessage());
+            }
+
+            return redirect()->route('two-factor.challenge');
+        }
+
+        // No 2FA, login directly
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-
             return redirect()->intended('dashboard')->with('success', __('welcome_back', ['name' => Auth::user()->name]));
         }
 
