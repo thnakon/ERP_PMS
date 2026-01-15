@@ -25,6 +25,19 @@
                     style="-webkit-appearance: none; -moz-appearance: none;" onchange="this.form.submit()">
                 <i
                     class="ph-fill ph-calendar-blank text-ios-blue text-xl absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                <style>
+                    #dashboard-date::-webkit-calendar-picker-indicator {
+                        opacity: 0;
+                        position: absolute;
+                        left: 0;
+                        right: 0;
+                        top: 0;
+                        bottom: 0;
+                        width: 100%;
+                        height: 100%;
+                        cursor: pointer;
+                    }
+                </style>
             </div>
             <button type="button" onclick="changeDate(1)"
                 class="w-10 h-10 bg-white/80 backdrop-blur-md border border-gray-100 rounded-xl shadow-sm flex items-center justify-center hover:bg-gray-50 transition-colors {{ $selectedDate->isToday() ? 'opacity-50 cursor-not-allowed' : '' }}"
