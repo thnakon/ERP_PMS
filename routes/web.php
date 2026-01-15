@@ -108,6 +108,11 @@ Route::middleware(['auth', 'staff'])->group(function () {
     Route::post('/two-factor/confirm', [\App\Http\Controllers\TwoFactorController::class, 'confirm'])->name('two-factor.confirm');
     Route::delete('/two-factor/disable', [\App\Http\Controllers\TwoFactorController::class, 'disable'])->name('two-factor.disable');
 
+    // Session Management
+    Route::get('/sessions', [\App\Http\Controllers\SessionController::class, 'index'])->name('sessions.index');
+    Route::delete('/sessions/{session}', [\App\Http\Controllers\SessionController::class, 'destroy'])->name('sessions.destroy');
+    Route::delete('/sessions', [\App\Http\Controllers\SessionController::class, 'destroyOthers'])->name('sessions.destroy-others');
+
     // Point of Sale
     Route::prefix('pos')->name('pos.')->group(function () {
         Route::get('/', [PosController::class, 'index'])->name('index');
