@@ -1409,7 +1409,152 @@
 
             // Update held orders count
             updateHeldCount();
+
+            // ===============================================
+            // KEYBOARD SHORTCUTS
+            // ===============================================
+            document.addEventListener('keydown', function(e) {
+                // Skip if typing in input/textarea
+                const isTyping = ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName);
+
+                switch (e.key) {
+                    case 'F1':
+                        e.preventDefault();
+                        showKeyboardShortcutsHelp();
+                        break;
+                    case 'F2':
+                        e.preventDefault();
+                        document.getElementById('productSearch').focus();
+                        break;
+                    case 'F3':
+                        e.preventDefault();
+                        document.getElementById('customerSearch')?.focus();
+                        break;
+                    case 'F4':
+                        e.preventDefault();
+                        toggleBarcodeScanner();
+                        break;
+                    case 'F8':
+                        e.preventDefault();
+                        if (cart.length > 0) holdOrder();
+                        break;
+                    case 'F10':
+                        e.preventDefault();
+                        if (cart.length > 0) showCheckoutModal();
+                        break;
+                    case 'Escape':
+                        e.preventDefault();
+                        // Close any open modals
+                        document.querySelectorAll('[id$="Modal"]').forEach(modal => {
+                            if (!modal.classList.contains('hidden')) {
+                                modal.classList.add('hidden');
+                            }
+                        });
+                        // Clear search if focused
+                        if (document.activeElement.id === 'productSearch') {
+                            document.activeElement.value = '';
+                            document.activeElement.blur();
+                        }
+                        break;
+                    case '+':
+                    case '=':
+                        if (!isTyping && cart.length > 0) {
+                            e.preventDefault();
+                            // Increase last item qty
+                            updateQty(cart.length - 1, 1);
+                        }
+                        break;
+                    case '-':
+                        if (!isTyping && cart.length > 0) {
+                            e.preventDefault();
+                            // Decrease last item qty
+                            updateQty(cart.length - 1, -1);
+                        }
+                        break;
+                    case 'Delete':
+                        if (!isTyping && cart.length > 0) {
+                            e.preventDefault();
+                            // Remove last item
+                            if (confirm('ลบรายการล่าสุด?')) {
+                                removeFromCart(cart.length - 1);
+                            }
+                        }
+                        break;
+                }
+            });
         });
+
+        // Keyboard Shortcuts Help Modal
+        function showKeyboardShortcutsHelp() {
+            const modal = document.createElement('div');
+            modal.id = 'keyboardHelpModal';
+            modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center';
+            modal.onclick = (e) => {
+                if (e.target === modal) modal.remove();
+            };
+            modal.innerHTML = `
+                <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+                    <div class="bg-gradient-to-r from-ios-blue to-blue-600 text-white p-6">
+                        <div class="flex items-center gap-3">
+                            <i class="ph-fill ph-keyboard text-3xl"></i>
+                            <div>
+                                <h3 class="text-xl font-bold">คีย์ลัด (Shortcuts)</h3>
+                                <p class="text-white/70 text-sm">เพิ่มความเร็วในการใช้งาน POS</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-3 max-h-[60vh] overflow-y-auto">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-gray-700">แสดงความช่วยเหลือ</span>
+                            <kbd class="px-3 py-1 bg-gray-100 rounded-lg font-mono text-sm font-bold">F1</kbd>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-gray-700">ค้นหาสินค้า</span>
+                            <kbd class="px-3 py-1 bg-gray-100 rounded-lg font-mono text-sm font-bold">F2</kbd>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-gray-700">ค้นหาลูกค้า</span>
+                            <kbd class="px-3 py-1 bg-gray-100 rounded-lg font-mono text-sm font-bold">F3</kbd>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-gray-700">สแกนบาร์โค้ด</span>
+                            <kbd class="px-3 py-1 bg-gray-100 rounded-lg font-mono text-sm font-bold">F4</kbd>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-gray-700">พักบิล</span>
+                            <kbd class="px-3 py-1 bg-gray-100 rounded-lg font-mono text-sm font-bold">F8</kbd>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-gray-700 font-bold text-ios-blue">ชำระเงิน</span>
+                            <kbd class="px-3 py-1 bg-ios-blue text-white rounded-lg font-mono text-sm font-bold">F10</kbd>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-gray-700">ปิด / ยกเลิก</span>
+                            <kbd class="px-3 py-1 bg-gray-100 rounded-lg font-mono text-sm font-bold">Esc</kbd>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-gray-700">เพิ่มจำนวน</span>
+                            <kbd class="px-3 py-1 bg-gray-100 rounded-lg font-mono text-sm font-bold">+</kbd>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="text-gray-700">ลดจำนวน</span>
+                            <kbd class="px-3 py-1 bg-gray-100 rounded-lg font-mono text-sm font-bold">-</kbd>
+                        </div>
+                        <div class="flex justify-between items-center py-2">
+                            <span class="text-gray-700">ลบรายการล่าสุด</span>
+                            <kbd class="px-3 py-1 bg-gray-100 rounded-lg font-mono text-sm font-bold">Delete</kbd>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 border-t border-gray-100">
+                        <button onclick="this.closest('#keyboardHelpModal').remove()" 
+                            class="w-full py-3 bg-gray-200 hover:bg-gray-300 rounded-xl font-bold text-gray-700 transition-colors">
+                            ปิด (Esc)
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
 
         // Search products
         async function searchProducts(query) {
