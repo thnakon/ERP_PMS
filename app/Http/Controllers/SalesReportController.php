@@ -11,6 +11,7 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SalesReportController extends Controller
 {
@@ -82,15 +83,16 @@ class SalesReportController extends Controller
         $filename = 'sales_report_' . $startDate . '_to_' . $endDate;
 
         if ($format === 'pdf') {
-            // For PDF, we'll return a simple HTML view for now
-            return response()->view('reports.sales-pdf', compact(
+            $pdf = Pdf::loadView('reports.sales-pdf', compact(
                 'startDate',
                 'endDate',
                 'metrics',
                 'topProducts',
                 'categoryData',
                 'staffSales'
-            ))->header('Content-Type', 'text/html');
+            ));
+            $pdf->setPaper('A4', 'portrait');
+            return $pdf->download($filename . '.pdf');
         }
 
         // Excel/CSV export

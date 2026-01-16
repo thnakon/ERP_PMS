@@ -3,29 +3,28 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Report - {{ $startDate }} to {{ $endDate }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>รายงานยอดขาย</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Sarabun', 'TH Sarabun New', 'DejaVu Sans', sans-serif;
         }
 
         body {
-            font-family: 'Helvetica', 'Arial', sans-serif;
             font-size: 12px;
             line-height: 1.5;
             color: #333;
-            padding: 40px;
-            background: #fff;
+            padding: 20px;
         }
 
         .header {
             text-align: center;
             margin-bottom: 30px;
-            padding-bottom: 20px;
             border-bottom: 2px solid #007AFF;
+            padding-bottom: 15px;
         }
 
         .header h1 {
@@ -34,48 +33,46 @@
             margin-bottom: 5px;
         }
 
-        .header p {
-            color: #666;
+        .header .period {
             font-size: 14px;
+            color: #666;
         }
 
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .section-title {
             font-size: 16px;
             font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
+            color: #007AFF;
+            margin-bottom: 10px;
             padding-bottom: 5px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #E5E7EB;
         }
 
         .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            display: table;
+            width: 100%;
         }
 
-        .metric-card {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
+        .metric-box {
+            display: table-cell;
+            width: 25%;
             text-align: center;
+            padding: 10px;
+            border: 1px solid #E5E7EB;
         }
 
         .metric-value {
             font-size: 20px;
             font-weight: bold;
-            color: #007AFF;
+            color: #1F2937;
         }
 
         .metric-label {
             font-size: 11px;
-            color: #666;
-            text-transform: uppercase;
+            color: #6B7280;
         }
 
         table {
@@ -86,21 +83,19 @@
 
         th,
         td {
-            padding: 10px 12px;
+            padding: 8px;
             text-align: left;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #E5E7EB;
         }
 
         th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #333;
-            font-size: 11px;
-            text-transform: uppercase;
+            background: #F3F4F6;
+            font-weight: bold;
+            color: #374151;
         }
 
-        td {
-            font-size: 12px;
+        tr:nth-child(even) {
+            background: #F9FAFB;
         }
 
         .text-right {
@@ -111,158 +106,129 @@
             text-align: center;
         }
 
-        .highlight {
-            background: #e8f4fd;
+        .text-green {
+            color: #10B981;
+        }
+
+        .text-red {
+            color: #EF4444;
         }
 
         .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
+            margin-top: 30px;
             text-align: center;
-            color: #999;
+            color: #9CA3AF;
             font-size: 10px;
-        }
-
-        @media print {
-            body {
-                padding: 20px;
-            }
-
-            .no-print {
-                display: none;
-            }
+            border-top: 1px solid #E5E7EB;
+            padding-top: 15px;
         }
     </style>
 </head>
 
 <body>
-    <div class="no-print" style="margin-bottom: 20px; text-align: right;">
-        <button onclick="window.print()"
-            style="padding: 10px 20px; background: #007AFF; color: white; border: none; border-radius: 8px; cursor: pointer;">
-            🖨️ Print / Save as PDF
-        </button>
-    </div>
-
     <div class="header">
-        <h1>📊 Sales Report</h1>
-        <p>Period: {{ $startDate }} to {{ $endDate }}</p>
+        <h1>📊 รายงานยอดขาย</h1>
+        <div class="period">{{ $startDate }} ถึง {{ $endDate }}</div>
+        <div style="font-size: 10px; color: #9CA3AF; margin-top: 5px;">
+            สร้างเมื่อ: {{ now()->format('d/m/Y H:i:s') }}
+        </div>
     </div>
 
     <div class="section">
-        <h2 class="section-title">Key Metrics</h2>
+        <div class="section-title">📈 สรุปยอดขาย</div>
         <div class="metrics-grid">
-            <div class="metric-card">
-                <div class="metric-value">฿{{ number_format($metrics['net_sales'], 0) }}</div>
-                <div class="metric-label">Net Sales</div>
+            <div class="metric-box">
+                <div class="metric-value">฿{{ number_format($metrics['net_sales'], 2) }}</div>
+                <div class="metric-label">ยอดขายสุทธิ</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-value">฿{{ number_format($metrics['gross_profit'], 0) }}</div>
-                <div class="metric-label">Gross Profit</div>
+            <div class="metric-box">
+                <div class="metric-value text-green">฿{{ number_format($metrics['gross_profit'], 2) }}</div>
+                <div class="metric-label">กำไรขั้นต้น</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-value">{{ number_format($metrics['profit_margin'], 1) }}%</div>
-                <div class="metric-label">Profit Margin</div>
+            <div class="metric-box">
+                <div class="metric-value">{{ $metrics['transaction_count'] }}</div>
+                <div class="metric-label">รายการขาย</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-value">{{ number_format($metrics['transaction_count']) }}</div>
-                <div class="metric-label">Transactions</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-value">฿{{ number_format($metrics['average_basket'], 0) }}</div>
-                <div class="metric-label">Avg Basket</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-value">฿{{ number_format($metrics['total_discount'], 0) }}</div>
-                <div class="metric-label">Total Discount</div>
+            <div class="metric-box">
+                <div class="metric-value">฿{{ number_format($metrics['average_basket'], 2) }}</div>
+                <div class="metric-label">ยอดเฉลี่ย/บิล</div>
             </div>
         </div>
     </div>
 
     <div class="section">
-        <h2 class="section-title">Top 10 Best Sellers</h2>
+        <div class="section-title">🏆 สินค้าขายดี Top 10</div>
         <table>
             <thead>
                 <tr>
-                    <th style="width: 50px;">#</th>
-                    <th>Product</th>
-                    <th class="text-center">Qty Sold</th>
-                    <th class="text-right">Revenue</th>
+                    <th class="text-center" width="50">อันดับ</th>
+                    <th>ชื่อสินค้า</th>
+                    <th class="text-right" width="80">จำนวน</th>
+                    <th class="text-right" width="100">ยอดขาย</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse($topProducts as $index => $product)
-                    <tr class="{{ $index < 3 ? 'highlight' : '' }}">
+                @foreach ($topProducts as $index => $product)
+                    <tr>
                         <td class="text-center">{{ $index + 1 }}</td>
                         <td>{{ $product['product_name'] }}</td>
-                        <td class="text-center">{{ number_format($product['total_quantity']) }}</td>
-                        <td class="text-right">฿{{ number_format($product['total_sales'], 0) }}</td>
+                        <td class="text-right">{{ number_format($product['total_quantity']) }}</td>
+                        <td class="text-right">฿{{ number_format($product['total_sales'], 2) }}</td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="text-center">No data available</td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
 
     <div class="section">
-        <h2 class="section-title">Sales by Category</h2>
+        <div class="section-title">📦 ยอดขายตามหมวดหมู่</div>
         <table>
             <thead>
                 <tr>
-                    <th>Category</th>
-                    <th class="text-center">Items Sold</th>
-                    <th class="text-right">Revenue</th>
+                    <th>หมวดหมู่</th>
+                    <th class="text-right" width="80">จำนวน</th>
+                    <th class="text-right" width="100">ยอดขาย</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse($categoryData as $cat)
+                @foreach ($categoryData as $cat)
                     <tr>
                         <td>{{ $cat['name'] }}</td>
-                        <td class="text-center">{{ number_format($cat['total_quantity']) }}</td>
-                        <td class="text-right">฿{{ number_format($cat['total_sales'], 0) }}</td>
+                        <td class="text-right">{{ number_format($cat['total_quantity']) }}</td>
+                        <td class="text-right">฿{{ number_format($cat['total_sales'], 2) }}</td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="3" class="text-center">No data available</td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
 
     <div class="section">
-        <h2 class="section-title">Staff Performance</h2>
+        <div class="section-title">👥 ยอดขายตามพนักงาน</div>
         <table>
             <thead>
                 <tr>
-                    <th>Staff</th>
-                    <th class="text-center">Transactions</th>
-                    <th class="text-right">Total Sales</th>
-                    <th class="text-right">Avg Sale</th>
+                    <th>พนักงาน</th>
+                    <th class="text-right" width="80">รายการ</th>
+                    <th class="text-right" width="100">ยอดขาย</th>
+                    <th class="text-right" width="100">เฉลี่ย</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse($staffSales as $staff)
+                @foreach ($staffSales as $staff)
                     <tr>
                         <td>{{ $staff['name'] }}</td>
-                        <td class="text-center">{{ number_format($staff['transaction_count']) }}</td>
-                        <td class="text-right">฿{{ number_format($staff['total_sales'], 0) }}</td>
-                        <td class="text-right">฿{{ number_format($staff['average_sale'], 0) }}</td>
+                        <td class="text-right">{{ number_format($staff['transaction_count']) }}</td>
+                        <td class="text-right">฿{{ number_format($staff['total_sales'], 2) }}</td>
+                        <td class="text-right">฿{{ number_format($staff['average_sale'], 2) }}</td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="text-center">No data available</td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
 
     <div class="footer">
-        <p>Generated on {{ now()->format('d M Y, H:i') }} | Oboun ERP</p>
+        <p>Oboun ERP - ระบบบริหารจัดการร้านขายยา</p>
+        <p>© {{ date('Y') }} Oboun ERP. All Rights Reserved.</p>
     </div>
 </body>
 
