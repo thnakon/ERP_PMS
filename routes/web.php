@@ -93,8 +93,10 @@ Route::middleware(['auth', 'staff'])->group(function () {
     // Global Search API
     Route::get('/api/global-search', [GlobalSearchController::class, 'search'])->name('global-search');
 
-    // AI Chat API
+    // AI Chat
     Route::post('/api/ai-chat', [\App\Http\Controllers\AiChatController::class, 'chat'])->name('ai.chat');
+
+
 
     // System Documentation
     Route::get('/docs/{document}', [DocumentationController::class, 'show'])->name('docs.show');

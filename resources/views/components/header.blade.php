@@ -36,13 +36,14 @@
                 </div>
             </div>
 
-            {{-- Apple Intelligence Style Icon - AI Chat --}}
+            {{-- Apple Intelligence Style Icon - AI Chat Modal --}}
             <button onclick="openAiChat()"
                 class="relative flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-blue-50 via-purple-50 to-orange-50 border border-white/50 shadow-sm active-scale transition-all hover:shadow-md mr-1"
                 title="{{ __('ai.assistant') }}">
                 <i
                     class="ph-fill ph-atom text-xl text-transparent bg-clip-text bg-gradient-to-tr from-blue-500 via-purple-500 to-orange-500"></i>
             </button>
+
 
             {{-- Website Home Link --}}
             <a href="{{ route('landing') }}"
@@ -432,18 +433,32 @@
             </div>
             <div class="flex-1">
                 <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-[90%]">
-                    <p class="text-sm text-gray-800">{{ __('ai.welcome_greeting') }} <strong>Oboun AI</strong>
-                        {{ __('ai.welcome_intro') }}</p>
+                    <p class="text-sm text-gray-800"><strong>{{ __('ai.welcome_greeting') }} Oboun AI</strong></p>
+                    <p class="text-sm text-gray-600 mt-1">{{ __('ai.welcome_intro') }}</p>
                     <p class="text-sm text-gray-600 mt-2">{{ __('ai.welcome_help') }}</p>
                     <ul class="text-sm text-gray-600 mt-1 space-y-1">
                         <li>{{ __('ai.welcome_drugs') }}</li>
                         <li>{{ __('ai.welcome_interactions') }}</li>
                         <li>{{ __('ai.welcome_erp') }}</li>
-                        <li>{{ __('ai.welcome_general') }}</li>
                     </ul>
-                    <p class="text-sm text-gray-600 mt-2">{{ __('ai.welcome_cta') }}</p>
                 </div>
                 <span class="text-[10px] text-gray-400 mt-1 block">Oboun AI</span>
+            </div>
+        </div>
+
+        {{-- Suggestions in Modal --}}
+        <div id="ai-suggestions" class="flex flex-col gap-2 pt-2">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1">ลองถาม:</p>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="quickAskAi('คลังยามีอะไรบ้าง?')"
+                    class="text-[11px] bg-white border border-gray-100 px-3 py-1.5 rounded-full hover:border-ios-blue hover:text-ios-blue transition shadow-sm">📦
+                    เช็คสต็อกยา</button>
+                <button onclick="quickAskAi('เช็คคนไข้แพ้ยากดตรงไหน?')"
+                    class="text-[11px] bg-white border border-gray-100 px-3 py-1.5 rounded-full hover:border-ios-blue hover:text-ios-blue transition shadow-sm">⚠️
+                    ดูประวัติแพ้ยา</button>
+                <button onclick="quickAskAi('ขอดูรายงานยอดขาย')"
+                    class="text-[11px] bg-white border border-gray-100 px-3 py-1.5 rounded-full hover:border-ios-blue hover:text-ios-blue transition shadow-sm">📊
+                    รายงานยอดขาย</button>
             </div>
         </div>
     </div>
@@ -474,12 +489,23 @@
     function openAiChat() {
         document.getElementById('aiChatModal-backdrop').classList.remove('hidden', 'modal-backdrop-hidden');
         document.getElementById('aiChatModal-panel').classList.remove('modal-panel-hidden');
+        // Reset suggestions visibility if needed
+        const suggestions = document.getElementById('ai-suggestions');
+        if (suggestions) suggestions.classList.remove('hidden');
+
         setTimeout(() => {
             document.getElementById('ai-chat-input').focus();
         }, 100);
     }
 
+    function quickAskAi(text) {
+        const input = document.getElementById('ai-chat-input');
+        input.value = text;
+        sendAiMessage(new Event('submit'));
+    }
+
     function closeAiChat() {
+
         document.getElementById('aiChatModal-backdrop').classList.add('modal-backdrop-hidden');
         document.getElementById('aiChatModal-panel').classList.add('modal-panel-hidden');
         setTimeout(() => {
@@ -495,6 +521,10 @@
         const message = input.value.trim();
 
         if (!message) return false;
+
+        // Hide suggestions on first message
+        const suggestions = document.getElementById('ai-suggestions');
+        if (suggestions) suggestions.classList.add('hidden');
 
         // Clear input
         input.value = '';
@@ -568,23 +598,53 @@
                     <span class="text-[10px] text-gray-400 mt-1">{{ __('ai.you') }}</span>
                 </div>
             `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
         } else {
+            const contentId = 'ai-content-' + Date.now();
             div.innerHTML = `
                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-orange-500 flex items-center justify-center flex-shrink-0">
                     <i class="ph-fill ph-atom text-white text-sm"></i>
                 </div>
                 <div class="flex-1">
                     <div class="bg-gray-100 ${isError ? 'bg-red-50 border border-red-200' : ''} rounded-2xl rounded-tl-none px-4 py-3 max-w-[90%]">
-                        <div class="text-sm ${isError ? 'text-red-600' : 'text-gray-800'} ai-message-content">${formattedMessage}</div>
+                        <div id="${contentId}" class="text-sm ${isError ? 'text-red-600' : 'text-gray-800'} ai-message-content"></div>
                     </div>
                     <span class="text-[10px] text-gray-400 mt-1 block">Oboun AI</span>
                 </div>
             `;
-        }
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
 
-        container.appendChild(div);
-        container.scrollTop = container.scrollHeight;
+            const contentEl = document.getElementById(contentId);
+            if (isError) {
+                contentEl.innerHTML = formattedMessage;
+            } else {
+                typeAiMessage(contentEl, formattedMessage);
+            }
+        }
     }
+
+    function typeAiMessage(element, html, speed = 10) {
+        let i = 0;
+        const container = document.getElementById('ai-chat-messages');
+
+        function type() {
+            if (i < html.length) {
+                if (html[i] === '<') {
+                    const tagEnd = html.indexOf('>', i);
+                    i = (tagEnd !== -1) ? tagEnd + 1 : i + 1;
+                } else {
+                    i++;
+                }
+                element.innerHTML = html.substring(0, i);
+                container.scrollTop = container.scrollHeight;
+                setTimeout(type, speed);
+            }
+        }
+        type();
+    }
+
 
     function addTypingIndicator() {
         const container = document.getElementById('ai-chat-messages');
