@@ -929,18 +929,19 @@
 
 @section('header-actions')
     <div class="flex items-center gap-3">
-        <button onclick="MessengerApp.createGroup()"
+        <button onclick="MessengerApp.createGroup()" data-no-loading
             class="px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl shadow-sm transition flex items-center gap-2">
             <i class="ph ph-users-three"></i>
             {{ __('messenger.new_group') }}
         </button>
-        <button onclick="MessengerApp.newChat()"
+        <button onclick="MessengerApp.newChat()" data-no-loading
             class="px-5 py-2.5 bg-ios-blue hover:brightness-110 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/20 transition active-scale flex items-center gap-2">
             <i class="ph-bold ph-plus"></i>
             {{ __('messenger.new_chat') }}
         </button>
     </div>
 @endsection
+
 
 @section('content')
     <div class="messenger-container {{ !$activeRoom || $activeRoom->type !== 'group' ? 'no-sidebar' : '' }}">

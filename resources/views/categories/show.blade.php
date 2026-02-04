@@ -15,13 +15,14 @@
 
 @section('header-actions')
     <div class="flex items-center gap-2">
-        <button onclick="editCategoryFromShow()"
+        <button onclick="editCategoryFromShow()" data-no-loading
             class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-xl transition flex items-center gap-2">
             <i class="ph ph-pencil"></i>
             {{ __('edit') }}
         </button>
     </div>
 @endsection
+
 
 @section('content')
     <div class="space-y-6">
@@ -369,10 +370,11 @@
                     class="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-2xl transition active-scale">
                     {{ __('cancel') }}
                 </button>
-                <button type="submit"
+                <button type="submit" data-no-loading
                     class="flex-1 py-3 bg-ios-blue hover:brightness-110 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/20 transition active-scale">
                     {{ __('save') }}
                 </button>
+
             </div>
         </form>
     </div>
