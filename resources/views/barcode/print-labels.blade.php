@@ -57,6 +57,11 @@
             color: #374151;
             text-decoration: none;
             display: inline-block;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: all 0.2s;
         }
 
         .back-btn:hover {

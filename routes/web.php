@@ -37,6 +37,8 @@ use App\Http\Controllers\ShiftNoteController;
 use App\Http\Controllers\MedicalCalculatorController;
 use App\Http\Controllers\DrugInteractionController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\DocumentationController;
+
 
 
 /*
@@ -93,6 +95,10 @@ Route::middleware(['auth', 'staff'])->group(function () {
 
     // AI Chat API
     Route::post('/api/ai-chat', [\App\Http\Controllers\AiChatController::class, 'chat'])->name('ai.chat');
+
+    // System Documentation
+    Route::get('/docs/{document}', [DocumentationController::class, 'show'])->name('docs.show');
+
 
     // =============================================
     // SALES OPERATIONS (All users)

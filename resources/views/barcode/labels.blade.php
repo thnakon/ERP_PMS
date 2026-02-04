@@ -20,6 +20,20 @@
 @endsection
 
 @section('content')
+    <style>
+        .product-item.selected {
+            background-color: rgba(0, 122, 255, 0.05);
+            border: 1px solid var(--ios-blue);
+        }
+
+        .product-item.selected .ph-plus {
+            display: none;
+        }
+
+        .product-item.selected .ph-check {
+            display: block !important;
+        }
+    </style>
     <form action="{{ route('barcode.generate-labels') }}" method="POST" target="_blank" id="labels-form">
         @csrf
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -62,6 +76,7 @@
                                     <button type="button"
                                         class="w-8 h-8 rounded-lg bg-ios-blue/10 text-ios-blue hover:bg-ios-blue hover:text-white transition flex items-center justify-center">
                                         <i class="ph-bold ph-plus"></i>
+                                        <i class="ph-bold ph-check hidden"></i>
                                     </button>
                                 </div>
                             </div>
@@ -81,12 +96,11 @@
                         </span>
                     </div>
 
-                    <div id="selected-products" class="space-y-3">
-                        <div id="no-products-selected" class="text-center py-8 text-gray-400">
-                            <i class="ph ph-package text-4xl mb-2"></i>
-                            <p>{{ __('barcode.no_products_selected') }}</p>
-                        </div>
+                    <div id="no-products-selected" class="text-center py-8 text-gray-400">
+                        <i class="ph ph-package text-4xl mb-2"></i>
+                        <p>{{ __('barcode.no_products_selected') }}</p>
                     </div>
+                    <div id="selected-products" class="space-y-3"></div>
                 </div>
             </div>
 
@@ -181,11 +195,13 @@
 
         function addProduct(element) {
             const id = parseInt(element.dataset.id);
-            const existing = selectedProducts.find(p => p.id === id);
+            const existingIndex = selectedProducts.findIndex(p => p.id === id);
 
-            if (existing) {
-                existing.quantity++;
+            if (existingIndex > -1) {
+                // If already selected, remove it (Unselect)
+                selectedProducts.splice(existingIndex, 1);
             } else {
+                // If not selected, add it
                 selectedProducts.push({
                     id: id,
                     name: element.dataset.name,
@@ -220,7 +236,6 @@
 
             if (selectedProducts.length === 0) {
                 container.innerHTML = '';
-                container.appendChild(empty);
                 empty.classList.remove('hidden');
                 printBtn.disabled = true;
                 document.getElementById('total-labels').textContent = '0';
@@ -266,6 +281,18 @@
             }).join('');
 
             document.getElementById('total-labels').textContent = totalLabels;
+
+            // Update search list selection state
+            const productItems = document.querySelectorAll('.product-item');
+            productItems.forEach(item => {
+                const id = parseInt(item.dataset.id);
+                const isSelected = selectedProducts.some(p => p.id === id);
+                if (isSelected) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
         }
     </script>
 @endpush

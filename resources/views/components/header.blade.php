@@ -871,13 +871,55 @@
         if (type === 'docs') {
             inner.innerHTML = `
                 <div class="space-y-4">
-                    <h3 class="font-bold text-lg">System Documentation</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-ios-blue hover:underline flex items-center gap-2"><i class="ph ph-file-text"></i> Getting Started Guide</a></li>
-                        <li><a href="#" class="text-ios-blue hover:underline flex items-center gap-2"><i class="ph ph-file-text"></i> POS & Checkout Basics</a></li>
-                        <li><a href="#" class="text-ios-blue hover:underline flex items-center gap-2"><i class="ph ph-file-text"></i> Inventory Management</a></li>
-                        <li><a href="#" class="text-ios-blue hover:underline flex items-center gap-2"><i class="ph ph-file-text"></i> Customer Loyalty Program</a></li>
-                    </ul>
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-lg">System Documentation</h3>
+                        <span class="text-[10px] bg-blue-100 text-ios-blue px-2 py-0.5 rounded-full font-bold">PDF Format</span>
+                    </div>
+                    <div class="grid grid-cols-1 gap-2">
+                        <a href="/docs/getting-started" target="_blank" class="flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-xl hover:border-ios-blue hover:shadow-sm transition group">
+                            <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-ios-blue group-hover:bg-ios-blue group-hover:text-white transition">
+                                <i class="ph ph-file-pdf text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-bold text-gray-900">Getting Started Guide</div>
+                                <div class="text-[10px] text-gray-400">Basic setup and navigation</div>
+                            </div>
+                            <i class="ph ph-arrow-square-out text-gray-300 group-hover:text-ios-blue transition"></i>
+                        </a>
+
+                        <a href="/docs/pos-checkout" target="_blank" class="flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-xl hover:border-ios-blue hover:shadow-sm transition group">
+                            <div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center text-orange-600 group-hover:bg-orange-500 group-hover:text-white transition">
+                                <i class="ph ph-file-pdf text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-bold text-gray-900">POS & Checkout Basics</div>
+                                <div class="text-[10px] text-gray-400">Sales, refunds and shortcuts</div>
+                            </div>
+                            <i class="ph ph-arrow-square-out text-gray-300 group-hover:text-ios-blue transition"></i>
+                        </a>
+
+                        <a href="/docs/inventory" target="_blank" class="flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-xl hover:border-ios-blue hover:shadow-sm transition group">
+                            <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center text-green-600 group-hover:bg-green-500 group-hover:text-white transition">
+                                <i class="ph ph-file-pdf text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-bold text-gray-900">Inventory Management</div>
+                                <div class="text-[10px] text-gray-400">Stock counts and adjustments</div>
+                            </div>
+                            <i class="ph ph-arrow-square-out text-gray-300 group-hover:text-ios-blue transition"></i>
+                        </a>
+
+                        <a href="/docs/loyalty" target="_blank" class="flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-xl hover:border-ios-blue hover:shadow-sm transition group">
+                            <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600 group-hover:bg-purple-500 group-hover:text-white transition">
+                                <i class="ph ph-file-pdf text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-bold text-gray-900">Customer Loyalty Program</div>
+                                <div class="text-[10px] text-gray-400">Points and member benefits</div>
+                            </div>
+                            <i class="ph ph-arrow-square-out text-gray-300 group-hover:text-ios-blue transition"></i>
+                        </a>
+                    </div>
                 </div>
             `;
         } else if (type === 'contact') {
