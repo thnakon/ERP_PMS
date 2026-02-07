@@ -208,19 +208,7 @@
         <div>
             <h3 class="sidebar-section-title">{{ __('inventory_tools') }}</h3>
             <ul class="sidebar-section">
-                <li>
-                    <button onclick="openAiChat()" class="sidebar-link w-full text-left">
-                        <div class="sidebar-link-content">
-                            <i
-                                class="ph-fill ph-atom sidebar-link-icon text-transparent bg-clip-text bg-gradient-to-tr from-blue-500 via-purple-500 to-orange-500"></i>
-                            <span
-                                class="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Oboun
-                                AI Assistant</span>
-                        </div>
-                        <span
-                            class="sidebar-badge bg-gradient-to-r from-purple-500 to-indigo-500 text-white !text-[9px]">Beta</span>
-                    </button>
-                </li>
+
                 <li>
                     <a href="{{ route('barcode.index') }}"
                         class="sidebar-link {{ request()->routeIs('barcode.*') ? 'sidebar-link-active' : '' }}">
