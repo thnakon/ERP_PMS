@@ -50,7 +50,8 @@ services:
       MYSQL_PASSWORD: obounerp_secret
       MYSQL_ROOT_PASSWORD: rootpassword
     ports:
-      - "3306:3306"
+      - "3307:3306"
+
     volumes:
       - obounerp_dbdata:/var/lib/mysql
     networks:

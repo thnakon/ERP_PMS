@@ -61,35 +61,124 @@ class AiChatController extends Controller
 
     /**
      * Mock Response Logic for Pharmacy Assistant
+     * Now with REAL data insights!
      */
     private function getMockResponse(string $message, string $locale)
     {
         $message = mb_strtolower($message);
         $reply = "";
 
-        if ($locale === 'th') {
-            if (str_contains($message, 'ยา') || str_contains($message, 'medicine')) {
-                $reply = "💊 สำหรับข้อมูลยาในระบบ คุณสามารถตรวจสอบได้ที่เมนู **คลังสินค้า > ยาและเวชภัณฑ์** ครับ หากต้องการทราบวิธีใช้ยาตัวไหนเป็นพิเศษ แจ้งชื่อยาได้เลยครับ";
-            } elseif (str_contains($message, 'แพ้') || str_contains($message, 'allerg')) {
-                $reply = "⚠️ ระบบแจ้งเตือนการแพ้ยาจะทำงานอัตโนมัติในหน้า **POS** เมื่อคุณเลือกคนไข้ที่มีประวัติแพ้ยาครับ คุณสามารถบันทึกประวัติการแพ้ได้ที่หน้า **ข้อมูลลูกค้า**";
-            } elseif (str_contains($message, 'รายงาน') || str_contains($message, 'report')) {
-                $reply = "📊 ระบบมีรายงานครอบคลุมทั้ง **ยอดขาย (Sales), สต็อก (Inventory) และ การเงิน (Finance)** เข้าดูได้ที่เมนูรายงานทางด้านซ้ายครับ (เฉพาะ Admin)";
-            } elseif (str_contains($message, 'สวัสดี') || str_contains($message, 'hello') || str_contains($message, 'hi')) {
-                $reply = "สวัสดีครับ! ผม **Oboun AI** ผู้ช่วยอัจฉริยะของคุณ มีอะไรให้ผมช่วยดูแลระบบร้านยาในวันนี้ไหมครับ?";
+        // 1. Check for Expiry Questions
+        if (str_contains($message, 'หมดอายุ') || str_contains($message, 'expiry') || str_contains($message, 'expire')) {
+            $expiringLots = \App\Models\ProductLot::with('product')
+                ->where('quantity', '>', 0)
+                ->where('expiry_date', '<=', now()->addMonths(3))
+                ->orderBy('expiry_date', 'asc')
+                ->limit(5)
+                ->get();
+
+            if ($expiringLots->count() > 0) {
+                if ($locale === 'th') {
+                    $reply = "จากการตรวจสอบข้อมูลคลังสินค้า พบยาที่ **ใกล้หมดอายุ (ภายใน 3 เดือน)** ดังนี้ครับ:\n\n";
+                    foreach ($expiringLots as $lot) {
+                        $days = $lot->days_until_expiry;
+                        $status = $days <= 0 ? "❌ หมดอายุแล้ว" : "⏳ อีก $days วัน";
+                        $reply .= "- **{$lot->product->name}** (Lot: {$lot->lot_number}) - $status\n";
+                    }
+                    $reply .= "\nแนะนำให้รีบจัดทำรายการระบายสต็อก หรือติดต่อคืนผู้จำหน่าย (ถ้าสะดวกรุ่น) นะครับ";
+                } else {
+                    $reply = "I found these items **expiring soon (within 3 months)**:\n\n";
+                    foreach ($expiringLots as $lot) {
+                        $days = $lot->days_until_expiry;
+                        $status = $days <= 0 ? "❌ Expired" : "⏳ $days days left";
+                        $reply .= "- **{$lot->product->name}** (Lot: {$lot->lot_number}) - $status\n";
+                    }
+                }
             } else {
-                $reply = "เข้าใจแลัวครับ! ในฐานะผู้ช่วยร้านยา ผมขอแนะนำให้คุณตรวจสอบข้อมูลที่ถูกต้องในระบบ หรือหากต้องการความช่วยเหลือด้านเทคนิค สามารถสอบถามผมเพิ่มเติมได้เกี่ยวกับ การขาย, สต็อกยา หรือการดูรายงานครับ";
+                $reply = ($locale === 'th')
+                    ? "ยินดีด้วยครับ! ขณะนี้ยังไม่พบรายการยาที่ใกล้หมดอายุในสต็อกของคุณ"
+                    : "Great news! No items are nearing expiry at the moment.";
             }
-        } else {
-            if (str_contains($message, 'drug') || str_contains($message, 'medicine')) {
-                $reply = "💊 You can manage drug information in the **Inventory > Products** menu. If you need specific dosage or indications for a drug, please let me know the name!";
-            } elseif (str_contains($message, 'allergy') || str_contains($message, 'allergic')) {
-                $reply = "⚠️ Allergy alerts work automatically in the **POS** when selecting patients with recorded allergies. Record these in the **Customer Profile**.";
-            } elseif (str_contains($message, 'report') || str_contains($message, 'sales')) {
-                $reply = "📊 We provide comprehensive reports for **Sales, Inventory, and Finance**. Check the Reports section in the sidebar for details.";
-            } elseif (str_contains($message, 'hello') || str_contains($message, 'hi')) {
-                $reply = "Hello! I'm **Oboun AI**, your intelligent pharmacy assistant. How can I help you manage your pharmacy today?";
+        }
+
+        // 2. Check for Low Stock Questions
+        elseif (str_contains($message, 'ของหมด') || str_contains($message, 'สต็อกน้อย') || str_contains($message, 'low stock') || str_contains($message, 'สั่งของ')) {
+            $lowStockProducts = \App\Models\Product::where('stock_qty', '<=', \Illuminate\Support\Facades\DB::raw('min_stock'))
+                ->where('is_active', true)
+                ->limit(5)
+                ->get();
+
+            if ($lowStockProducts->count() > 0) {
+                if ($locale === 'th') {
+                    $reply = "รายการยาที่ **สต็อกใกล้หมด (Low Stock)** ที่ควรสั่งเพิ่มครับ:\n\n";
+                    foreach ($lowStockProducts as $p) {
+                        $reply .= "- **{$p->name}** (คงเหลือ: {$p->stock_qty} {$p->unit} / ขั้นต่ำ: {$p->min_stock})\n";
+                    }
+                    $reply .= "\nคุณสามารถสร้างรายการ **Purchase Order** ได้ที่เมนูจัดซื้อครับ";
+                } else {
+                    $reply = "These items are below your **Minimum Stock Level**:\n\n";
+                    foreach ($lowStockProducts as $p) {
+                        $reply .= "- **{$p->name}** (Stock: {$p->stock_qty} / Min: {$p->min_stock})\n";
+                    }
+                }
             } else {
-                $reply = "I understand! As your pharmacy assistant, I recommend checking the system's recorded data. I can help with sales operations, inventory tracking, or reporting queries!";
+                $reply = ($locale === 'th')
+                    ? "ระดับสต็อกยาในปัจจุบันยังอยู่ในเกณฑ์ที่ตั้งไว้ครับ ยังไม่พบรายการที่ต้องสั่งเพิ่มด่วน"
+                    : "Your inventory levels are healthy! No items require urgent reordering.";
+            }
+        }
+
+        // 3. Check for Sales/Performance Questions
+        elseif (str_contains($message, 'ขายดี') || str_contains($message, 'ยอดขาย') || str_contains($message, 'best seller') || str_contains($message, 'sales')) {
+            $topSelling = \App\Models\OrderItem::select('product_id', \Illuminate\Support\Facades\DB::raw('SUM(quantity) as total_sold'))
+                ->groupBy('product_id')
+                ->orderBy('total_sold', 'desc')
+                ->with('product')
+                ->limit(3)
+                ->get();
+
+            if ($topSelling->count() > 0) {
+                if ($locale === 'th') {
+                    $reply = "รายการยาที่ **มียอดจำหน่ายสูงสุด (Top 3)** ในช่วงนี้ครับ:\n\n";
+                    foreach ($topSelling as $item) {
+                        $reply .= "- 🏆 **{$item->product?->name}** (ขายได้ {$item->total_sold} รายการ)\n";
+                    }
+                    $reply .= "\nต้องการดูรายงานยอดขายแบบละเอียดเชิงลึกไหมครับ?";
+                } else {
+                    $reply = "Your **Top 3 Selling Products** are:\n\n";
+                    foreach ($topSelling as $item) {
+                        $reply .= "- 🏆 **{$item->product?->name}** ({$item->total_sold} items sold)\n";
+                    }
+                }
+            } else {
+                $reply = ($locale === 'th')
+                    ? "ช่วงนี้ยังมียอดขายไหลเข้าสม่ำเสมอครับ หากต้องการดูสรุปยอดรายวัน สามารถแจ้งผมได้เลย"
+                    : "Sales are steady! I can provide a daily summary if you'd like.";
+            }
+        }
+
+        // 4. Fallback to existing mock Logic
+        if (empty($reply)) {
+            if ($locale === 'th') {
+                if (str_contains($message, 'ยา') || str_contains($message, 'medicine')) {
+                    $reply = "💊 สำหรับข้อมูลยาในระบบ คุณสามารถตรวจสอบได้ที่เมนู **คลังสินค้า > ยาและเวชภัณฑ์** ครับ หากต้องการทราบวิธีใช้ยาตัวไหนเป็นพิเศษ แจ้งชื่อยาได้เลยครับ";
+                } elseif (str_contains($message, 'แพ้') || str_contains($message, 'allerg')) {
+                    $reply = "⚠️ ระบบแจ้งเตือนการแพ้ยาจะทำงานอัตโนมัติในหน้า **POS** เมื่อคุณเลือกคนไข้ที่มีประวัติแพ้ยาครับ คุณสามารถบันทึกประวัติการแพ้ได้ที่หน้า **ข้อมูลลูกค้า**";
+                } elseif (str_contains($message, 'สวัสดี') || str_contains($message, 'hello') || str_contains($message, 'hi')) {
+                    $reply = "สวัสดีครับ! ผม **Oboun AI** ผู้ช่วยอัจฉริยะของคุณ มีอะไรให้ผมช่วยดูแลระบบร้านยาในวันนี้ไหมครับ?";
+                } else {
+                    $reply = "เข้าใจแลัวครับ! ในฐานะผู้ช่วยร้านยา ผมขอแนะนำให้คุณตรวจสอบข้อมูลที่ถูกต้องในระบบ หรือหากต้องการความช่วยเหลือด้านเทคนิค สามารถสอบถามผมเพิ่มเติมได้เกี่ยวกับ การขาย, สต็อกยา หรือการดูรายงานครับ";
+                }
+            } else {
+                if (str_contains($message, 'drug') || str_contains($message, 'medicine')) {
+                    $reply = "💊 You can manage drug information in the **Inventory > Products** menu. If you need specific dosage or indications for a drug, please let me know the name!";
+                } elseif (str_contains($message, 'allergy') || str_contains($message, 'allergic')) {
+                    $reply = "⚠️ Allergy alerts work automatically in the **POS** when selecting patients with recorded allergies. Record these in the **Customer Profile**.";
+                } elseif (str_contains($message, 'hello') || str_contains($message, 'hi')) {
+                    $reply = "Hello! I'm **Oboun AI**, your intelligent pharmacy assistant. How can I help you manage your pharmacy today?";
+                } else {
+                    $reply = "I understand! As your pharmacy assistant, I recommend checking the system's recorded data. I can help with sales operations, inventory tracking, or reporting queries!";
+                }
             }
         }
 
@@ -99,6 +188,7 @@ class AiChatController extends Controller
             'is_mock' => true
         ]);
     }
+
 
 
     /**
