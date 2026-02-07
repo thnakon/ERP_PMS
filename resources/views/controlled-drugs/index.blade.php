@@ -37,7 +37,8 @@
 @section('content')
     <div class="space-y-6">
         {{-- Stats Cards --}}
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
+        <div class="grid grid-cols-5 gap-2">
+
             {{-- Total Logs --}}
             <div
                 class="bg-white/80 backdrop-blur-md rounded-2xl p-3 border border-white shadow-sm hover-ios transition-all">
