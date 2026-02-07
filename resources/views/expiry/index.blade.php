@@ -243,15 +243,16 @@
                     {{-- Quick Action Button --}}
                     <div class="stack-actions">
                         @if ($lotStatus === 'expired' || $lotStatus === 'critical')
-                            <button type="button"
+                            <button type="button" data-no-loading
                                 onclick="ExpiryPage.quickAdjust({{ $lot->product_id }}, {{ $lot->id }}, '{{ $lot->product->name }}', '{{ $lot->lot_number }}', {{ $lot->quantity }})"
                                 class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg transition flex items-center gap-1.5 active-scale"
                                 title="{{ __('expiry.adjust_stock') }}">
+
                                 <i class="ph-bold ph-arrow-down"></i>
                                 {{ __('expiry.write_off') }}
                             </button>
                         @else
-                            <button type="button"
+                            <button type="button" data-no-loading
                                 onclick="ExpiryPage.quickAdjust({{ $lot->product_id }}, {{ $lot->id }}, '{{ $lot->product->name }}', '{{ $lot->lot_number }}', {{ $lot->quantity }})"
                                 class="stack-action-circle hover:bg-gray-100" title="{{ __('expiry.adjust_stock') }}">
                                 <i class="ph ph-pencil-simple-line text-gray-400"></i>
@@ -349,11 +350,12 @@
                         class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition">
                         {{ __('cancel') }}
                     </button>
-                    <button type="submit"
+                    <button type="submit" data-no-loading
                         class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-xl transition active-scale flex items-center gap-2">
                         <i class="ph-bold ph-trash"></i>
                         {{ __('expiry.confirm_writeoff') }}
                     </button>
+
                 </div>
             </form>
         </div>
