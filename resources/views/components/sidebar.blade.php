@@ -236,15 +236,7 @@
                         </div>
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('drug-interactions.index') }}"
-                        class="sidebar-link {{ request()->routeIs('drug-interactions.*') ? 'sidebar-link-active' : '' }}">
-                        <div class="sidebar-link-content">
-                            <i class="ph ph-shield-check sidebar-link-icon"></i>
-                            <span>{{ __('drug_interactions.title') }}</span>
-                        </div>
-                    </a>
-                </li>
+
             </ul>
         </div>
 
