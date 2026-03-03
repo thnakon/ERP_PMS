@@ -459,15 +459,19 @@
         // Make CategoriesPage available globally
         window.CategoriesPage = CategoriesPage;
 
-        // Override executeDelete for categories page
-        const originalExecuteDelete = window.executeDelete;
-        window.executeDelete = function() {
-            if (CategoriesPage.deleteUrl) {
-                CategoriesPage.executeDelete();
-            } else if (originalExecuteDelete) {
-                originalExecuteDelete();
-            }
-        };
+        // Override executeDelete for categories page (wait for app.js)
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const originalExecuteDelete = window.executeDelete;
+                window.executeDelete = function() {
+                    if (CategoriesPage.deleteUrl) {
+                        CategoriesPage.executeDelete();
+                    } else if (originalExecuteDelete) {
+                        originalExecuteDelete();
+                    }
+                };
+            }, 50);
+        });
 
         function openAddModal() {
             const form = document.getElementById('category-form');

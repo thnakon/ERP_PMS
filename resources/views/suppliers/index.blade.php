@@ -444,15 +444,19 @@
 
         window.SupplierPage = SupplierPage;
 
-        // Override executeDelete for suppliers page
-        const originalExecuteDelete = window.executeDelete;
-        window.executeDelete = function() {
-            if (SupplierPage.deleteUrl) {
-                SupplierPage.executeDelete();
-            } else if (typeof originalExecuteDelete === 'function') {
-                originalExecuteDelete();
-            }
-        };
+        // Override executeDelete for suppliers page (wait for app.js to finish setting it)
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const originalExecuteDelete = window.executeDelete;
+                window.executeDelete = function() {
+                    if (SupplierPage.deleteUrl) {
+                        SupplierPage.executeDelete();
+                    } else if (typeof originalExecuteDelete === 'function') {
+                        originalExecuteDelete();
+                    }
+                };
+            }, 50);
+        });
 
         // Search on Enter
         document.getElementById('supplier-search')?.addEventListener('keypress', function(e) {
