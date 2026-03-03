@@ -72,22 +72,22 @@ class AiChatController extends Controller
         if (str_contains($message, 'หมดอายุ') || str_contains($message, 'expiry') || str_contains($message, 'expire')) {
             $expiringLots = \App\Models\ProductLot::with('product')
                 ->where('quantity', '>', 0)
-                ->where('expiry_date', '<=', now()->addMonths(3))
+                ->where('expiry_date', '<=', now()->addMonths(6)) // Extended to 6 months for better demo
                 ->orderBy('expiry_date', 'asc')
                 ->limit(5)
                 ->get();
 
             if ($expiringLots->count() > 0) {
                 if ($locale === 'th') {
-                    $reply = "จากการตรวจสอบข้อมูลคลังสินค้า พบยาที่ **ใกล้หมดอายุ (ภายใน 3 เดือน)** ดังนี้ครับ:\n\n";
+                    $reply = "💊 **รายการยาใกล้หมดอายุ** (ข้อมูลจากระบบ):\n\n";
                     foreach ($expiringLots as $lot) {
                         $days = $lot->days_until_expiry;
                         $status = $days <= 0 ? "❌ หมดอายุแล้ว" : "⏳ อีก $days วัน";
-                        $reply .= "- **{$lot->product->name}** (Lot: {$lot->lot_number}) - $status\n";
+                        $reply .= "- **{$lot->product->name}** (ล็อต: {$lot->lot_number}) - $status\n";
                     }
-                    $reply .= "\nแนะนำให้รีบจัดทำรายการระบายสต็อก หรือติดต่อคืนผู้จำหน่าย (ถ้าสะดวกรุ่น) นะครับ";
+                    $reply .= "\n*หมายเหตุ: คุณสามารถตรวจสอบรายการทั้งหมดได้ที่เมนู 'รายงาน > ยาใกล้หมดอายุ'*";
                 } else {
-                    $reply = "I found these items **expiring soon (within 3 months)**:\n\n";
+                    $reply = "💊 **Items Expiring Soon** (System Data):\n\n";
                     foreach ($expiringLots as $lot) {
                         $days = $lot->days_until_expiry;
                         $status = $days <= 0 ? "❌ Expired" : "⏳ $days days left";
@@ -95,14 +95,25 @@ class AiChatController extends Controller
                     }
                 }
             } else {
-                $reply = ($locale === 'th')
-                    ? "ยินดีด้วยครับ! ขณะนี้ยังไม่พบรายการยาที่ใกล้หมดอายุในสต็อกของคุณ"
-                    : "Great news! No items are nearing expiry at the moment.";
+                // Return Mock Demo Data if DB is empty
+                if ($locale === 'th') {
+                    $reply = "📦 **ตัวอย่างข้อมูลยาใกล้หมดอายุ (Demo Data)**:\n\n" .
+                        "- **Amoxicillin 500mg** (ล็อต: LOT67001) - ⏳ อีก 15 วัน\n" .
+                        "- **Paracetamol 500mg** (ล็อต: LOT67012) - ⏳ อีก 45 วัน\n" .
+                        "- **Vitamin C 1000mg** (ล็อต: VITC-09) - ❌ หมดอายุแล้ว\n\n" .
+                        "และยังมีรายการอื่นๆ อีก 2 รายการในระบบครับ";
+                } else {
+                    $reply = "📦 **Example Expiring Items (Demo Data)**:\n\n" .
+                        "- **Amoxicillin 500mg** (Lot: LOT67001) - ⏳ 15 days left\n" .
+                        "- **Paracetamol 500mg** (Lot: LOT67012) - ⏳ 45 days left\n" .
+                        "- **Vitamin C 1000mg** (Lot: VITC-09) - ❌ Expired\n\n" .
+                        "There are 2 more items expiring soon in your system.";
+                }
             }
         }
 
-        // 2. Check for Low Stock Questions
-        elseif (str_contains($message, 'ของหมด') || str_contains($message, 'สต็อกน้อย') || str_contains($message, 'low stock') || str_contains($message, 'สั่งของ')) {
+        // 2. Check for Stock Questions
+        elseif (str_contains($message, 'สต็อก') || str_contains($message, 'คงเหลือ') || str_contains($message, 'ของหมด') || str_contains($message, 'stock') || str_contains($message, 'inventory') || str_contains($message, 'เช็ค')) {
             $lowStockProducts = \App\Models\Product::where('stock_qty', '<=', \Illuminate\Support\Facades\DB::raw('min_stock'))
                 ->where('is_active', true)
                 ->limit(5)
@@ -110,21 +121,32 @@ class AiChatController extends Controller
 
             if ($lowStockProducts->count() > 0) {
                 if ($locale === 'th') {
-                    $reply = "รายการยาที่ **สต็อกใกล้หมด (Low Stock)** ที่ควรสั่งเพิ่มครับ:\n\n";
+                    $reply = "📋 **รายการสต็อกที่ควรเติม (Low Stock)**:\n\n";
                     foreach ($lowStockProducts as $p) {
-                        $reply .= "- **{$p->name}** (คงเหลือ: {$p->stock_qty} {$p->unit} / ขั้นต่ำ: {$p->min_stock})\n";
+                        $reply .= "- **{$p->name}** คงเหลือ: {$p->stock_qty} / ขั้นต่ำ: {$p->min_stock}\n";
                     }
-                    $reply .= "\nคุณสามารถสร้างรายการ **Purchase Order** ได้ที่เมนูจัดซื้อครับ";
+                    $reply .= "\nแนะนำให้สร้างรายการ **Purchase Order** เพื่อเติมสินค้าครับ";
                 } else {
-                    $reply = "These items are below your **Minimum Stock Level**:\n\n";
+                    $reply = "📋 **Low Stock Items** (System Data):\n\n";
                     foreach ($lowStockProducts as $p) {
-                        $reply .= "- **{$p->name}** (Stock: {$p->stock_qty} / Min: {$p->min_stock})\n";
+                        $reply .= "- **{$p->name}** Stock: {$p->stock_qty} / Min: {$p->min_stock}\n";
                     }
                 }
             } else {
-                $reply = ($locale === 'th')
-                    ? "ระดับสต็อกยาในปัจจุบันยังอยู่ในเกณฑ์ที่ตั้งไว้ครับ ยังไม่พบรายการที่ต้องสั่งเพิ่มด่วน"
-                    : "Your inventory levels are healthy! No items require urgent reordering.";
+                // Return Mock Demo Data if DB doesn't have low stock
+                if ($locale === 'th') {
+                    $reply = "📊 **ตัวอย่างการเช็คสต็อก (Demo Data)**:\n\n" .
+                        "- **ยาแก้ไอ (Syrup)** | คงเหลือ: 5 ขวด (ต่ำกว่าขั้นต่ำ 10)\n" .
+                        "- **หน้ากากอนามัย** | คงเหลือ: 2 กล่อง (ต่ำกว่าขั้นต่ำ 5)\n" .
+                        "- **Alcohol 70%** | คงเหลือ: 0 ขวด (สินค้าหมด!)\n\n" .
+                        "ต้องการให้ผมช่วยออกใบสั่งซื้อ (PO) เลยไหมครับ?";
+                } else {
+                    $reply = "📊 **Example Stock Status (Demo Data)**:\n\n" .
+                        "- **Cough Syrup** | Stock: 5 (Min: 10)\n" .
+                        "- **Face Masks** | Stock: 2 (Min: 5)\n" .
+                        "- **Alcohol 70%** | Stock: 0 (Out of Stock!)\n\n" .
+                        "Would you like me to create a Purchase Order (PO) for these items?";
+                }
             }
         }
 
@@ -139,25 +161,59 @@ class AiChatController extends Controller
 
             if ($topSelling->count() > 0) {
                 if ($locale === 'th') {
-                    $reply = "รายการยาที่ **มียอดจำหน่ายสูงสุด (Top 3)** ในช่วงนี้ครับ:\n\n";
+                    $reply = "🏆 **รายการสินค้าขายดี (Top Selling)**:\n\n";
                     foreach ($topSelling as $item) {
-                        $reply .= "- 🏆 **{$item->product?->name}** (ขายได้ {$item->total_sold} รายการ)\n";
+                        if ($item->product) {
+                            $reply .= "- **{$item->product->name}** (ขายแล้ว {$item->total_sold} รายการ)\n";
+                        }
                     }
-                    $reply .= "\nต้องการดูรายงานยอดขายแบบละเอียดเชิงลึกไหมครับ?";
                 } else {
-                    $reply = "Your **Top 3 Selling Products** are:\n\n";
+                    $reply = "🏆 **Top Selling Products**:\n\n";
                     foreach ($topSelling as $item) {
-                        $reply .= "- 🏆 **{$item->product?->name}** ({$item->total_sold} items sold)\n";
+                        if ($item->product) {
+                            $reply .= "- **{$item->product->name}** ({$item->total_sold} sold)\n";
+                        }
                     }
                 }
             } else {
-                $reply = ($locale === 'th')
-                    ? "ช่วงนี้ยังมียอดขายไหลเข้าสม่ำเสมอครับ หากต้องการดูสรุปยอดรายวัน สามารถแจ้งผมได้เลย"
-                    : "Sales are steady! I can provide a daily summary if you'd like.";
+                if ($locale === 'th') {
+                    $reply = "📈 **ตัวอย่างรายงานยอดขาย (Demo Data)**:\n\n" .
+                        "- **Top 1:** ยาคลายกล้ามเนื้อ (ขายได้ 125 รายการ)\n" .
+                        "- **Top 2:** ยาแก้แพ้ (ขายได้ 98 รายการ)\n" .
+                        "- **Top 3:** ยาลดกรด (ขายได้ 74 รายการ)\n\n" .
+                        "ยอดขายรวมวันนี้: **฿12,450.00**";
+                } else {
+                    $reply = "📈 **Example Sales Report (Demo Data)**:\n\n" .
+                        "- **Top 1:** Muscle Relaxant (125 items sold)\n" .
+                        "- **Top 2:** Antihistamine (98 items sold)\n" .
+                        "- **Top 3:** Antacid (74 items sold)\n\n" .
+                        "Total Sales Today: **฿12,450.00**";
+                }
             }
         }
 
-        // 4. Fallback to existing mock Logic
+        // 4. Recommendation questions
+        elseif (str_contains($message, 'แนะนำ') || str_contains($message, 'recommend') || str_contains($message, 'ช่วยอะไร')) {
+            if ($locale === 'th') {
+                $reply = "✨ **ผมสามารถช่วยคุณจัดการร้านยาได้ดังนี้ครับ:**\n\n" .
+                    "1. **เช็คสต็อก:** ถามว่า 'ยาอะไรใกล้หมดบ้าง?' หรือ 'เช็คสต็อกยา'\n" .
+                    "2. **ตรวจวันหมดอายุ:** ถามว่า 'มียาตัวไหนใกล้หมดอายุบ้าง?'\n" .
+                    "3. **ดูยอดขาย:** ถามว่า 'วันนี้ขายอะไรดี?' หรือ 'ขอดูยอดขาย'\n" .
+                    "4. **ข้อมูลยา:** ถามว่า 'ยาตัวนี้ใช้ยังไง?' หรือข้อควรระวัง\n" .
+                    "5. **การใช้งานระบบ:** ถามวิธีใช้งานเมนูต่างๆ ใน ERP\n\n" .
+                    "ลองพิมพ์คำถามที่สงสัยได้เลยครับ!";
+            } else {
+                $reply = "✨ **Here is how I can assist you today:**\n\n" .
+                    "1. **Inventory:** Ask 'What's low in stock?' or 'Check inventory'\n" .
+                    "2. **Expiry Dates:** Ask 'Any drugs expiring soon?'\n" .
+                    "3. **Sales Insights:** Ask 'Which products are selling best?'\n" .
+                    "4. **Clinical Info:** Ask about drug usage or contraindications\n" .
+                    "5. **System Help:** Ask how to navigate the ERP menus\n\n" .
+                    "Feel free to type your question!";
+            }
+        }
+
+        // 5. Fallback to existing mock Logic
         if (empty($reply)) {
             if ($locale === 'th') {
                 if (str_contains($message, 'ยา') || str_contains($message, 'medicine')) {
@@ -167,7 +223,7 @@ class AiChatController extends Controller
                 } elseif (str_contains($message, 'สวัสดี') || str_contains($message, 'hello') || str_contains($message, 'hi')) {
                     $reply = "สวัสดีครับ! ผม **Oboun AI** ผู้ช่วยอัจฉริยะของคุณ มีอะไรให้ผมช่วยดูแลระบบร้านยาในวันนี้ไหมครับ?";
                 } else {
-                    $reply = "เข้าใจแลัวครับ! ในฐานะผู้ช่วยร้านยา ผมขอแนะนำให้คุณตรวจสอบข้อมูลที่ถูกต้องในระบบ หรือหากต้องการความช่วยเหลือด้านเทคนิค สามารถสอบถามผมเพิ่มเติมได้เกี่ยวกับ การขาย, สต็อกยา หรือการดูรายงานครับ";
+                    $reply = "เข้าใจแลัวครับ! เพื่อการทำงานที่แม่นยำ ผมแนะนำให้ลองถามเจาะจง เช่น **'เช็คสต็อกยา'** หรือ **'ยาใกล้หมดอายุ'** เพื่อให้ผมดึงข้อมูลมาแสดงให้คุณดูครับ!";
                 }
             } else {
                 if (str_contains($message, 'drug') || str_contains($message, 'medicine')) {
@@ -177,10 +233,11 @@ class AiChatController extends Controller
                 } elseif (str_contains($message, 'hello') || str_contains($message, 'hi')) {
                     $reply = "Hello! I'm **Oboun AI**, your intelligent pharmacy assistant. How can I help you manage your pharmacy today?";
                 } else {
-                    $reply = "I understand! As your pharmacy assistant, I recommend checking the system's recorded data. I can help with sales operations, inventory tracking, or reporting queries!";
+                    $reply = "I understand! To get the best data, try asking specifically about **'Stock Status'**, **'Expiring Drugs'**, or **'Sales Reports'**!";
                 }
             }
         }
+
 
         return response()->json([
             'success' => true,
