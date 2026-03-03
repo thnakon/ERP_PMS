@@ -38,7 +38,11 @@ export const LoadingSystem = {
 
             if (!isAction) return;
             console.log('Loading triggered for:', text);
-            if (btn.hasAttribute('onclick') && (btn.getAttribute('onclick').includes('toggleModal') || btn.getAttribute('onclick').includes('toggleDrawer'))) return;
+            if (btn.hasAttribute('onclick')) {
+                const onclick = btn.getAttribute('onclick').toLowerCase();
+                const ignoreKeywords = ['modal', 'drawer', 'delete', 'adjust', 'quick', 'remove', 'cancel', 'close', 'open'];
+                if (ignoreKeywords.some(k => onclick.includes(k))) return;
+            }
             if (btn.dataset.noLoading !== undefined) return;
 
             // Show loading overlay
