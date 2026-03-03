@@ -53,8 +53,8 @@
                     {{-- Product Image --}}
                     <div
                         class="w-40 h-40 bg-gray-100 rounded-2xl flex-shrink-0 flex items-center justify-center overflow-hidden">
-                        @if ($product->image_path)
-                            <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}"
+                        @if ($product->image_url)
+                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
                                 class="w-full h-full object-cover">
                         @else
                             <i class="ph ph-image text-gray-300 text-5xl"></i>

@@ -47,10 +47,9 @@
                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
 
                                 <div id="image-preview"
-                                    class="{{ $product->image_path ? '' : 'hidden' }} absolute inset-0 w-full h-full rounded-2xl overflow-hidden">
-                                    <img id="image-preview-img"
-                                        src="{{ $product->image_path ? asset('storage/' . $product->image_path) : '' }}"
-                                        alt="Preview" class="w-full h-full object-cover">
+                                    class="{{ $product->image_url ? '' : 'hidden' }} absolute inset-0 w-full h-full rounded-2xl overflow-hidden">
+                                    <img id="image-preview-img" src="{{ $product->image_url ?? '' }}" alt="Preview"
+                                        class="w-full h-full object-cover">
                                 </div>
 
                                 <div id="image-placeholder"

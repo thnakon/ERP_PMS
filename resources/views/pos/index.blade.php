@@ -876,8 +876,8 @@
                             'category_id' => $product->category_id,
                         ]) }})">
                         <div class="pos-product-image">
-                            @if ($product->image_path)
-                                <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}">
+                            @if ($product->image_url)
+                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
                             @else
                                 <i class="ph ph-pill"></i>
                             @endif
@@ -1579,7 +1579,7 @@
                      data-category="${product.category_id || ''}"
                      onclick='addToCart(${JSON.stringify(product)})'>
                     <div class="pos-product-image">
-                        ${product.image_path ? `<img src="/storage/${product.image_path}" alt="${product.name}">` : '<i class="ph ph-pill"></i>'}
+                        ${product.image_url ? `<img src="${product.image_url}" alt="${product.name}">` : '<i class="ph ph-pill"></i>'}
                     </div>
                     <div class="pos-product-name">${product.name}</div>
                     <div class="pos-product-price">฿${parseFloat(product.unit_price).toFixed(2)}</div>

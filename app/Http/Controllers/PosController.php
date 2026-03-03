@@ -169,6 +169,7 @@ class PosController extends Controller
                     'member_price' => $product->member_price,
                     'stock_qty' => $product->stock_qty,
                     'image_path' => $product->image_path,
+                    'image_url' => $product->image_url,
                     'requires_prescription' => $product->requires_prescription,
                     'drug_class' => $product->drug_class,
                     'category_id' => $product->category_id,
@@ -208,7 +209,7 @@ class PosController extends Controller
                 'unit_price' => $product->unit_price,
                 'member_price' => $product->member_price,
                 'stock_qty' => $product->stock_qty,
-                'image' => $product->image ? asset('storage/' . $product->image) : null,
+                'image_url' => $product->image_url,
                 'requires_prescription' => $product->requires_prescription,
             ],
         ]);
