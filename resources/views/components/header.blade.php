@@ -573,7 +573,7 @@
             } else {
                 const data = await response.json();
                 if (data.success) {
-                    addChatMessage(data.message, 'ai');
+                    addChatMessage(data.message, 'ai', false, data.suggestions || []);
                 } else {
                     addChatMessage(data.error || 'ขออภัย เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง', 'ai', true);
                 }
@@ -589,7 +589,7 @@
         return false;
     }
 
-    function addChatMessage(message, type, isError = false) {
+    function addChatMessage(message, type, isError = false, suggestions = []) {
         const container = document.getElementById('ai-chat-messages');
         const div = document.createElement('div');
         div.className = 'flex gap-3 ' + (type === 'user' ? 'justify-end' : '');
@@ -610,6 +610,8 @@
             container.scrollTop = container.scrollHeight;
         } else {
             const contentId = 'ai-content-' + Date.now();
+            const suggestionsId = 'ai-suggestions-' + Date.now();
+
             div.innerHTML = `
                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-orange-500 flex items-center justify-center flex-shrink-0">
                     <i class="ph-fill ph-atom text-white text-sm"></i>
@@ -617,6 +619,7 @@
                 <div class="flex-1">
                     <div class="bg-gray-100 ${isError ? 'bg-red-50 border border-red-200' : ''} rounded-2xl rounded-tl-none px-4 py-3 max-w-[90%]">
                         <div id="${contentId}" class="text-sm ${isError ? 'text-red-600' : 'text-gray-800'} ai-message-content"></div>
+                        <div id="${suggestionsId}" class="mt-3 flex flex-wrap gap-2 hidden"></div>
                     </div>
                     <span class="text-[10px] text-gray-400 mt-1 block">Oboun AI</span>
                 </div>
@@ -625,15 +628,31 @@
             container.scrollTop = container.scrollHeight;
 
             const contentEl = document.getElementById(contentId);
+            const suggestionsEl = document.getElementById(suggestionsId);
+
             if (isError) {
                 contentEl.innerHTML = formattedMessage;
             } else {
-                typeAiMessage(contentEl, formattedMessage);
+                typeAiMessage(contentEl, formattedMessage, 10, () => {
+                    // Show suggestions after typing finishes
+                    if (suggestions && suggestions.length > 0) {
+                        suggestionsEl.classList.remove('hidden');
+                        suggestions.forEach(suggest => {
+                            const btn = document.createElement('button');
+                            btn.className =
+                                'text-[10px] bg-white border border-gray-200 px-2 py-1 rounded-full hover:border-ios-blue hover:text-ios-blue transition shadow-sm';
+                            btn.textContent = suggest;
+                            btn.onclick = () => quickAskAi(suggest);
+                            suggestionsEl.appendChild(btn);
+                        });
+                        container.scrollTop = container.scrollHeight;
+                    }
+                });
             }
         }
     }
 
-    function typeAiMessage(element, html, speed = 10) {
+    function typeAiMessage(element, html, speed = 10, onComplete = null) {
         let i = 0;
         const container = document.getElementById('ai-chat-messages');
 
@@ -648,10 +667,13 @@
                 element.innerHTML = html.substring(0, i);
                 container.scrollTop = container.scrollHeight;
                 setTimeout(type, speed);
+            } else if (onComplete) {
+                onComplete();
             }
         }
         type();
     }
+
 
 
     function addTypingIndicator() {

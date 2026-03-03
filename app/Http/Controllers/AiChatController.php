@@ -192,8 +192,50 @@ class AiChatController extends Controller
             }
         }
 
-        // 4. Recommendation questions
-        elseif (str_contains($message, 'แนะนำ') || str_contains($message, 'recommend') || str_contains($message, 'ช่วยอะไร')) {
+        // 4. Clinical / Usage / Indications / Contraindications
+        elseif (str_contains($message, 'dose') || str_contains($message, 'กินยังไง') || str_contains($message, 'วิธีใช้') || str_contains($message, 'dosage') || str_contains($message, 'indication') || str_contains($message, 'ข้อบ่งใช้') || str_contains($message, 'contraindication') || str_contains($message, 'ห้ามใช้') || str_contains($message, 'side effect') || str_contains($message, 'ผลข้างเคียง')) {
+            if ($locale === 'th') {
+                $reply = "💊 **ข้อมูลทางคลินิกและวิธีใช้ยา**:\n\n" .
+                    "สำหรับการตรวจสอบข้อมูลยา คุณสามารถระบุชื่อยาที่ต้องการทราบได้เลยครับ เช่น **'Amoxicillin ใช้ยังไง?'**\n\n" .
+                    "โดยปกติ ระบบจะดึงข้อมูลจาก:\n" .
+                    "- **วิธีใช้ (Instructions):** ปริมาณและเวลาที่ระบุในฐานข้อมูล\n" .
+                    "- **ข้อบ่งใช้ (Indications):** กลุ่มอาการที่แนะนำให้ใช้\n" .
+                    "- **ข้อควรระวัง/ผลข้างเคียง:** ข้อมูลแจ้งเตือนผู้ป่วยทางคลินิก\n\n" .
+                    "ต้องการให้ผมค้นหาข้อมูลของยาตัวไหนในสต็อกให้ไหมครับ?";
+            } else {
+                $reply = "💊 **Clinical Info & Usage**:\n\n" .
+                    "To get specific details, please let me know the drug name. For example: **'How to use Amoxicillin?'**\n\n" .
+                    "I can provide information on:\n" .
+                    "- **Dosage/Usage:** How and when to take the medicine.\n" .
+                    "- **Indications:** What the drug is used to treat.\n" .
+                    "- **Side Effects & Warnings:** Important safety information.\n\n" .
+                    "Which drug would you like me to look up for you?";
+            }
+        }
+
+        // 5. ERP System Usage / Help
+        elseif (str_contains($message, 'erp') || str_contains($message, 'ระบบ') || str_contains($message, 'เมนู') || str_contains($message, 'menu') || str_contains($message, 'system') || str_contains($message, 'how to') || str_contains($message, 'ใช้งาน')) {
+            if ($locale === 'th') {
+                $reply = "🖥️ **คำแนะนำการใช้งานระบบ (ERP Guide)**:\n\n" .
+                    "คุณสามารถจัดการส่วนต่างๆ ของร้านยาได้ผ่านเมนูหลักดังนี้ครับ:\n" .
+                    "- **POS:** สำหรับขายยาและพิมพ์ใบเสร็จ (ชอร์ตคัต: F8)\n" .
+                    "- **คลังสินค้า (Inventory):** จัดการสต็อกยา, แก้ไขราคา, เพิ่มรูปภาพ\n" .
+                    "- **จัดซื้อ (Purchasing):** ออกใบ PO เมื่อของใกล้หมด\n" .
+                    "- **รายงาน (Reports):** ดูสรุปยอดขายและวันหมดอายุ\n\n" .
+                    "มีเมนูไหนที่คุณต้องการให้ผมสอนใช้งานเป็นพิเศษไหมครับ?";
+            } else {
+                $reply = "🖥️ **ERP System Navigation Guide**:\n\n" .
+                    "You can manage your pharmacy through these core modules:\n" .
+                    "- **POS:** Fast checkout and receipt printing (Shortcut: F8)\n" .
+                    "- **Inventory:** Manage stock, update prices, and upload images\n" .
+                    "- **Purchasing:** Create POs when items are low in stock\n" .
+                    "- **Reports:** Detailed sales analysis and expiry tracking\n\n" .
+                    "Which part of the system would you like to learn more about?";
+            }
+        }
+
+        // 6. Recommendation / Help
+        elseif (str_contains($message, 'แนะนำ') || str_contains($message, 'recommend') || str_contains($message, 'help') || str_contains($message, 'ช่วยอะไร')) {
             if ($locale === 'th') {
                 $reply = "✨ **ผมสามารถช่วยคุณจัดการร้านยาได้ดังนี้ครับ:**\n\n" .
                     "1. **เช็คสต็อก:** ถามว่า 'ยาอะไรใกล้หมดบ้าง?' หรือ 'เช็คสต็อกยา'\n" .
@@ -213,39 +255,76 @@ class AiChatController extends Controller
             }
         }
 
-        // 5. Fallback to existing mock Logic
-        if (empty($reply)) {
+        // 7. General Greeting
+        elseif (str_contains($message, 'สวัสดี') || str_contains($message, 'hello') || str_contains($message, 'hi')) {
             if ($locale === 'th') {
-                if (str_contains($message, 'ยา') || str_contains($message, 'medicine')) {
-                    $reply = "💊 สำหรับข้อมูลยาในระบบ คุณสามารถตรวจสอบได้ที่เมนู **คลังสินค้า > ยาและเวชภัณฑ์** ครับ หากต้องการทราบวิธีใช้ยาตัวไหนเป็นพิเศษ แจ้งชื่อยาได้เลยครับ";
-                } elseif (str_contains($message, 'แพ้') || str_contains($message, 'allerg')) {
-                    $reply = "⚠️ ระบบแจ้งเตือนการแพ้ยาจะทำงานอัตโนมัติในหน้า **POS** เมื่อคุณเลือกคนไข้ที่มีประวัติแพ้ยาครับ คุณสามารถบันทึกประวัติการแพ้ได้ที่หน้า **ข้อมูลลูกค้า**";
-                } elseif (str_contains($message, 'สวัสดี') || str_contains($message, 'hello') || str_contains($message, 'hi')) {
-                    $reply = "สวัสดีครับ! ผม **Oboun AI** ผู้ช่วยอัจฉริยะของคุณ มีอะไรให้ผมช่วยดูแลระบบร้านยาในวันนี้ไหมครับ?";
-                } else {
-                    $reply = "เข้าใจแลัวครับ! เพื่อการทำงานที่แม่นยำ ผมแนะนำให้ลองถามเจาะจง เช่น **'เช็คสต็อกยา'** หรือ **'ยาใกล้หมดอายุ'** เพื่อให้ผมดึงข้อมูลมาแสดงให้คุณดูครับ!";
-                }
+                $reply = "สวัสดีครับ! ผม **Oboun AI** ผู้ช่วยอัจฉริยะประจำร้านยาของคุณ มีอะไรให้ผมช่วยดูแลระบบในวันนี้ไหมครับ?";
             } else {
-                if (str_contains($message, 'drug') || str_contains($message, 'medicine')) {
-                    $reply = "💊 You can manage drug information in the **Inventory > Products** menu. If you need specific dosage or indications for a drug, please let me know the name!";
-                } elseif (str_contains($message, 'allergy') || str_contains($message, 'allergic')) {
-                    $reply = "⚠️ Allergy alerts work automatically in the **POS** when selecting patients with recorded allergies. Record these in the **Customer Profile**.";
-                } elseif (str_contains($message, 'hello') || str_contains($message, 'hi')) {
-                    $reply = "Hello! I'm **Oboun AI**, your intelligent pharmacy assistant. How can I help you manage your pharmacy today?";
-                } else {
-                    $reply = "I understand! To get the best data, try asking specifically about **'Stock Status'**, **'Expiring Drugs'**, or **'Sales Reports'**!";
-                }
+                $reply = "Hello! I'm **Oboun AI**, your intelligent pharmacy assistant. How can I help you manage your pharmacy today?";
             }
         }
 
+        // 8. Fallback
+        if (empty($reply)) {
+            if ($locale === 'th') {
+                $reply = "เข้าใจแลัวครับ! เพื่อให้ผมดึงข้อมูลที่ถูกต้องมาแสดง ผมแนะนำให้ลองถามเจาะจง เช่น **'เช็คสต็อกยา'**, **'ขอดูยอดขายล่าสุด'** หรือถามเกี่ยวกับยาตัวที่คุณสนใจได้เลยครับ";
+            } else {
+                $reply = "I understand! To provide specific data, please try asking about **'Stock Status'**, **'Latest Sales'**, or more details about a **specific drug**!";
+            }
+        }
+
+        // Generate dynamic suggestions based on context
+        $suggestions = $this->getDynamicSuggestions($message, $locale);
 
         return response()->json([
             'success' => true,
             'message' => $reply,
+            'suggestions' => $suggestions,
             'is_mock' => true
         ]);
     }
 
+    /**
+     * Get dynamic suggestions based on user message
+     */
+    private function getDynamicSuggestions($message, $locale)
+    {
+        $allSuggestions = [
+            'th' => [
+                'stock' => ['เช็คสต็อกคลัง', 'ยาอะไรใกล้ขาดสต็อกบ้าง?', 'วิธีเติมสต็อกยามีขั้นตอนยังไง?'],
+                'expiry' => ['ขอดูยาใกล้หมดอายุเพิ่ม', 'เช็ควันหมดอายุล็อตนี้', 'ทำรายการคัดแยกยาหมดอายุ'],
+                'sales' => ['ยอดขายวันนี้เป็นไง?', 'เปรียบเทียบยอดขายรายสัปดาห์', 'สินค้ากลุ่มไหนขายดีที่สุด?'],
+                'clinical' => ['ตัวอย่างวิธีใช้ยาแก้แพ้', 'ยาตัวไหนห้ามใช้ในสตรีมีครรภ์?', 'ถามเรื่องผลข้างเคียงของยา'],
+                'system' => ['สอนใช้งานหน้า POS หน่อย', 'วิธีกดสร้างใบ PO', 'การเปลี่ยนภาษาในระบบ'],
+                'general' => ['เช็คสต็อกยา', 'ยาใกล้หมดอายุเดือนนี้', 'รายงานยอดขาย', 'แนะนำคำถามเพิ่มเติม']
+            ],
+            'en' => [
+                'stock' => ['Check inventory', 'What is out of stock?', 'How to restock products?'],
+                'expiry' => ['Show more expiring items', 'Check lot expiry dates', 'How to write off expired drugs?'],
+                'sales' => ['How are sales today?', 'Weekly sales report', 'Top selling categories?'],
+                'clinical' => ['Dosage for Amoxicillin', 'Drugs to avoid during pregnancy', 'Show me drug side effects'],
+                'system' => ['How to use POS?', 'How to create a PO?', 'System settings guide'],
+                'general' => ['Check Stock', 'Expiring Soon', 'Sales Report', 'More suggestions']
+            ]
+        ];
+
+        $lang = $locale === 'th' ? 'th' : 'en';
+        $selected = $allSuggestions[$lang]['general'];
+
+        if (str_contains($message, 'หมดอายุ') || str_contains($message, 'expire')) {
+            $selected = $allSuggestions[$lang]['expiry'];
+        } elseif (str_contains($message, 'สต็อก') || str_contains($message, 'stock')) {
+            $selected = $allSuggestions[$lang]['stock'];
+        } elseif (str_contains($message, 'ขาย') || str_contains($message, 'sales')) {
+            $selected = $allSuggestions[$lang]['sales'];
+        } elseif (str_contains($message, 'ยา') || str_contains($message, 'drug') || str_contains($message, 'dose') || str_contains($message, 'กินยังไง') || str_contains($message, 'วิธีใช้') || str_contains($message, 'dosage') || str_contains($message, 'indication') || str_contains($message, 'ข้อบ่งใช้') || str_contains($message, 'contraindication') || str_contains($message, 'ห้ามใช้') || str_contains($message, 'side effect') || str_contains($message, 'ผลข้างเคียง')) {
+            $selected = $allSuggestions[$lang]['clinical'];
+        } elseif (str_contains($message, 'ระบบ') || str_contains($message, 'system') || str_contains($message, 'erp') || str_contains($message, 'เมนู') || str_contains($message, 'menu') || str_contains($message, 'how to') || str_contains($message, 'ใช้งาน')) {
+            $selected = $allSuggestions[$lang]['system'];
+        }
+
+        return $selected;
+    }
 
 
     /**
