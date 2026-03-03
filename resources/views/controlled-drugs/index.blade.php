@@ -186,14 +186,14 @@
             <div class="stack-container view-list" id="logs-stack">
                 @forelse($logs as $log)
                     @php
-                        $scheduleColor = match ($log->product->drug_schedule ?? 'normal') {
+                        $scheduleColor = match ($log->product?->drug_schedule ?? 'normal') {
                             'dangerous' => '#f97316',
                             'specially_controlled' => '#ef4444',
                             'narcotic' => '#b91c1c',
                             'psychotropic' => '#7c3aed',
                             default => '#3b82f6',
                         };
-                        $bgLight = match ($log->product->drug_schedule ?? 'normal') {
+                        $bgLight = match ($log->product?->drug_schedule ?? 'normal') {
                             'dangerous' => '#fff7ed',
                             'specially_controlled' => '#fef2f2',
                             'narcotic' => '#fef2f2',
@@ -223,7 +223,7 @@
                             <span class="stack-label">{{ __('controlled_drugs.log_number') }}</span>
                             <div class="stack-value text-lg leading-tight text-ios-blue">{{ $log->log_number }}</div>
                             <div class="text-xs text-gray-500 font-bold mt-0.5 uppercase tracking-wide">
-                                {{ $log->product->name }}
+                                {{ $log->product?->name ?? 'N/A' }}
                             </div>
                         </div>
 
@@ -239,7 +239,7 @@
                         {{-- Drug Type Badge --}}
                         <div class="stack-col stack-data hidden lg:flex w-36">
                             <span class="stack-label">{{ __('controlled_drugs.drug_type') }}</span>
-                            <div class="mt-1">{!! $log->product->drug_schedule_badge !!}</div>
+                            <div class="mt-1">{!! $log->product?->drug_schedule_badge ?? '<span class="badge badge-gray">-</span>' !!}</div>
                         </div>
 
                         {{-- Quantity --}}
@@ -249,7 +249,7 @@
                                 <span
                                     class="stack-value text-lg font-black text-gray-900">{{ number_format($log->quantity) }}</span>
                                 <span
-                                    class="text-[10px] text-gray-400 font-bold uppercase">{{ $log->product->sell_unit ?? __('units') }}</span>
+                                    class="text-[10px] text-gray-400 font-bold uppercase">{{ $log->product?->sell_unit ?? __('units') }}</span>
                             </div>
                         </div>
 

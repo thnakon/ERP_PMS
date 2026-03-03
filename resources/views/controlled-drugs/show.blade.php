@@ -92,11 +92,11 @@
                             <i class="ph-fill ph-pill text-red-600 text-xl"></i>
                         </div>
                         <div>
-                            <p class="font-bold text-gray-900">{{ $controlledDrug->product->name }}</p>
-                            <p class="text-sm text-gray-500">SKU: {{ $controlledDrug->product->sku }}</p>
+                            <p class="font-bold text-gray-900">{{ $controlledDrug->product?->name ?? 'N/A' }}</p>
+                            <p class="text-sm text-gray-500">SKU: {{ $controlledDrug->product?->sku ?? '-' }}</p>
                         </div>
                     </div>
-                    <div class="mt-2">{!! $controlledDrug->product->drug_schedule_badge !!}</div>
+                    <div class="mt-2">{!! $controlledDrug->product?->drug_schedule_badge ?? '<span class="badge badge-gray">-</span>' !!}</div>
                     <div class="border-t border-gray-100 pt-3 space-y-2 text-sm">
                         <div class="flex justify-between">
                             <span class="text-gray-500">{{ __('controlled_drugs.quantity') }}</span>
