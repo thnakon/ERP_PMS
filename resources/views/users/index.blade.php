@@ -227,7 +227,7 @@
                                 </a>
                                 <div class="h-px bg-gray-100 my-1"></div>
                                 <button type="button"
-                                    onclick="deleteRow({{ $user->id }}, '{{ $user->name }}', '{{ route('users.destroy', $user) }}')"
+                                    onclick="UserPage.deleteUser('{{ route('users.destroy', $user) }}')" data-no-loading
                                     class="ios-dropdown-item ios-dropdown-item-danger">
                                     <i class="ph ph-trash ios-dropdown-icon"></i>
                                     <span>{{ __('delete') }}</span>
@@ -268,6 +268,50 @@
 
 @push('scripts')
     <script>
+        const UserPage = {
+            deleteUrl: null,
+
+            deleteUser(url) {
+                this.deleteUrl = url;
+                if (typeof toggleModal === 'function') {
+                    toggleModal(true, 'delete-modal');
+                }
+            },
+
+            executeDelete() {
+                if (!this.deleteUrl) return;
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = this.deleteUrl;
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                form.innerHTML = `
+                    <input type="hidden" name="_token" value="${csrfToken}">
+                    <input type="hidden" name="_method" value="DELETE">
+                `;
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        };
+
+        window.UserPage = UserPage;
+
+        // Override executeDelete for users page (wait for app.js to finish setting it)
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const originalExecuteDelete = window.executeDelete;
+                window.executeDelete = function() {
+                    if (UserPage.deleteUrl) {
+                        UserPage.executeDelete();
+                    } else if (typeof originalExecuteDelete === 'function') {
+                        originalExecuteDelete();
+                    }
+                };
+            }, 50);
+        });
+
         // Search functionality
         document.getElementById('user-search')?.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
