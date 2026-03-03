@@ -220,6 +220,7 @@ Route::middleware(['auth', 'staff'])->group(function () {
         Route::get('/{controlledDrug}', [ControlledDrugController::class, 'show'])->name('show');
         Route::post('/{controlledDrug}/approve', [ControlledDrugController::class, 'approve'])->name('approve');
         Route::post('/{controlledDrug}/reject', [ControlledDrugController::class, 'reject'])->name('reject');
+        Route::post('/bulk-delete', [ControlledDrugController::class, 'bulkDelete'])->name('bulk-delete');
         Route::delete('/{controlledDrug}', [ControlledDrugController::class, 'destroy'])->name('destroy');
     });
 

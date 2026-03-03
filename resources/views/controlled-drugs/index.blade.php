@@ -303,8 +303,7 @@
                                         </form>
                                     @endif
                                     <div class="h-px bg-gray-100 my-1"></div>
-                                    <button type="button"
-                                        onclick="deleteRow({{ $log->id }}, '{{ $log->log_number }}', '{{ route('controlled-drugs.destroy', $log) }}')"
+                                    <button type="button" onclick="deleteRow(this)"
                                         class="ios-dropdown-item ios-dropdown-item-danger">
                                         <i class="ph ph-trash ios-dropdown-icon"></i>
                                         <span>{{ __('delete') }}</span>

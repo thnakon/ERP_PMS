@@ -220,13 +220,15 @@ const BulkActionsSystem = {
             const count = checkboxes.length;
             const productIds = Array.from(checkboxes).map(cb => cb.value);
 
-            // Real bulk delete for products
-            if (tableId.includes('product') || window.location.pathname.includes('/products')) {
+            // Real bulk delete for products or controlled drugs
+            if (tableId.includes('product') || window.location.pathname.includes('/products') || window.location.pathname.includes('/controlled-drugs')) {
                 if (typeof window.showLoading === 'function') window.showLoading();
+
+                const deleteUrl = window.location.pathname.includes('/controlled-drugs') ? '/controlled-drugs/bulk-delete' : '/products/bulk-delete';
 
                 setTimeout(async () => {
                     try {
-                        const response = await fetch('/products/bulk-delete', {
+                        const response = await fetch(deleteUrl, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -275,13 +277,15 @@ const BulkActionsSystem = {
             const cb = row.querySelector('.row-checkbox');
             const productId = cb ? cb.value : null;
 
-            // Real delete for products if applicable
-            if (productId && (tableId.includes('product') || window.location.pathname.includes('/products'))) {
+            // Real delete for products or controlled drugs if applicable
+            if (productId && (tableId.includes('product') || window.location.pathname.includes('/products') || window.location.pathname.includes('/controlled-drugs'))) {
                 if (typeof window.showLoading === 'function') window.showLoading();
+
+                const deleteUrl = window.location.pathname.includes('/controlled-drugs') ? `/controlled-drugs/${productId}` : `/products/${productId}`;
 
                 setTimeout(async () => {
                     try {
-                        const response = await fetch(`/products/${productId}`, {
+                        const response = await fetch(deleteUrl, {
                             method: 'DELETE',
                             headers: {
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,

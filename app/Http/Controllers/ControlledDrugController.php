@@ -336,8 +336,28 @@ class ControlledDrugController extends Controller
     {
         $controlledDrug->delete();
 
+        if (request()->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
         return redirect()
             ->route('controlled-drugs.index')
             ->with('success', __('general.deleted_successfully') ?: 'Deleted successfully');
+    }
+
+    /**
+     * Bulk remove controlled drug logs.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'No items selected'], 400);
+        }
+
+        ControlledDrugLog::whereIn('id', $ids)->delete();
+
+        return response()->json(['success' => true, 'message' => 'Logs deleted successfully']);
     }
 }
