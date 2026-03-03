@@ -84,18 +84,7 @@
                         @endif
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('messenger.index') }}"
-                        class="sidebar-link {{ request()->routeIs('messenger.*') ? 'sidebar-link-active' : '' }}">
-                        <div class="sidebar-link-content">
-                            <i class="ph ph-messenger-logo sidebar-link-icon"></i>
-                            <span>{{ __('messenger') }}</span>
-                        </div>
-                        @if (($sidebarBadges['messenger'] ?? 0) > 0)
-                            <span class="sidebar-badge sidebar-badge-red">{{ $sidebarBadges['messenger'] }}</span>
-                        @endif
-                    </a>
-                </li>
+
                 <li>
                     <a href="{{ route('notifications.index') }}"
                         class="sidebar-link {{ request()->routeIs('notifications.*') ? 'sidebar-link-active' : '' }}">
@@ -387,24 +376,6 @@
 
                 {{-- Admin only reports --}}
                 @if ($isAdmin)
-                    <li>
-                        <a href="{{ route('reports.product-profit') }}"
-                            class="sidebar-link {{ request()->routeIs('reports.product-profit') ? 'sidebar-link-active' : '' }}">
-                            <div class="sidebar-link-content">
-                                <i class="ph ph-chart-line-up sidebar-link-icon"></i>
-                                <span>{{ __('reports.product_profit') }}</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('reports.loyal-customers') }}"
-                            class="sidebar-link {{ request()->routeIs('reports.loyal-customers') ? 'sidebar-link-active' : '' }}">
-                            <div class="sidebar-link-content">
-                                <i class="ph ph-heart sidebar-link-icon"></i>
-                                <span>{{ __('reports.loyal_customers') }}</span>
-                            </div>
-                        </a>
-                    </li>
                 @endif
             </ul>
         </div>
