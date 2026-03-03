@@ -448,19 +448,27 @@
 
         {{-- Suggestions in Modal --}}
         <div id="ai-suggestions" class="flex flex-col gap-2 pt-2">
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1">ลองถาม:</p>
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1">{{ __('ai.try_asking') }}
+            </p>
             <div class="flex flex-wrap gap-2">
-                <button onclick="quickAskAi('คลังยามีอะไรบ้าง?')"
+                <button onclick="quickAskAi('{{ __('ai.ask_stock') }}')"
                     class="text-[11px] bg-white border border-gray-100 px-3 py-1.5 rounded-full hover:border-ios-blue hover:text-ios-blue transition shadow-sm">📦
-                    เช็คสต็อกยา</button>
-                <button onclick="quickAskAi('เช็คคนไข้แพ้ยากดตรงไหน?')"
+                    {{ __('ai.suggestion_stock') }}</button>
+                <button onclick="quickAskAi('{{ __('ai.ask_expiry') }}')"
+                    class="text-[11px] bg-white border border-gray-100 px-3 py-1.5 rounded-full hover:border-ios-blue hover:text-ios-blue transition shadow-sm">⏳
+                    {{ __('ai.suggestion_expiry') }}</button>
+                <button onclick="quickAskAi('{{ __('ai.ask_allergy') }}')"
                     class="text-[11px] bg-white border border-gray-100 px-3 py-1.5 rounded-full hover:border-ios-blue hover:text-ios-blue transition shadow-sm">⚠️
-                    ดูประวัติแพ้ยา</button>
-                <button onclick="quickAskAi('ขอดูรายงานยอดขาย')"
+                    {{ __('ai.suggestion_allergy') }}</button>
+                <button onclick="quickAskAi('{{ __('ai.ask_sales') }}')"
                     class="text-[11px] bg-white border border-gray-100 px-3 py-1.5 rounded-full hover:border-ios-blue hover:text-ios-blue transition shadow-sm">📊
-                    รายงานยอดขาย</button>
+                    {{ __('ai.suggestion_sales') }}</button>
+                <button onclick="quickAskAi('{{ __('ai.ask_more') }}')"
+                    class="text-[11px] bg-white border border-gray-100 px-3 py-1.5 rounded-full hover:border-ios-blue hover:text-ios-blue transition shadow-sm">💡
+                    {{ __('ai.suggestion_more') }}</button>
             </div>
         </div>
+
     </div>
 
     <div class="p-4 border-t border-gray-100" style="flex-shrink: 0;">

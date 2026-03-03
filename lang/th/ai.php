@@ -18,4 +18,19 @@ return [
     'welcome_general' => '❓ คำถามทั่วไป',
     'welcome_cta' => 'ลองถามผมได้เลยครับ!',
     'you' => 'คุณ',
+    'try_asking' => 'ลองถาม:',
+
+    // Suggestions
+    'suggestion_stock' => 'เช็คสต็อกยา',
+    'suggestion_allergy' => 'ดูประวัติแพ้ยา',
+    'suggestion_sales' => 'รายงานยอดขาย',
+    'suggestion_expiry' => 'ยาใกล้หมดอายุเดือนนี้',
+    'suggestion_more' => 'แนะนำคำถามเพิ่มเติม',
+
+    // Example Questions
+    'ask_stock' => 'คลังยามีอะไรเหลือบ้าง?',
+    'ask_allergy' => 'เช็คคนไข้แพ้ยากดตรงไหน?',
+    'ask_sales' => 'ขอดูรายงานยอดขายหน่อย',
+    'ask_expiry' => 'มียาตัวไหนที่ใกล้หมดอายุภายในเดือนนี้บ้าง?',
+    'ask_more' => 'ช่วยแนะนำคำถามเพิ่มเติมที่คุณสามารถช่วยฉันได้หน่อย',
 ];

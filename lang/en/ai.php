@@ -18,4 +18,19 @@ return [
     'welcome_general' => '❓ General questions',
     'welcome_cta' => 'Feel free to ask me anything!',
     'you' => 'You',
+    'try_asking' => 'Try asking:',
+
+    // Suggestions
+    'suggestion_stock' => 'Stock Check',
+    'suggestion_allergy' => 'Check Allergies',
+    'suggestion_sales' => 'Sales Report',
+    'suggestion_expiry' => 'Next Expiry',
+    'suggestion_more' => 'More suggestions',
+
+    // Example Questions
+    'ask_stock' => 'What is currently in stock?',
+    'ask_allergy' => 'How do I check patient allergy history?',
+    'ask_sales' => 'Show me the sales report',
+    'ask_expiry' => 'Which drugs are expiring this month?',
+    'ask_more' => 'What else can you help me with? Recommend more questions.',
 ];
