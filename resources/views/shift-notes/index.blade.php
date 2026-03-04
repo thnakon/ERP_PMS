@@ -206,7 +206,7 @@
                 </div>
 
                 <div class="p-6 md:p-8 bg-gray-50 flex gap-3">
-                    <button type="button" id="delete-btn" onclick="deleteNote()"
+                    <button type="button" id="delete-btn" onclick="deleteNote()" data-no-loading
                         class="hidden px-6 py-3 bg-red-100 text-red-600 font-bold rounded-2xl hover:bg-red-200 transition">
                         <i class="ph-bold ph-trash"></i>
                     </button>

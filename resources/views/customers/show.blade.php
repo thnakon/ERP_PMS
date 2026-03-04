@@ -348,8 +348,8 @@
             </div>
 
             {{-- Delete Button --}}
-            <button type="button"
-                onclick="deleteRow({{ $customer->id }}, '{{ $customer->name }}', '{{ route('customers.destroy', $customer) }}')"
+            <button type="button" onclick="CustomerPage.deleteCustomer('{{ route('customers.destroy', $customer) }}')"
+                data-no-loading
                 class="w-full py-3 bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-xl transition flex items-center justify-center gap-2">
                 <i class="ph ph-trash"></i>
                 {{ __('customers.delete_customer') }}
@@ -357,3 +357,51 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        const CustomerPage = {
+            deleteUrl: null,
+
+            deleteCustomer(url) {
+                this.deleteUrl = url;
+                if (typeof toggleModal === 'function') {
+                    toggleModal(true, 'delete-modal');
+                }
+            },
+
+            executeDelete() {
+                if (!this.deleteUrl) return;
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = this.deleteUrl;
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                form.innerHTML = `
+                    <input type="hidden" name="_token" value="${csrfToken}">
+                    <input type="hidden" name="_method" value="DELETE">
+                `;
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        };
+
+        window.CustomerPage = CustomerPage;
+
+        // Override executeDelete for customers page (wait for app.js)
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const originalExecuteDelete = window.executeDelete;
+                window.executeDelete = function() {
+                    if (CustomerPage.deleteUrl) {
+                        CustomerPage.executeDelete();
+                    } else if (typeof originalExecuteDelete === 'function') {
+                        originalExecuteDelete();
+                    }
+                };
+            }, 50);
+        });
+    </script>
+@endpush

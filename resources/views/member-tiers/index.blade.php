@@ -99,6 +99,7 @@
                                     <i class="ph-bold ph-pencil-simple"></i>
                                 </a>
                                 <button type="button" onclick="deleteTier({{ $tier->id }}, '{{ $tier->name }}')"
+                                    data-no-loading
                                     class="flex-1 py-2.5 bg-red-50 hover:bg-red-100 text-red-500 rounded-xl transition flex items-center justify-center active-scale">
                                     <i class="ph-bold ph-trash"></i>
                                 </button>

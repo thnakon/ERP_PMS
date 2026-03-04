@@ -21,11 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Update existing 'qr' or 'promptpay' records to 'transfer' before shrinking the ENUM to avoid truncation error
-        DB::table('orders')
-            ->whereIn('payment_method', ['qr', 'promptpay'])
-            ->update(['payment_method' => 'transfer']);
-
         DB::statement("ALTER TABLE orders MODIFY COLUMN payment_method ENUM('cash', 'card', 'transfer', 'credit') DEFAULT 'cash'");
     }
 };

@@ -48,7 +48,7 @@
                     title="{{ __('change_category') }}">
                     <i class="ph ph-archive bulk-action-btn-icon"></i>
                 </button>
-                <button onclick="deleteSelected()" class="bulk-action-btn-delete">
+                <button onclick="deleteSelected()" data-no-loading class="bulk-action-btn-delete">
                     <i class="ph ph-trash bulk-action-btn-icon"></i> {{ __('general.delete') }}
                 </button>
             </div>

@@ -85,7 +85,7 @@
                             <span>{{ __('edit') }}</span>
                         </a>
                         <div class="h-px bg-gray-100 my-1"></div>
-                        <button type="button" onclick="deleteRow(this)"
+                        <button type="button" onclick="deleteRow(this)" data-no-loading
                             class="ios-dropdown-item ios-dropdown-item-danger">
                             <i class="ph ph-trash ios-dropdown-icon"></i>
                             <span>{{ __('general.delete') ?? 'Delete' }}</span>

@@ -2309,7 +2309,7 @@
                                     <button onclick="recallOrder(${order.index})" class="p-2 bg-ios-blue text-white rounded-lg hover:brightness-110">
                                         <i class="ph-bold ph-arrow-u-up-left"></i>
                                     </button>
-                                    <button onclick="deleteHeldOrder(${order.index})" class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+                                    <button onclick="deleteHeldOrder(${order.index})" data-no-loading class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
                                         <i class="ph ph-trash"></i>
                                     </button>
                                 </div>

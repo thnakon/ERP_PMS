@@ -11,7 +11,7 @@ export const LoadingSystem = {
         // 1. Handle all form submissions
         document.addEventListener('submit', (e) => {
             const form = e.target;
-            if (form.dataset.noLoading || form.dataset.isSubmitting) return;
+            if (form.dataset.noLoading || form.dataset.isSubmitting || e.defaultPrevented) return;
 
             e.preventDefault();
             this.show();

@@ -19,8 +19,7 @@
             <i class="ph ph-pencil-simple"></i>
             {{ __('edit') }}
         </a>
-        <button type="button"
-            onclick="deleteRow({{ $user->id }}, '{{ $user->name }}', '{{ route('users.destroy', $user) }}')"
+        <button type="button" onclick="UserPage.deleteUser('{{ route('users.destroy', $user) }}')" data-no-loading
             class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-xl transition flex items-center gap-2">
             <i class="ph ph-trash"></i>
             {{ __('delete') }}
@@ -238,3 +237,51 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        const UserPage = {
+            deleteUrl: null,
+
+            deleteUser(url) {
+                this.deleteUrl = url;
+                if (typeof toggleModal === 'function') {
+                    toggleModal(true, 'delete-modal');
+                }
+            },
+
+            executeDelete() {
+                if (!this.deleteUrl) return;
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = this.deleteUrl;
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                form.innerHTML = `
+                    <input type="hidden" name="_token" value="${csrfToken}">
+                    <input type="hidden" name="_method" value="DELETE">
+                `;
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        };
+
+        window.UserPage = UserPage;
+
+        // Override executeDelete for users page (wait for app.js)
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const originalExecuteDelete = window.executeDelete;
+                window.executeDelete = function() {
+                    if (UserPage.deleteUrl) {
+                        UserPage.executeDelete();
+                    } else if (typeof originalExecuteDelete === 'function') {
+                        originalExecuteDelete();
+                    }
+                };
+            }, 50);
+        });
+    </script>
+@endpush
