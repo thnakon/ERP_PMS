@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\ShiftNote;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class ShiftNoteSeeder extends Seeder
 {
@@ -48,11 +49,17 @@ class ShiftNoteSeeder extends Seeder
         ];
 
         foreach ($notes as $note) {
+            $startDate = Carbon::create(2026, 2, 1);
+            $endDate = Carbon::create(2026, 4, 1);
+            $createdAt = $startDate->copy()->addDays(rand(0, $startDate->diffInDays($endDate)));
+
             ShiftNote::create([
                 'user_id' => $user->id,
                 'content' => $note['content'],
                 'color' => $note['color'],
                 'is_pinned' => $note['is_pinned'],
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
             ]);
         }
     }

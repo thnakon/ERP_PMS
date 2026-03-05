@@ -121,48 +121,54 @@ class ControlledDrugSeeder extends Seeder
 
         $count = 0;
 
-        // Create 15 sample controlled drug logs
-        for ($i = 0; $i < 15; $i++) {
-            $product = $products->random();
-            $customer = $customers->random();
-            $doctor = $doctors[array_rand($doctors)];
-            $purpose = $purposes[array_rand($purposes)];
+        $startDate = Carbon::create(2026, 2, 1);
+        $endDate = Carbon::create(2026, 4, 1);
 
-            $createdAt = Carbon::now()->subDays(rand(0, 30));
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $logsToday = rand(1, 4); // 1-4 logs per day
 
-            // Random status - more approved than pending
-            $statuses = ['approved', 'approved', 'approved', 'pending', 'pending'];
-            $status = $statuses[array_rand($statuses)];
+            for ($i = 0; $i < $logsToday; $i++) {
+                $product = $products->random();
+                $customer = $customers->random();
+                $doctor = $doctors[array_rand($doctors)];
+                $purpose = $purposes[array_rand($purposes)];
 
-            $transactionTypes = ['sale', 'sale', 'dispense', 'sale'];
-            $transactionType = $transactionTypes[array_rand($transactionTypes)];
+                $hour = rand(9, 20);
+                $createdAt = $date->copy()->setTime($hour, rand(0, 59), rand(0, 59));
 
-            $log = ControlledDrugLog::create([
-                'product_id' => $product->id,
-                'quantity' => rand(5, 30),
-                'transaction_type' => $transactionType,
-                'customer_id' => $customer->id,
-                'customer_name' => $customer->name,
-                'customer_id_card' => $this->generateThaiIdCard(),
-                'customer_phone' => $customer->phone,
-                'customer_address' => $customer->address,
-                'customer_age' => rand(20, 75) . ' ปี',
-                'prescription_number' => $transactionType === 'dispense' ? 'RX-' . strtoupper(substr(md5(rand()), 0, 8)) : null,
-                'doctor_name' => $transactionType === 'dispense' ? $doctor['name'] : null,
-                'doctor_license_no' => $transactionType === 'dispense' ? $doctor['license'] : null,
-                'hospital_clinic' => $transactionType === 'dispense' ? $doctor['hospital'] : null,
-                'purpose' => $purpose,
-                'indication' => $product->description ?? 'ตามดุลยพินิจของแพทย์',
-                'status' => $status,
-                'approved_by' => $status === 'approved' ? $adminUser->id : null,
-                'approved_at' => $status === 'approved' ? $createdAt->copy()->addMinutes(rand(5, 60)) : null,
-                'created_by' => $adminUser->id,
-                'notes' => 'ข้อมูลตัวอย่าง - สร้างจาก Seeder',
-                'created_at' => $createdAt,
-                'updated_at' => $createdAt,
-            ]);
+                $statuses = ['approved', 'approved', 'approved', 'pending', 'pending'];
+                $status = $statuses[array_rand($statuses)];
 
-            $count++;
+                $transactionTypes = ['sale', 'sale', 'dispense', 'sale'];
+                $transactionType = $transactionTypes[array_rand($transactionTypes)];
+
+                ControlledDrugLog::create([
+                    'product_id' => $product->id,
+                    'quantity' => rand(5, 30),
+                    'transaction_type' => $transactionType,
+                    'customer_id' => $customer->id,
+                    'customer_name' => $customer->name,
+                    'customer_id_card' => $this->generateThaiIdCard(),
+                    'customer_phone' => $customer->phone,
+                    'customer_address' => $customer->address,
+                    'customer_age' => rand(20, 75) . ' ปี',
+                    'prescription_number' => $transactionType === 'dispense' ? 'RX-' . strtoupper(substr(md5(rand()), 0, 8)) : null,
+                    'doctor_name' => $transactionType === 'dispense' ? $doctor['name'] : null,
+                    'doctor_license_no' => $transactionType === 'dispense' ? $doctor['license'] : null,
+                    'hospital_clinic' => $transactionType === 'dispense' ? $doctor['hospital'] : null,
+                    'purpose' => $purpose,
+                    'indication' => $product->description ?? 'ตามดุลยพินิจของแพทย์',
+                    'status' => $status,
+                    'approved_by' => $status === 'approved' ? $adminUser->id : null,
+                    'approved_at' => $status === 'approved' ? $createdAt->copy()->addMinutes(rand(5, 60)) : null,
+                    'created_by' => $adminUser->id,
+                    'notes' => 'ข้อมูลตัวอย่าง - สร้างจาก Seeder',
+                    'created_at' => $createdAt,
+                    'updated_at' => $createdAt,
+                ]);
+
+                $count++;
+            }
         }
 
         $this->command->info("Created {$count} controlled drug logs.");

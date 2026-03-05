@@ -16,7 +16,7 @@ class PromotionSeeder extends Seeder
      */
     public function run(): void
     {
-        $now = Carbon::now();
+        $now = Carbon::create(2026, 3, 1);
         $products = Product::all();
         $categories = Category::all();
         $tiers = MemberTier::all();

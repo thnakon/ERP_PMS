@@ -14,7 +14,7 @@ class BundleSeeder extends Seeder
      */
     public function run(): void
     {
-        $now = Carbon::now();
+        $now = Carbon::create(2026, 3, 1);
         $products = Product::where('is_active', true)->get();
 
         if ($products->count() < 6) {

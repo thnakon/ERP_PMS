@@ -21,11 +21,13 @@ class BackupSeeder extends Seeder
         }
 
         $backups = [];
-        $now = Carbon::now();
+        $startDate = Carbon::create(2026, 2, 1);
+        $endDate = Carbon::create(2026, 4, 1);
+        $daysDiff = $startDate->diffInDays($endDate);
 
-        // Generate 20 backup records over the last 3 months
+        // Generate 20 backup records over the requested period
         for ($i = 0; $i < 20; $i++) {
-            $createdAt = $now->copy()->subDays(rand(1, 90))->subHours(rand(0, 23))->subMinutes(rand(0, 59));
+            $createdAt = $startDate->copy()->addDays(rand(0, $daysDiff))->addHours(rand(0, 23))->addMinutes(rand(0, 59));
             $type = $i % 3 === 0 ? 'manual' : 'scheduled';
             $status = $i < 18 ? 'completed' : ($i === 18 ? 'failed' : 'in_progress');
 

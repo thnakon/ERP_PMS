@@ -57,7 +57,7 @@ class GoodsReceivedSeeder extends Seeder
                     'unit_cost' => $item->unit_cost,
                     'line_total' => $item->received_qty * $item->unit_cost,
                     'lot_number' => 'LOT-' . rand(1000, 9999),
-                    'expiry_date' => Carbon::now()->addMonths(rand(6, 24)),
+                    'expiry_date' => Carbon::now()->addDays(rand(10, 365)), // Vary more
                 ]);
 
                 // Also create a lot for this
@@ -108,8 +108,12 @@ class GoodsReceivedSeeder extends Seeder
                     'unit_cost' => $cost,
                     'line_total' => $qty * $cost,
                     'lot_number' => 'LOT-D-' . rand(1000, 9999),
-                    'expiry_date' => Carbon::now()->addMonths(rand(12, 36)),
+                    'expiry_date' => Carbon::now()->addDays(rand(5, 730)), // Vary more
                 ]);
+
+                $startDate = Carbon::create(2026, 2, 1);
+                $endDate = Carbon::create(2026, 4, 1);
+                $grDate = $startDate->copy()->addDays(rand(0, $startDate->diffInDays($endDate)));
 
                 ProductLot::create([
                     'product_id' => $product->id,

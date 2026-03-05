@@ -31,15 +31,17 @@ class CategorySeeder extends Seeder
 
         $createdMain = [];
         foreach ($mainCategories as $i => $category) {
-            $createdMain[$category['name']] = Category::create([
-                'name' => $category['name'],
-                'name_th' => $category['name_th'],
-                'slug' => Str::slug($category['name']),
-                'description' => $category['description'],
-                'color_code' => $category['color_code'],
-                'sort_order' => $i + 1,
-                'is_active' => true,
-            ]);
+            $createdMain[$category['name']] = Category::updateOrCreate(
+                ['name' => $category['name']],
+                [
+                    'name_th' => $category['name_th'],
+                    'slug' => Str::slug($category['name']),
+                    'description' => $category['description'],
+                    'color_code' => $category['color_code'],
+                    'sort_order' => $i + 1,
+                    'is_active' => true,
+                ]
+            );
         }
 
         // Sub-Categories
@@ -52,15 +54,17 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($subCategories as $i => $category) {
-            Category::create([
-                'name' => $category['name'],
-                'name_th' => $category['name_th'],
-                'slug' => Str::slug($category['name']),
-                'parent_id' => $createdMain[$category['parent']]->id,
-                'color_code' => $category['color_code'],
-                'sort_order' => $i + 1,
-                'is_active' => true,
-            ]);
+            Category::updateOrCreate(
+                ['name' => $category['name']],
+                [
+                    'name_th' => $category['name_th'],
+                    'slug' => Str::slug($category['name']),
+                    'parent_id' => $createdMain[$category['parent']]->id,
+                    'color_code' => $category['color_code'],
+                    'sort_order' => $i + 1,
+                    'is_active' => true,
+                ]
+            );
         }
 
         $this->command->info('Created ' . (count($mainCategories) + count($subCategories)) . ' categories!');

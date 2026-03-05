@@ -147,8 +147,8 @@ class ThaiProductSeeder extends Seeder
             $productData['generic_name'] = $productData['name'];
             $productData['barcode'] = '885' . str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
             $productData['member_price'] = $productData['unit_price'] * 0.9;
-            $productData['stock_qty'] = rand(50, 500);
             $productData['min_stock'] = rand(10, 50);
+            $productData['stock_qty'] = rand(0, 10) > 8 ? rand(0, $productData['min_stock']) : rand(50, 500);
             $productData['max_stock'] = $productData['min_stock'] * 10;
             $productData['reorder_point'] = $productData['min_stock'] * 1.5;
             $productData['unit'] = 'piece';
@@ -160,6 +160,12 @@ class ThaiProductSeeder extends Seeder
             $productData['location'] = chr(65 + rand(0, 5)) . rand(1, 5) . '-' . str_pad(rand(1, 20), 2, '0', STR_PAD_LEFT);
             $productData['requires_prescription'] = rand(0, 10) > 7;
             $productData['vat_applicable'] = false;
+
+            // Restore if soft-deleted
+            $existing = Product::withTrashed()->where('sku', $productData['sku'])->first();
+            if ($existing && $existing->trashed()) {
+                $existing->restore();
+            }
 
             Product::updateOrCreate(
                 ['sku' => $productData['sku']],

@@ -228,7 +228,10 @@ class SupplierSeeder extends Seeder
         ];
 
         foreach ($suppliers as $supplier) {
-            Supplier::create($supplier);
+            Supplier::updateOrCreate(
+                ['tax_id' => $supplier['tax_id']],
+                $supplier
+            );
         }
 
         $this->command->info('Created ' . count($suppliers) . ' suppliers!');

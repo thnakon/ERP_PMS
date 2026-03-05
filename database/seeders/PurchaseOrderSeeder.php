@@ -28,7 +28,9 @@ class PurchaseOrderSeeder extends Seeder
 
         for ($i = 1; $i <= 25; $i++) {
             $supplier = $suppliers->random();
-            $orderDate = Carbon::now()->subDays(rand(1, 60));
+            $startDate = Carbon::create(2026, 2, 1);
+            $endDate = Carbon::create(2026, 4, 1);
+            $orderDate = $startDate->copy()->addDays(rand(0, $startDate->diffInDays($endDate)));
             $status = collect(['draft', 'sent', 'partial', 'completed'])->random();
 
             $po = PurchaseOrder::create([

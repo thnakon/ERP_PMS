@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class ActivityLogSeeder extends Seeder
 {
@@ -43,7 +44,9 @@ class ActivityLogSeeder extends Seeder
             $module = $modules[array_rand($modules)];
             $description = $descriptions[$action][array_rand($descriptions[$action])] ?? null;
 
-            $loggedAt = now()->subDays(rand(0, 30))->subHours(rand(0, 23))->subMinutes(rand(0, 59));
+            $startDate = Carbon::create(2026, 2, 1);
+            $endDate = Carbon::create(2026, 4, 1);
+            $loggedAt = $startDate->copy()->addDays(rand(0, $startDate->diffInDays($endDate)))->subHours(rand(0, 23))->subMinutes(rand(0, 59));
 
             $oldValues = null;
             $newValues = null;

@@ -75,7 +75,9 @@ class PrescriptionSeeder extends Seeder
             for ($i = 0; $i < 2; $i++) {
                 $doctor = $doctors[array_rand($doctors)];
                 $diagnosis = $diagnoses[array_rand($diagnoses)];
-                $prescriptionDate = Carbon::now()->subDays(rand(1, 30));
+                $startDate = Carbon::create(2026, 2, 1);
+                $endDate = Carbon::create(2026, 4, 1);
+                $prescriptionDate = $startDate->copy()->addDays(rand(0, $startDate->diffInDays($endDate)));
 
                 // Random status
                 $statuses = ['pending', 'dispensed', 'dispensed'];

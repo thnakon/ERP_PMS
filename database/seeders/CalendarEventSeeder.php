@@ -21,9 +21,9 @@ class CalendarEventSeeder extends Seeder
         $adminUser = User::where('role', 'admin')->first();
         $createdBy = $adminUser ? $adminUser->id : 1;
 
-        // Current month and next month
-        $startDate = Carbon::now()->startOfMonth();
-        $endDate = Carbon::now()->addMonth()->endOfMonth();
+        // Set for Feb 1 - Apr 1 2026
+        $startDate = Carbon::create(2026, 2, 1);
+        $endDate = Carbon::create(2026, 4, 1);
 
         // ===== SHIFT EVENTS (ตารางเวร) =====
         // Create daily shifts for pharmacists
@@ -90,9 +90,10 @@ class CalendarEventSeeder extends Seeder
                 'ตรวจน้ำตาลในเลือด',
             ];
 
-            // Add 15 random appointments
-            for ($i = 0; $i < 15; $i++) {
-                $appointmentDate = Carbon::now()->addDays(rand(1, 45));
+            // Add 30 random appointments throughout the range
+            for ($i = 0; $i < 30; $i++) {
+                $daysDiff = $startDate->diffInDays($endDate);
+                $appointmentDate = $startDate->copy()->addDays(rand(0, $daysDiff));
                 $hour = rand(9, 18);
                 $customer = $customers->random();
 
@@ -123,7 +124,8 @@ class CalendarEventSeeder extends Seeder
         ];
 
         foreach ($reminders as $reminder) {
-            $reminderDate = Carbon::now()->addDays($reminder['offset']);
+            $daysDiff = $startDate->diffInDays($endDate);
+            $reminderDate = $startDate->copy()->addDays(rand(0, $daysDiff));
             CalendarEvent::create([
                 'type' => 'reminder',
                 'title' => $reminder['title'],
@@ -147,7 +149,8 @@ class CalendarEventSeeder extends Seeder
         ];
 
         foreach ($otherEvents as $event) {
-            $eventDate = Carbon::now()->addDays($event['offset']);
+            $daysDiff = $startDate->diffInDays($endDate);
+            $eventDate = $startDate->copy()->addDays(rand(0, $daysDiff));
             CalendarEvent::create([
                 'type' => 'other',
                 'title' => $event['title'],

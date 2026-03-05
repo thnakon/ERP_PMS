@@ -27,8 +27,8 @@ class OrderSeeder extends Seeder
         }
 
         $orderCount = 0;
-        $startDate = Carbon::now()->subMonths(3)->startOfMonth();
-        $endDate = Carbon::now();
+        $startDate = Carbon::create(2026, 2, 1);
+        $endDate = Carbon::create(2026, 4, 1);
 
         // Generate orders for each day in the past 3 months
         for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {

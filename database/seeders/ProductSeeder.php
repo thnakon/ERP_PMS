@@ -86,6 +86,12 @@ class ProductSeeder extends Seeder
             $productData['location'] = chr(65 + rand(0, 5)) . rand(1, 5) . '-' . str_pad(rand(1, 20), 2, '0', STR_PAD_LEFT);
             $productData['vat_applicable'] = $productData['drug_class'] === 'อาหารเสริม';
 
+            // Restore if soft-deleted
+            $existing = Product::withTrashed()->where('sku', $productData['sku'])->first();
+            if ($existing && $existing->trashed()) {
+                $existing->restore();
+            }
+
             Product::updateOrCreate(
                 ['sku' => $productData['sku']],
                 $productData

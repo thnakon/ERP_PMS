@@ -60,6 +60,10 @@ class StockAdjustmentSeeder extends Seeder
                     break;
             }
 
+            $startDate = Carbon::create(2026, 2, 1);
+            $endDate = Carbon::create(2026, 4, 1);
+            $adjustedAt = $startDate->copy()->addDays(rand(0, $startDate->diffInDays($endDate)))->subHours(rand(0, 23));
+
             StockAdjustment::create([
                 'adjustment_number' => 'ADJ-' . date('Ymd') . '-' . str_pad($i + 1, 4, '0', STR_PAD_LEFT),
                 'product_id' => $product->id,
@@ -71,7 +75,7 @@ class StockAdjustmentSeeder extends Seeder
                 'after_quantity' => $afterQty,
                 'reason' => $reasons[$type][array_rand($reasons[$type])],
                 'notes' => rand(0, 3) === 0 ? 'หมายเหตุเพิ่มเติม: ตรวจสอบแล้วถูกต้อง' : null,
-                'adjusted_at' => Carbon::now()->subDays(rand(0, 60))->subHours(rand(0, 23)),
+                'adjusted_at' => $adjustedAt,
             ]);
 
             $adjustmentCount++;
