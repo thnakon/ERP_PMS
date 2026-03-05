@@ -6,13 +6,11 @@ services:
     region: singapore
     envVars:
       - key: APP_KEY
-        generateValue: true
+        value: "base64:A2hYSza9e0sUZcBE+yYToEeSu9+tADKKZO2wa0RVv4Q="
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
         value: "false"
-      - key: APP_URL
-        fromContext: url
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
