@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class RealisticDataSeeder extends Seeder
 {
@@ -17,30 +18,47 @@ class RealisticDataSeeder extends Seeder
 
         // 0. Clear Transactional Data for a fresh start
         $this->command->info('🧹 Clearing existing transactional data...');
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('orders')->truncate();
-        DB::table('backups')->truncate();
-        DB::table('order_items')->truncate();
-        DB::table('order_items')->truncate();
-        DB::table('purchase_orders')->truncate();
-        DB::table('purchase_order_items')->truncate();
-        DB::table('goods_received')->truncate();
-        DB::table('goods_received_items')->truncate();
-        DB::table('product_lots')->truncate();
-        DB::table('prescriptions')->truncate();
-        DB::table('prescription_items')->truncate();
-        DB::table('controlled_drug_logs')->truncate();
-        DB::table('stock_adjustments')->truncate();
-        DB::table('calendar_events')->truncate();
-        DB::table('activity_logs')->truncate();
-        DB::table('shift_notes')->truncate();
-        DB::table('bundles')->truncate(); // We'll re-seed
-        DB::table('bundle_items')->truncate();
-        DB::table('promotions')->truncate(); // We'll re-seed
-        DB::table('promotion_products')->truncate();
-        DB::table('promotion_categories')->truncate();
-        DB::table('promotion_usages')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        Schema::disableForeignKeyConstraints();
+
+        $tables = [
+            'orders',
+            'backups',
+            'order_items',
+            'purchase_orders',
+            'purchase_order_items',
+            'goods_received',
+            'goods_received_items',
+            'product_lots',
+            'prescriptions',
+            'prescription_items',
+            'controlled_drug_logs',
+            'stock_adjustments',
+            'calendar_events',
+            'activity_logs',
+            'shift_notes',
+            'bundles',
+            'bundle_items',
+            'promotions',
+            'promotion_products',
+            'promotion_categories',
+            'promotion_usages',
+        ];
+
+        $driver = Schema::getConnection()->getDriverName();
+
+        foreach ($tables as $table) {
+            if (Schema::hasTable($table)) {
+                if ($driver === 'pgsql') {
+                    DB::table($table)->delete();
+                    // Reset auto-increment sequence for PostgreSQL
+                    DB::statement("ALTER SEQUENCE IF EXISTS {$table}_id_seq RESTART WITH 1");
+                } else {
+                    DB::table($table)->truncate();
+                }
+            }
+        }
+
+        Schema::enableForeignKeyConstraints();
 
         $startDate = Carbon::create(2026, 2, 1);
         $endDate = Carbon::create(2026, 4, 1);
