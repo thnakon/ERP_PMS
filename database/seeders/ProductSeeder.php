@@ -81,7 +81,7 @@ class ProductSeeder extends Seeder
             $productData['base_unit'] = 'tablet';
             $productData['sell_unit'] = 'box';
             $productData['conversion_factor'] = rand(10, 100);
-            $productData['reorder_point'] = $productData['min_stock'] * 1.5;
+            $productData['reorder_point'] = (int) round($productData['min_stock'] * 1.5);
             $productData['max_stock'] = $productData['min_stock'] * 10;
             $productData['location'] = chr(65 + rand(0, 5)) . rand(1, 5) . '-' . str_pad(rand(1, 20), 2, '0', STR_PAD_LEFT);
             $productData['vat_applicable'] = $productData['drug_class'] === 'อาหารเสริม';

@@ -150,7 +150,7 @@ class ThaiProductSeeder extends Seeder
             $productData['min_stock'] = rand(10, 50);
             $productData['stock_qty'] = rand(0, 10) > 8 ? rand(0, $productData['min_stock']) : rand(50, 500);
             $productData['max_stock'] = $productData['min_stock'] * 10;
-            $productData['reorder_point'] = $productData['min_stock'] * 1.5;
+            $productData['reorder_point'] = (int) round($productData['min_stock'] * 1.5);
             $productData['unit'] = 'piece';
             $productData['base_unit'] = 'piece';
             $productData['sell_unit'] = 'box';
