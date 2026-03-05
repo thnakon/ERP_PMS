@@ -60,8 +60,12 @@ class FullDataImportSeeder extends Seeder
                 continue;
             }
 
-            // Clear existing data
-            DB::table($table)->delete();
+            // Clear existing data safely for both MySQL and PostgreSQL
+            if ($driver === 'pgsql') {
+                DB::statement("TRUNCATE TABLE \"{$table}\" CASCADE");
+            } else {
+                DB::table($table)->delete();
+            }
 
             // Reset sequence for PostgreSQL
             if ($driver === 'pgsql') {
