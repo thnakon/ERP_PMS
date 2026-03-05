@@ -20,6 +20,9 @@ return new class extends Migration
 
         if ($driver === 'mysql') {
             DB::statement("ALTER TABLE activity_logs MODIFY COLUMN action ENUM('login', 'logout', 'create', 'update', 'delete', 'print', 'export', 'download', 'restore', 'view', 'other') DEFAULT 'other'");
+        } elseif ($driver === 'pgsql') {
+            DB::statement("ALTER TABLE activity_logs ALTER COLUMN action TYPE VARCHAR(255)");
+            DB::statement("ALTER TABLE activity_logs ALTER COLUMN action SET DEFAULT 'other'");
         }
         // For SQLite, no action needed as TEXT accepts any string
     }
@@ -33,6 +36,9 @@ return new class extends Migration
 
         if ($driver === 'mysql') {
             DB::statement("ALTER TABLE activity_logs MODIFY COLUMN action ENUM('login', 'logout', 'create', 'update', 'delete', 'print', 'export', 'view', 'other') DEFAULT 'other'");
+        } elseif ($driver === 'pgsql') {
+            DB::statement("ALTER TABLE activity_logs ALTER COLUMN action TYPE VARCHAR(255)");
+            DB::statement("ALTER TABLE activity_logs ALTER COLUMN action SET DEFAULT 'other'");
         }
     }
 };

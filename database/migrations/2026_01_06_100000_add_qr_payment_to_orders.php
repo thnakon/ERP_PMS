@@ -12,8 +12,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Modify payment_method enum to include 'qr' and 'promptpay'
-        DB::statement("ALTER TABLE orders MODIFY COLUMN payment_method ENUM('cash', 'card', 'transfer', 'credit', 'qr', 'promptpay') DEFAULT 'cash'");
+        $driver = Schema::getConnection()->getDriverName();
+
+        if ($driver === 'mysql') {
+            // Modify payment_method enum to include 'qr' and 'promptpay'
+            DB::statement("ALTER TABLE orders MODIFY COLUMN payment_method ENUM('cash', 'card', 'transfer', 'credit', 'qr', 'promptpay') DEFAULT 'cash'");
+        } elseif ($driver === 'pgsql') {
+            // PostgreSQL doesn't support MODIFY COLUMN ENUM easily. Using string with fallback.
+            DB::statement("ALTER TABLE orders ALTER COLUMN payment_method TYPE VARCHAR(255)");
+            DB::statement("ALTER TABLE orders ALTER COLUMN payment_method SET DEFAULT 'cash'");
+        }
     }
 
     /**
@@ -21,6 +29,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement("ALTER TABLE orders MODIFY COLUMN payment_method ENUM('cash', 'card', 'transfer', 'credit') DEFAULT 'cash'");
+        $driver = Schema::getConnection()->getDriverName();
+
+        if ($driver === 'mysql') {
+            DB::statement("ALTER TABLE orders MODIFY COLUMN payment_method ENUM('cash', 'card', 'transfer', 'credit') DEFAULT 'cash'");
+        } elseif ($driver === 'pgsql') {
+            DB::statement("ALTER TABLE orders ALTER COLUMN payment_method TYPE VARCHAR(255)");
+            DB::statement("ALTER TABLE orders ALTER COLUMN payment_method SET DEFAULT 'cash'");
+        }
     }
 };
