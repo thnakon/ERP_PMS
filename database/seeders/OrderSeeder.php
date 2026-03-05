@@ -19,16 +19,17 @@ class OrderSeeder extends Seeder
     {
         $products = Product::all();
         $customers = Customer::all();
+        $pharmacistIds = User::where('role', 'pharmacist')->where('status', 'active')->pluck('id')->toArray();
         $staffUsers = User::whereIn('role', ['staff', 'pharmacist', 'admin'])->where('status', 'active')->get();
 
-        if ($products->isEmpty() || $staffUsers->isEmpty()) {
+        if ($products->isEmpty() || $staffUsers->isEmpty() || empty($pharmacistIds)) {
             $this->command->warn('Please seed products and users first!');
             return;
         }
 
         $orderCount = 0;
-        $startDate = Carbon::create(2026, 2, 1);
-        $endDate = Carbon::create(2026, 4, 1);
+        $startDate = Carbon::create(2026, 3, 1);
+        $endDate = Carbon::create(2026, 3, 5);
 
         // Generate orders for each day in the past 3 months
         for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
@@ -37,33 +38,8 @@ class OrderSeeder extends Seeder
                 continue;
             }
 
-            // Random orders per day (15-60 orders for a busy pharmacy)
-            $ordersToday = rand(15, 60);
-
-            // More orders on weekends
-            if ($date->isSaturday()) {
-                $ordersToday = rand(25, 70);
-            }
-
-            // Less orders on holidays (Thai holidays simulation)
-            $thaiHolidays = [
-                '01-01',
-                '04-06',
-                '05-01',
-                '05-04',
-                '05-06',
-                '06-03',
-                '07-28',
-                '08-12',
-                '10-13',
-                '10-23',
-                '12-05',
-                '12-10',
-                '12-31'
-            ];
-            if (in_array($date->format('m-d'), $thaiHolidays)) {
-                $ordersToday = rand(5, 20);
-            }
+            // Random orders per day (Reduce for demo speed: 10-25 orders)
+            $ordersToday = rand(10, 25);
 
             for ($i = 0; $i < $ordersToday; $i++) {
                 $staff = $staffUsers->random();
@@ -77,7 +53,7 @@ class OrderSeeder extends Seeder
                     'order_number' => 'INV-' . $orderTime->format('Ymd') . '-' . str_pad(++$orderCount, 5, '0', STR_PAD_LEFT),
                     'customer_id' => $customer?->id,
                     'user_id' => $staff->id,
-                    'pharmacist_id' => User::where('role', 'pharmacist')->where('status', 'active')->inRandomOrder()->first()?->id,
+                    'pharmacist_id' => $pharmacistIds[array_rand($pharmacistIds)],
                     'status' => $this->getRandomStatus(),
                     'payment_method' => $this->getRandomPaymentMethod(),
                     'payment_status' => 'paid',
