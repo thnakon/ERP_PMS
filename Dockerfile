@@ -12,10 +12,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libpq-dev \
     nodejs \
-    npm
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    npm && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip
@@ -26,16 +24,24 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application files
+# Step 1: Install PHP dependencies (using cache)
+COPY composer.json composer.lock ./
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts || true
+
+# Step 2: Install Node dependencies and Build Assets (using cache)
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Step 3: Copy the rest of the application
 COPY . .
 
-# Install dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader || true
-RUN npm install && npm run build
+# Step 4: Finalize Build
+RUN npm run build && \
+    composer dump-autoload --optimize
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage 2>/dev/null || true
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html/storage
 
 # Expose port
 EXPOSE 8000
