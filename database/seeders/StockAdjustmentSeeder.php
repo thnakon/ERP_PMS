@@ -45,7 +45,7 @@ class StockAdjustmentSeeder extends Seeder
 
             // Determine quantity based on type
             $quantity = rand(1, 50);
-            $beforeQty = $product->stock_qty;
+            $beforeQty = (int) $product->stock_qty;
 
             switch ($type) {
                 case 'increase':
