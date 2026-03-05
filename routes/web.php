@@ -59,7 +59,8 @@ Route::get('/test-403', function () {
 });
 
 // Public Landing Page
-Route::get('/welcome', [\App\Http\Controllers\LandingController::class, 'index'])->name('landing');
+Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name('landing');
+Route::get('/welcome', [\App\Http\Controllers\LandingController::class, 'index']);
 Route::get('/terms', [\App\Http\Controllers\LandingController::class, 'terms'])->name('terms');
 Route::get('/privacy', [\App\Http\Controllers\LandingController::class, 'privacy'])->name('privacy');
 
@@ -107,8 +108,7 @@ Route::middleware(['auth', 'staff'])->group(function () {
     // =============================================
 
     // Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Two-Factor Authentication Settings (Authenticated)
     Route::get('/two-factor', [\App\Http\Controllers\TwoFactorController::class, 'settings'])->name('two-factor.settings');

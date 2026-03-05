@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
+use Illuminate\Support\Facades\Schema;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -34,8 +35,17 @@ Schedule::command('notifications:send-line --type=refill')
     ->description('Send refill reminder LINE alerts');
 
 // Automatic Database Backup
-$backupTime = \App\Models\HardwareSetting::get('backup_time', '02:00');
-$backupSchedule = \App\Models\HardwareSetting::get('backup_schedule', 'daily');
+$backupTime = '02:00';
+$backupSchedule = 'daily';
+
+try {
+    if (Schema::hasTable('hardware_settings')) {
+        $backupTime = \App\Models\HardwareSetting::get('backup_time', '02:00');
+        $backupSchedule = \App\Models\HardwareSetting::get('backup_schedule', 'daily');
+    }
+} catch (\Exception $e) {
+    // Fallback to defaults if table doesn't exist or other error
+}
 
 $backupTask = Schedule::command('app:backup-db');
 
