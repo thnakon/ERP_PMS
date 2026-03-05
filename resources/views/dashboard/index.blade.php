@@ -418,7 +418,7 @@
                                 <div
                                     class="w-10 h-10 rounded-lg bg-white shadow-sm flex items-center justify-center overflow-hidden">
                                     @if ($product->image_path)
-                                        <img src="{{ str_starts_with($product->image_path, 'http') ? $product->image_path : str_starts_with($product->image_path, 'http') ? $product->image_path : asset('storage/' . $product->image_path) }}"
+                                        <img src="{{ str_starts_with($product->image_path, 'http') ? $product->image_path : asset('storage/' . $product->image_path) }}"
                                             class="w-full h-full object-cover">
                                     @else
                                         <i class="ph ph-pill text-gray-400"></i>
@@ -682,7 +682,7 @@
                                     <div
                                         class="w-10 h-10 rounded-lg bg-white shadow-sm flex items-center justify-center overflow-hidden">
                                         @if ($product->image_path)
-                                            <img src="{{ str_starts_with($product->image_path, 'http') ? $product->image_path : str_starts_with($product->image_path, 'http') ? $product->image_path : asset('storage/' . $product->image_path) }}"
+                                            <img src="{{ str_starts_with($product->image_path, 'http') ? $product->image_path : asset('storage/' . $product->image_path) }}"
                                                 class="w-full h-full object-cover">
                                         @else
                                             <i class="ph ph-pill text-gray-400"></i>
