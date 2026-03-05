@@ -48,7 +48,7 @@ EXPOSE 8000
 
 # Start Laravel and setup DB
 CMD php artisan migrate --force && \
-    php artisan db:seed --class=RealisticDataSeeder --force && \
+    php artisan db:seed --class=FullDataImportSeeder --force && \
     php artisan storage:link && \
     php artisan config:cache && \
     php artisan route:cache && \

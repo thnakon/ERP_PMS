@@ -1,0 +1,274 @@
+[
+    {
+        "id": 1,
+        "bundle_id": 1,
+        "product_id": 64,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 04:36:24"
+    },
+    {
+        "id": 2,
+        "bundle_id": 1,
+        "product_id": 98,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 04:36:24"
+    },
+    {
+        "id": 3,
+        "bundle_id": 1,
+        "product_id": 128,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 04:36:24"
+    },
+    {
+        "id": 4,
+        "bundle_id": 2,
+        "product_id": 33,
+        "quantity": 2,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 5,
+        "bundle_id": 2,
+        "product_id": 68,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 6,
+        "bundle_id": 3,
+        "product_id": 1,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 7,
+        "bundle_id": 3,
+        "product_id": 35,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 8,
+        "bundle_id": 3,
+        "product_id": 100,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 9,
+        "bundle_id": 3,
+        "product_id": 131,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 10,
+        "bundle_id": 4,
+        "product_id": 20,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 11,
+        "bundle_id": 4,
+        "product_id": 55,
+        "quantity": 2,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 12,
+        "bundle_id": 4,
+        "product_id": 58,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 13,
+        "bundle_id": 4,
+        "product_id": 80,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 14,
+        "bundle_id": 4,
+        "product_id": 124,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 15,
+        "bundle_id": 5,
+        "product_id": 49,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 16,
+        "bundle_id": 5,
+        "product_id": 58,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 17,
+        "bundle_id": 5,
+        "product_id": 124,
+        "quantity": 2,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 18,
+        "bundle_id": 6,
+        "product_id": 54,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 19,
+        "bundle_id": 6,
+        "product_id": 56,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 20,
+        "bundle_id": 6,
+        "product_id": 120,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 21,
+        "bundle_id": 6,
+        "product_id": 135,
+        "quantity": 2,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 22,
+        "bundle_id": 7,
+        "product_id": 4,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 23,
+        "bundle_id": 7,
+        "product_id": 29,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 24,
+        "bundle_id": 7,
+        "product_id": 36,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 25,
+        "bundle_id": 8,
+        "product_id": 32,
+        "quantity": 2,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 26,
+        "bundle_id": 8,
+        "product_id": 88,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 27,
+        "bundle_id": 8,
+        "product_id": 121,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 28,
+        "bundle_id": 9,
+        "product_id": 69,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 29,
+        "bundle_id": 9,
+        "product_id": 105,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 30,
+        "bundle_id": 9,
+        "product_id": 110,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 31,
+        "bundle_id": 9,
+        "product_id": 118,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 32,
+        "bundle_id": 10,
+        "product_id": 15,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 33,
+        "bundle_id": 10,
+        "product_id": 67,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    },
+    {
+        "id": 34,
+        "bundle_id": 10,
+        "product_id": 90,
+        "quantity": 1,
+        "created_at": "2026-03-05 03:47:32",
+        "updated_at": "2026-03-05 03:47:32"
+    }
+]
