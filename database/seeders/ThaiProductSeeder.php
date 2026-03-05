@@ -161,6 +161,23 @@ class ThaiProductSeeder extends Seeder
             $productData['requires_prescription'] = rand(0, 10) > 7;
             $productData['vat_applicable'] = false;
 
+            // Set default image based on category
+            $images = [
+                'Pain Relief' => 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300',
+                'Cold & Flu' => 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=300',
+                'Gastrointestinal' => 'https://images.unsplash.com/photo-1550572017-ed20015ade7a?w=300',
+                'Vitamins & Supplements' => 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=300',
+                'Skin Care' => 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?w=300',
+                'Antibiotics' => 'https://images.unsplash.com/photo-1471864190281-ad5f9f81ce4c?w=300',
+                'Cardiovascular' => 'https://images.unsplash.com/photo-1628771065518-0d82f1110503?w=300',
+                'Diabetes Care' => 'https://images.unsplash.com/photo-1579154235602-3c2c2993d162?w=300',
+                'Medical Supplies' => 'https://images.unsplash.com/photo-1583324113626-70df0f43aa2b?w=300',
+            ];
+
+            // Find category name for image mapping
+            $catName = array_search($categoryId, $categories);
+            $productData['image_path'] = $images[$catName] ?? 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300';
+
             // Restore if soft-deleted
             $existing = Product::withTrashed()->where('sku', $productData['sku'])->first();
             if ($existing && $existing->trashed()) {

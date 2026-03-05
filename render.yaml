@@ -37,6 +37,8 @@ services:
         value: stderr
       - key: APP_NAME
         value: ObounERP
+      - key: APP_URL
+        value: ${RENDER_EXTERNAL_URL}
 
 databases:
   - name: oboun-db
