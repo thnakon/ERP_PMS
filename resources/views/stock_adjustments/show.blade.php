@@ -49,7 +49,7 @@
                     <div
                         class="w-16 h-16 bg-white rounded-xl flex items-center justify-center border border-gray-200 overflow-hidden">
                         @if ($adjustment->product->image_path)
-                            <img src="{{ asset('storage/' . $adjustment->product->image_path) }}"
+                            <img src="{{ str_starts_with($adjustment->product->image_path, 'http') ? $adjustment->product->image_path : asset('storage/' . $adjustment->product->image_path) }}"
                                 class="w-full h-full object-cover">
                         @else
                             <i class="ph ph-pill text-gray-300 text-2xl"></i>

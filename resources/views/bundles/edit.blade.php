@@ -191,7 +191,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Image</label>
                             @if ($bundle->image_path)
-                                <img src="{{ asset('storage/' . $bundle->image_path) }}"
+                                <img src="{{ str_starts_with($bundle->image_path, 'http') ? $bundle->image_path : asset('storage/' . $bundle->image_path) }}"
                                     class="w-full h-32 object-cover rounded-xl mb-2">
                             @endif
                             <input type="file" name="image" accept="image/*" class="input-ios w-full text-sm">

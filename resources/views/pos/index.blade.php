@@ -873,6 +873,7 @@
                             'stock_qty' => $product->stock_qty,
                             'requires_prescription' => $product->requires_prescription,
                             'image_path' => $product->image_path,
+                            'image_url' => $product->image_url,
                             'category_id' => $product->category_id,
                         ]) }})">
                         <div class="pos-product-image">

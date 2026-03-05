@@ -35,7 +35,7 @@
                 <div
                     class="relative h-64 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
                     @if ($bundle->image_path)
-                        <img src="{{ asset('storage/' . $bundle->image_path) }}"
+                        <img src="{{ str_starts_with($bundle->image_path, 'http') ? $bundle->image_path : asset('storage/' . $bundle->image_path) }}"
                             class="w-full h-full object-cover mix-blend-overlay opacity-60">
                         <div class="absolute inset-0 bg-black/20"></div>
                         <div class="absolute bottom-0 left-0 right-0 p-8">
@@ -107,7 +107,7 @@
                             <div
                                 class="w-16 h-16 rounded-xl bg-white border border-gray-200 flex items-center justify-center overflow-hidden relative">
                                 @if ($product->image_path)
-                                    <img src="{{ asset('storage/' . $product->image_path) }}"
+                                    <img src="{{ str_starts_with($product->image_path, 'http') ? $product->image_path : asset('storage/' . $product->image_path) }}"
                                         class="w-full h-full object-cover">
                                 @else
                                     <i class="ph-fill ph-package text-gray-200 text-2xl"></i>

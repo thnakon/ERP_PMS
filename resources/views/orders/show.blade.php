@@ -73,7 +73,7 @@
                             <div
                                 class="w-14 h-14 bg-white rounded-xl flex items-center justify-center border border-gray-100 overflow-hidden flex-shrink-0">
                                 @if ($item->product?->image_path)
-                                    <img src="{{ asset('storage/' . $item->product->image_path) }}"
+                                    <img src="{{ str_starts_with($item->product->image_path, 'http') ? $item->product->image_path : asset('storage/' . $item->product->image_path) }}"
                                         alt="{{ $item->product_name }}" class="w-full h-full object-cover">
                                 @else
                                     <i class="ph ph-pill text-gray-300 text-2xl"></i>

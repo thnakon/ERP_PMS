@@ -378,7 +378,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Image</label>
                             @if ($promotion->image_path)
-                                <img src="{{ asset('storage/' . $promotion->image_path) }}"
+                                <img src="{{ str_starts_with($promotion->image_path, 'http') ? $promotion->image_path : asset('storage/' . $promotion->image_path) }}"
                                     class="w-full h-32 object-cover rounded-xl mb-2">
                             @endif
                             <input type="file" name="image" accept="image/*" class="input-ios w-full text-sm">

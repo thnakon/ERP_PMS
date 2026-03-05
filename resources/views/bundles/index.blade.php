@@ -130,7 +130,7 @@
                             <div
                                 class="w-16 h-16 rounded-2xl flex-shrink-0 flex items-center justify-center mr-4 bg-gray-100 overflow-hidden relative shadow-sm border border-gray-200">
                                 @if ($bundle->image_path)
-                                    <img src="{{ asset('storage/' . $bundle->image_path) }}"
+                                    <img src="{{ str_starts_with($bundle->image_path, 'http') ? $bundle->image_path : asset('storage/' . $bundle->image_path) }}"
                                         class="w-full h-full object-cover">
                                 @else
                                     <i class="ph-fill ph-package text-gray-300 text-3xl"></i>
@@ -161,7 +161,7 @@
                                         <div class="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center shadow-sm overflow-hidden"
                                             title="{{ $product->name }}">
                                             @if ($product->image_path)
-                                                <img src="{{ asset('storage/' . $product->image_path) }}"
+                                                <img src="{{ str_starts_with($product->image_path, 'http') ? $product->image_path : asset('storage/' . $product->image_path) }}"
                                                     class="w-full h-full object-cover text-[8px]">
                                             @else
                                                 <span

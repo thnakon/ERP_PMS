@@ -41,7 +41,7 @@
                     <div
                         class="w-32 h-32 rounded-3xl bg-purple-100 flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
                         @if ($promotion->image_path)
-                            <img src="{{ asset('storage/' . $promotion->image_path) }}" class="w-full h-full object-cover">
+                            <img src="{{ str_starts_with($promotion->image_path, 'http') ? $promotion->image_path : asset('storage/' . $promotion->image_path) }}" class="w-full h-full object-cover">
                         @else
                             <i class="ph-fill ph-tag text-purple-600 text-5xl"></i>
                         @endif
@@ -152,7 +152,7 @@
                                         <div
                                             class="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
                                             @if ($product->image_path)
-                                                <img src="{{ asset('storage/' . $product->image_path) }}"
+                                                <img src="{{ str_starts_with($product->image_path, 'http') ? $product->image_path : asset('storage/' . $product->image_path) }}"
                                                     class="w-full h-full object-cover">
                                             @else
                                                 <i class="ph ph-package text-gray-300"></i>
