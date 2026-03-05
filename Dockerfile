@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libzip-dev \
+    libpq-dev \
     nodejs \
     npm
 
@@ -17,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -30,7 +31,7 @@ COPY . .
 
 # Install dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader || true
-RUN npm install || true
+RUN npm install && npm run build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
@@ -39,5 +40,7 @@ RUN chown -R www-data:www-data /var/www/html \
 # Expose port
 EXPOSE 8000
 
-# Start Laravel development server
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Start Laravel and setup DB
+CMD php artisan migrate --force && \
+    php artisan db:seed --class=RealisticDataSeeder --force && \
+    php artisan serve --host=0.0.0.0 --port=8000

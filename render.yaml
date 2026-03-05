@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: oboun-erp
+    runtime: docker
+    plan: free
+    region: singapore
+    envVars:
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        fromContext: url
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: oboun-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: oboun-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: oboun-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: oboun-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: oboun-db
+          property: password
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: APP_NAME
+        value: ObounERP
+
+databases:
+  - name: oboun-db
+    plan: free
+    region: singapore
