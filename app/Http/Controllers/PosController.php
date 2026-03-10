@@ -265,24 +265,65 @@ class PosController extends Controller
         }
 
         $alerts = [];
-        $customerAllergies = is_array($customer->allergies) ? $customer->allergies : [];
 
-        // Check if product name or ingredients match any allergies
+        // 1. Check Drug Allergies
+        $customerAllergies = is_array($customer->drug_allergies) ? $customer->drug_allergies : [];
         foreach ($customerAllergies as $allergy) {
-            $allergyLower = strtolower($allergy);
-            $productNameLower = strtolower($product->name . ' ' . ($product->generic_name ?? ''));
+            $allergyName = is_array($allergy) ? ($allergy['drug_name'] ?? '') : $allergy;
+            $drugLower = strtolower($product->name . ' ' . ($product->generic_name ?? ''));
 
-            if (str_contains($productNameLower, $allergyLower)) {
+            if (str_contains($drugLower, strtolower($allergyName))) {
                 $alerts[] = [
-                    'type' => $allergy,
+                    'type' => 'allergy',
+                    'title' => __('pos.allergy_warning'),
                     'level' => 'danger',
                     'message' => __('pos.allergy_alert_message', [
                         'customer' => $customer->name,
-                        'allergy' => $allergy,
+                        'allergy' => $allergyName,
                         'product' => $product->name,
                     ]),
-                    'product_id' => $product->id,
                 ];
+            }
+        }
+
+        // 2. Check Pregnancy Contraindications
+        if ($customer->pregnancy_status === 'pregnant' || $customer->pregnancy_status === 'breastfeeding') {
+            $precautions = strtolower($product->precautions . ' ' . $product->precautions_th);
+            if (str_contains($precautions, 'pregnant') || str_contains($precautions, 'pregnancy') || str_contains($precautions, 'ตั้งครรภ์') || str_contains($precautions, 'ครรภ์')) {
+                $alerts[] = [
+                    'type' => 'pregnancy',
+                    'title' => 'Safety Alert: Pregnancy',
+                    'level' => 'warning',
+                    'message' => "Warning: Product '{$product->name}' is contraindicated or requires caution for {$customer->pregnancy_status} patients.",
+                ];
+            }
+        }
+
+        // 3. Check G6PD / Chronic Conditions
+        $chronicDiseases = is_array($customer->chronic_diseases) ? $customer->chronic_diseases : [];
+        foreach ($chronicDiseases as $disease) {
+            if (stripos($disease, 'G6PD') !== false) {
+                $precautions = strtolower($product->precautions . ' ' . $product->precautions_th);
+                $drugName = strtolower($product->name . ' ' . ($product->generic_name ?? ''));
+
+                // Common G6PD triggers (simple check for demo)
+                $g6pdTriggers = ['aspirin', 'ibuprofen', 'sulfonamide', 'dapsone', 'primaquine', 'nitrofurantoin'];
+                $isTrigger = false;
+                foreach ($g6pdTriggers as $trigger) {
+                    if (str_contains($drugName, $trigger)) {
+                        $isTrigger = true;
+                        break;
+                    }
+                }
+
+                if ($isTrigger || str_contains($precautions, 'g6pd')) {
+                    $alerts[] = [
+                        'type' => 'g6pd',
+                        'title' => 'Safety Alert: G6PD Deficiency',
+                        'level' => 'danger',
+                        'message' => "Critical: Patient has G6PD deficiency. '{$product->name}' is known to trigger oxidative stress in these patients.",
+                    ];
+                }
             }
         }
 

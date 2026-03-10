@@ -97,6 +97,18 @@
                         @endif
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('messenger.index') }}"
+                        class="sidebar-link {{ request()->routeIs('messenger.*') ? 'sidebar-link-active' : '' }}">
+                        <div class="sidebar-link-content">
+                            <i class="ph ph-chat-circle-dots sidebar-link-icon"></i>
+                            <span>{{ __('messenger.title') }}</span>
+                        </div>
+                        @if (($sidebarBadges['messenger'] ?? 0) > 0)
+                            <span class="sidebar-badge sidebar-badge-blue">{{ $sidebarBadges['messenger'] }}</span>
+                        @endif
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -224,8 +236,31 @@
                             <span>{{ __('calculators.title') }}</span>
                         </div>
                     </a>
+                <li>
+                    <a href="{{ route('drug-interactions.index') }}"
+                        class="sidebar-link {{ request()->routeIs('drug-interactions.*') ? 'sidebar-link-active' : '' }}">
+                        <div class="sidebar-link-content">
+                            <i class="ph ph-warning-circle sidebar-link-icon"></i>
+                            <span>{{ __('drug_interactions.title') }}</span>
+                        </div>
+                    </a>
                 </li>
+            </ul>
+        </div>
 
+        {{-- Resources & Compliance --}}
+        <div>
+            <h3 class="sidebar-section-title">{{ __('general.regulations') }}</h3>
+            <ul class="sidebar-section">
+                <li>
+                    <a href="{{ route('regulations.index') }}"
+                        class="sidebar-link {{ request()->routeIs('regulations.*') ? 'sidebar-link-active' : '' }}">
+                        <div class="sidebar-link-content">
+                            <i class="ph ph-scales sidebar-link-icon"></i>
+                            <span>{{ __('general.regulations') }}</span>
+                        </div>
+                    </a>
+                </li>
             </ul>
         </div>
 

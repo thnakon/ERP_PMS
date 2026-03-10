@@ -94,6 +94,18 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        // Pre-processing
+        if ($request->has('drug_allergies')) {
+            $request->merge([
+                'drug_allergies' => array_filter($request->drug_allergies, fn($a) => !empty($a['drug_name']))
+            ]);
+        }
+        if ($request->has('chronic_diseases')) {
+            $request->merge([
+                'chronic_diseases' => array_filter($request->chronic_diseases, fn($d) => !empty($d))
+            ]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'nickname' => 'nullable|string|max:100',
@@ -105,7 +117,7 @@ class CustomerController extends Controller
             'address' => 'nullable|string',
             'line_id' => 'nullable|string|max:100',
             'drug_allergies' => 'nullable|array',
-            'drug_allergies.*.drug_name' => 'required_with:drug_allergies|string',
+            'drug_allergies.*.drug_name' => 'nullable|string',
             'drug_allergies.*.reaction' => 'nullable|string',
             'chronic_diseases' => 'nullable|array',
             'pregnancy_status' => 'nullable|in:none,pregnant,breastfeeding',
@@ -148,6 +160,16 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
+        // Pre-processing
+        if ($request->has('drug_allergies')) {
+            $filteredAllergies = array_filter($request->drug_allergies, fn($a) => !empty($a['drug_name']));
+            $request->merge(['drug_allergies' => !empty($filteredAllergies) ? $filteredAllergies : null]);
+        }
+        if ($request->has('chronic_diseases')) {
+            $filteredDiseases = array_filter($request->chronic_diseases, fn($d) => !empty($d));
+            $request->merge(['chronic_diseases' => !empty($filteredDiseases) ? $filteredDiseases : null]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'nickname' => 'nullable|string|max:100',
@@ -159,7 +181,7 @@ class CustomerController extends Controller
             'address' => 'nullable|string',
             'line_id' => 'nullable|string|max:100',
             'drug_allergies' => 'nullable|array',
-            'drug_allergies.*.drug_name' => 'required_with:drug_allergies|string',
+            'drug_allergies.*.drug_name' => 'nullable|string',
             'drug_allergies.*.reaction' => 'nullable|string',
             'chronic_diseases' => 'nullable|array',
             'pregnancy_status' => 'nullable|in:none,pregnant,breastfeeding',
@@ -201,7 +223,7 @@ class CustomerController extends Controller
                     ->orWhere('nickname', 'like', "%{$query}%");
             })
             ->limit(10)
-            ->get(['id', 'name', 'nickname', 'phone', 'drug_allergies', 'member_tier', 'points_balance']);
+            ->get(['id', 'name', 'nickname', 'phone', 'drug_allergies', 'chronic_diseases', 'pregnancy_status', 'member_tier', 'points_balance']);
 
         return response()->json($customers);
     }

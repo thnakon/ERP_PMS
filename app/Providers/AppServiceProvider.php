@@ -44,105 +44,103 @@ class AppServiceProvider extends ServiceProvider
         // Share sidebar badge counts with sidebar
         View::composer('components.sidebar', function ($view) {
             $userId = auth()->id();
-            $today = Carbon::today();
+            if (!$userId) return;
 
-            // Sales Operations
-            $todayOrders = Order::whereDate('created_at', $today)->count();
+            // Cache counts for 30 seconds to speed up navigation and redirects
+            $badges = \Illuminate\Support\Facades\Cache::remember("sidebar_badges_{$userId}", 30, function () use ($userId) {
+                $today = Carbon::today();
 
-            // Calendar - upcoming events today
-            $todayEvents = CalendarEvent::whereDate('start_time', $today)->count();
+                // Sales Operations
+                $todayOrders = Order::whereDate('created_at', $today)->count();
 
-            // Messenger - unread messages
-            $unreadMessages = 0;
-            if ($userId) {
+                // Calendar - upcoming events today
+                $todayEvents = CalendarEvent::whereDate('start_time', $today)->count();
+
+                // Messenger - unread messages
                 $userRooms = ChatRoom::whereHas('participants', fn($q) => $q->where('user_id', $userId))->pluck('id');
                 $unreadMessages = Message::whereIn('chat_room_id', $userRooms)
                     ->where('sender_id', '!=', $userId)
                     ->whereDoesntHave('reads', fn($q) => $q->where('user_id', $userId))
                     ->count();
-            }
-
-            // Inventory
-            $lowStockCount = Product::where('is_active', true)
-                ->whereColumn('stock_qty', '<=', 'min_stock')
-                ->count();
-
-            $expiringCount = ProductLot::where('expiry_date', '<=', $today->copy()->addDays(30))
-                ->where('expiry_date', '>', $today)
-                ->where('quantity', '>', 0)
-                ->count();
-
-            $expiredCount = ProductLot::where('expiry_date', '<', $today)
-                ->where('quantity', '>', 0)
-                ->count();
-
-            // Stock adjustments - total count (recent 7 days)
-            $recentAdjustments = StockAdjustment::where('created_at', '>=', $today->copy()->subDays(7))->count();
-
-            // Categories count
-            $categoriesCount = Category::count();
-
-            // Purchasing - pending counts
-            $pendingPOs = PurchaseOrder::where('status', 'pending')->count();
-            $allPOs = PurchaseOrder::count();
-            $pendingGRs = GoodsReceived::where('status', 'pending')->count();
-            $allGRs = GoodsReceived::count();
-
-            // Suppliers with pending orders
-            $suppliersWithPending = Supplier::whereHas('purchaseOrders', fn($q) => $q->where('status', 'pending'))->count();
-
-            // People & Logs - total counts
-            $totalCustomers = Customer::count();
-            $activeUsers = User::where('status', 'active')->count();
-            $recentActivities = ActivityLog::where('created_at', '>=', $today->copy()->subDays(7))->count();
-
-            // Backups - total count
-            $totalBackups = Backup::count();
-
-            // Notifications / Delivery
-            $pendingDeliveries = DeliveryLog::where('status', 'pending')->count();
-
-            // Share all counts
-            $view->with('sidebarBadges', [
-                // Sales Operations
-                'dashboard' => $todayOrders,
-                'pos' => 0,
-                'orders' => $todayOrders,
-                'calendar' => $todayEvents,
-                'messenger' => $unreadMessages,
-                'prescriptions' => Prescription::where('status', 'pending')->count(),
-                'controlled_drugs' => \App\Models\ControlledDrugLog::where('status', 'pending')->count(),
 
                 // Inventory
-                'products' => $lowStockCount,
-                'stock_adjustments' => $recentAdjustments,
-                'expiry' => $expiringCount + $expiredCount,
-                'categories' => $categoriesCount,
+                $lowStockCount = Product::where('is_active', true)
+                    ->whereColumn('stock_qty', '<=', 'min_stock')
+                    ->count();
 
-                // Purchasing
-                'suppliers' => $suppliersWithPending ?: Supplier::count(),
-                'purchase_orders' => $pendingPOs ?: $allPOs,
-                'goods_received' => $pendingGRs ?: $allGRs,
+                $expiringCount = ProductLot::where('expiry_date', '<=', $today->copy()->addDays(30))
+                    ->where('expiry_date', '>', $today)
+                    ->where('quantity', '>', 0)
+                    ->count();
 
-                // People & Logs
-                'customers' => $totalCustomers,
-                'users' => $activeUsers,
-                'activity_logs' => $recentActivities,
+                $expiredCount = ProductLot::where('expiry_date', '<', $today)
+                    ->where('quantity', '>', 0)
+                    ->count();
 
-                // Reports (no badges needed)
-                'reports_sales' => 0,
-                'reports_inventory' => 0,
-                'reports_finance' => 0,
+                // Stock adjustments - total count (recent 7 days)
+                $recentAdjustments = StockAdjustment::where('created_at', '>=', $today->copy()->subDays(7))->count();
 
-                // Settings
-                'profile' => 1,
-                'settings' => 0,
-                'hardware' => 0,
-                'backup' => $totalBackups,
+                // Categories count
+                $categoriesCount = Category::count();
 
-                // Extra for notification center
-                'notifications' => $pendingDeliveries,
-            ]);
+                // Purchasing - pending counts
+                $pendingPOs = PurchaseOrder::where('status', 'pending')->count();
+                $allPOs = PurchaseOrder::count();
+                $pendingGRs = GoodsReceived::where('status', 'pending')->count();
+                $allGRs = GoodsReceived::count();
+
+                // Suppliers with pending orders
+                $suppliersWithPending = Supplier::whereHas('purchaseOrders', fn($q) => $q->where('status', 'pending'))->count();
+
+                // People & Logs - total counts
+                $totalCustomers = Customer::count();
+                $activeUsers = User::where('status', 'active')->count();
+                $recentActivities = ActivityLog::where('created_at', '>=', $today->copy()->subDays(7))->count();
+
+                // Backups - total count
+                $totalBackups = Backup::count();
+
+                // Notifications / Delivery
+                $pendingDeliveries = DeliveryLog::where('status', 'pending')->count();
+
+                return [
+                    // Sales Operations
+                    'dashboard' => $todayOrders,
+                    'pos' => 0,
+                    'orders' => $todayOrders,
+                    'calendar' => $todayEvents,
+                    'messenger' => $unreadMessages,
+                    'prescriptions' => Prescription::where('status', 'pending')->count(),
+                    'controlled_drugs' => \App\Models\ControlledDrugLog::where('status', 'pending')->count(),
+
+                    // Inventory
+                    'products' => $lowStockCount,
+                    'stock_adjustments' => $recentAdjustments,
+                    'expiry' => $expiringCount + $expiredCount,
+                    'categories' => $categoriesCount,
+
+                    // Purchasing
+                    'suppliers' => $suppliersWithPending ?: Supplier::count(),
+                    'purchase_orders' => $pendingPOs ?: $allPOs,
+                    'goods_received' => $pendingGRs ?: $allGRs,
+
+                    // People & Logs
+                    'customers' => $totalCustomers,
+                    'users' => $activeUsers,
+                    'activity_logs' => $recentActivities,
+
+                    // Settings
+                    'profile' => 1,
+                    'settings' => 0,
+                    'hardware' => 0,
+                    'backup' => $totalBackups,
+
+                    // Extra
+                    'notifications' => $pendingDeliveries,
+                ];
+            });
+
+            $view->with('sidebarBadges', $badges);
         });
 
         // Share notification data with header

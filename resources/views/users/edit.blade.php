@@ -89,14 +89,15 @@
                                 {{-- Current/Preview Avatar --}}
                                 <div class="flex-shrink-0">
                                     <div id="avatar-preview-container" class="relative group">
+                                        {{-- Hidden flag for removal --}}
+                                        <input type="hidden" name="remove_avatar" id="remove-avatar-input" value="0">
+
                                         @if ($user->avatar)
                                             <img id="avatar-preview" src="{{ asset('storage/' . $user->avatar) }}"
                                                 alt="{{ $user->name }}"
                                                 class="w-24 h-24 rounded-2xl object-cover border-2 border-gray-200 shadow-md">
-                                            <input type="hidden" name="remove_avatar" id="remove-avatar-input"
-                                                value="0">
-                                            <button type="button" id="remove-avatar-btn"
-                                                class="absolute -top-2 -right-2 w-7 h-7 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <button type="button" id="remove-avatar-btn" data-no-loading
+                                                class="absolute -top-2 -right-2 w-7 h-7 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                                 <i class="ph-bold ph-x text-sm"></i>
                                             </button>
                                         @else
@@ -304,12 +305,49 @@
         // Avatar Upload Functionality
         const avatarInput = document.getElementById('avatar-input');
         const avatarUploadArea = document.getElementById('avatar-upload-area');
-        const avatarPreview = document.getElementById('avatar-preview');
-        const avatarPreviewContainer = document.getElementById('avatar-preview-container');
-        const removeAvatarBtn = document.getElementById('remove-avatar-btn');
         const removeAvatarInput = document.getElementById('remove-avatar-input');
 
-        // Click to upload
+        // Function to update UI after removal
+        function clearAvatarUI() {
+            const previewContainer = document.getElementById('avatar-preview-container');
+            if (!previewContainer) return;
+
+            // Replace current preview with default icon
+            const defaultIcon = document.createElement('div');
+            defaultIcon.id = 'avatar-preview';
+            defaultIcon.className =
+                'w-24 h-24 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center shadow-md';
+            defaultIcon.innerHTML = '<i class="ph-fill ph-user text-white text-4xl"></i>';
+
+            const currentPreview = document.getElementById('avatar-preview');
+            if (currentPreview) {
+                currentPreview.replaceWith(defaultIcon);
+            }
+
+            // Remove the x button if it exists
+            const xBtn = document.getElementById('remove-avatar-btn');
+            if (xBtn) xBtn.remove();
+
+            // Set flag
+            if (removeAvatarInput) removeAvatarInput.value = '1';
+
+            // Clear file input
+            if (avatarInput) avatarInput.value = '';
+        }
+
+        // Attach click listener to container (delegation for dynamically added buttons)
+        document.getElementById('avatar-preview-container')?.addEventListener('click', function(e) {
+            const btn = e.target.closest('#remove-avatar-btn');
+            if (btn) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (confirm('{{ __('users.confirm_remove_avatar') }}' || 'ต้องการลบรูปโปรไฟล์หรือไม่?')) {
+                    clearAvatarUI();
+                }
+            }
+        });
+
+        // Click upload area
         avatarUploadArea?.addEventListener('click', () => {
             avatarInput?.click();
         });
@@ -318,66 +356,48 @@
         avatarInput?.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                // Validate file size (2MB)
                 if (file.size > 2 * 1024 * 1024) {
                     alert('ไฟล์ใหญ่เกินไป! กรุณาเลือกไฟล์ที่มีขนาดไม่เกิน 2MB');
                     this.value = '';
                     return;
                 }
 
-                // Validate file type
-                if (!file.type.match('image.*')) {
-                    alert('กรุณาเลือกไฟล์รูปภาพเท่านั้น (JPG, PNG)');
-                    this.value = '';
-                    return;
-                }
-
-                // Preview image
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    // Update preview
-                    if (avatarPreview.tagName === 'IMG') {
-                        avatarPreview.src = e.target.result;
-                    } else {
-                        // Replace icon with image
+                reader.onload = function(event) {
+                    const previewContainer = document.getElementById('avatar-preview-container');
+                    const currentPreview = document.getElementById('avatar-preview');
+
+                    // Create img if current is not img
+                    if (!currentPreview || currentPreview.tagName !== 'IMG') {
                         const img = document.createElement('img');
                         img.id = 'avatar-preview';
-                        img.src = e.target.result;
-                        img.alt = 'Preview';
                         img.className = 'w-24 h-24 rounded-2xl object-cover border-2 border-gray-200 shadow-md';
-                        avatarPreview.replaceWith(img);
-
-                        // Add remove button if not exists
-                        if (!removeAvatarBtn) {
-                            const btn = document.createElement('button');
-                            btn.type = 'button';
-                            btn.id = 'remove-avatar-btn';
-                            btn.className =
-                                'absolute -top-2 -right-2 w-7 h-7 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center';
-                            btn.innerHTML = '<i class="ph-bold ph-x text-sm"></i>';
-                            btn.onclick = removeAvatar;
-                            avatarPreviewContainer.appendChild(btn);
-
-                            // Add hidden input for remove flag
-                            const input = document.createElement('input');
-                            input.type = 'hidden';
-                            input.name = 'remove_avatar';
-                            input.id = 'remove-avatar-input';
-                            input.value = '0';
-                            avatarPreviewContainer.appendChild(input);
-                        }
+                        if (currentPreview) currentPreview.replaceWith(img);
+                        else previewContainer.appendChild(img);
                     }
 
-                    // Reset remove flag
-                    if (removeAvatarInput) {
-                        removeAvatarInput.value = '0';
+                    document.getElementById('avatar-preview').src = event.target.result;
+
+                    // Add remove button if missing
+                    if (!document.getElementById('remove-avatar-btn')) {
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.id = 'remove-avatar-btn';
+                        btn.dataset.noLoading = "true";
+                        btn.className =
+                            'absolute -top-2 -right-2 w-7 h-7 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg transition-opacity flex items-center justify-center';
+                        btn.innerHTML = '<i class="ph-bold ph-x text-sm"></i>';
+                        previewContainer.appendChild(btn);
                     }
+
+                    // Reset removal flag
+                    if (removeAvatarInput) removeAvatarInput.value = '0';
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // Drag and drop
+        // Drag and drop handlers
         avatarUploadArea?.addEventListener('dragover', (e) => {
             e.preventDefault();
             avatarUploadArea.classList.add('border-ios-blue', 'bg-blue-50');
@@ -391,47 +411,10 @@
         avatarUploadArea?.addEventListener('drop', (e) => {
             e.preventDefault();
             avatarUploadArea.classList.remove('border-ios-blue', 'bg-blue-50');
-
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                avatarInput.files = files;
+            if (e.dataTransfer.files.length > 0) {
+                avatarInput.files = e.dataTransfer.files;
                 avatarInput.dispatchEvent(new Event('change'));
             }
         });
-
-        // Remove avatar
-        function removeAvatar() {
-            if (confirm('ต้องการลบรูปโปรไฟล์หรือไม่?')) {
-                // Clear file input
-                if (avatarInput) {
-                    avatarInput.value = '';
-                }
-
-                // Set remove flag
-                if (removeAvatarInput) {
-                    removeAvatarInput.value = '1';
-                }
-
-                // Replace image with default icon
-                const defaultIcon = document.createElement('div');
-                defaultIcon.id = 'avatar-preview';
-                defaultIcon.className =
-                    'w-24 h-24 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center shadow-md';
-                defaultIcon.innerHTML = '<i class="ph-fill ph-user text-white text-4xl"></i>';
-
-                const currentPreview = document.getElementById('avatar-preview');
-                if (currentPreview) {
-                    currentPreview.replaceWith(defaultIcon);
-                }
-
-                // Remove the remove button
-                if (removeAvatarBtn) {
-                    removeAvatarBtn.remove();
-                }
-            }
-        }
-
-        // Attach remove function to button if exists
-        removeAvatarBtn?.addEventListener('click', removeAvatar);
     </script>
 @endpush

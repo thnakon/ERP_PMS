@@ -38,4 +38,5 @@ return [
     'go_to_website' => 'Go to Website',
     'back' => 'Back',
     'basic_info' => 'Basic Information',
+    'regulations' => 'Laws & Regulations',
 ];

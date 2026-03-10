@@ -139,14 +139,19 @@ class UserController extends Controller
         // Handle avatar removal
         if ($request->input('remove_avatar') == '1') {
             if ($user->avatar) {
-                Storage::disk('public')->delete($user->avatar);
+                // Check exists to avoid potential slow FS operations
+                if (Storage::disk('public')->exists($user->avatar)) {
+                    Storage::disk('public')->delete($user->avatar);
+                }
             }
+            $user->avatar = null;
+            $user->save();
             $validated['avatar'] = null;
         }
         // Handle avatar upload
         elseif ($request->hasFile('avatar')) {
             // Delete old avatar
-            if ($user->avatar) {
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
                 Storage::disk('public')->delete($user->avatar);
             }
             $validated['avatar'] = $request->file('avatar')->store('avatars', 'public');

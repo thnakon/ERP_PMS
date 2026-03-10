@@ -97,6 +97,9 @@ Route::middleware(['auth', 'staff'])->group(function () {
     // AI Chat
     Route::post('/api/ai-chat', [\App\Http\Controllers\AiChatController::class, 'chat'])->name('ai.chat');
 
+    // Laws & Regulations
+    Route::get('/regulations', [App\Http\Controllers\RegulationController::class, 'index'])->name('regulations.index');
+
 
 
     // System Documentation

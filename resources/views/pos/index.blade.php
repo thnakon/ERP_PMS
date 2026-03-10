@@ -1089,7 +1089,9 @@
                             'member_id' => $customer->member_id,
                             'member_type' => $customer->member_type,
                             'points' => $customer->points,
-                            'allergies' => $customer->allergies,
+                            'drug_allergies' => $customer->drug_allergies,
+                            'chronic_diseases' => $customer->chronic_diseases,
+                            'pregnancy_status' => $customer->pregnancy_status,
                         ]) }})">
                         <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                             <i class="ph ph-user text-blue-600"></i>
@@ -1607,26 +1609,61 @@
         }
 
         // Add to cart
-        function addToCart(product) {
+        async function addToCart(product) {
             if (product.stock_qty <= 0) {
                 showToast('{{ __('pos.out_of_stock') }}', 'error');
                 return;
             }
 
-            // Check allergies if customer selected
-            if (selectedCustomer && selectedCustomer.allergies) {
-                const allergies = Array.isArray(selectedCustomer.allergies) ? selectedCustomer.allergies : [];
-                for (const allergy of allergies) {
-                    if (product.name.toLowerCase().includes(allergy.toLowerCase()) ||
-                        (product.generic_name && product.generic_name.toLowerCase().includes(allergy.toLowerCase()))) {
+            // Check safety alerts if customer selected
+            if (selectedCustomer) {
+                try {
+                    const response = await fetch(
+                        `{{ route('pos.check-allergies') }}?customer_id=${selectedCustomer.id}&product_id=${product.id}`
+                        );
+                    const data = await response.json();
+
+                    if (data.alerts && data.alerts.length > 0) {
+                        const alert = data.alerts[0]; // Take first alert for now
                         pendingAllergyProduct = product;
-                        showAllergyWarning(allergy, product);
+                        showSafetyAlert(alert, product);
                         return;
                     }
+                } catch (error) {
+                    console.error('Safety check failed:', error);
                 }
             }
 
             doAddToCart(product);
+        }
+
+        function showSafetyAlert(alert, product) {
+            const titleEl = document.querySelector('#allergyModal-panel .text-xl');
+            const iconEl = document.querySelector('.pos-allergy-alert-icon');
+
+            // Set title and colors based on type
+            if (alert.type === 'pregnancy') {
+                titleEl.textContent = 'Safety Alert: Pregnancy';
+                titleEl.className = 'text-xl font-bold text-amber-600 mb-2';
+                iconEl.className = 'pos-allergy-alert-icon bg-amber-100 text-amber-600';
+            } else if (alert.type === 'g6pd') {
+                titleEl.textContent = 'Safety Alert: G6PD Deficiency';
+                titleEl.className = 'text-xl font-bold text-red-600 mb-2';
+                iconEl.className = 'pos-allergy-alert-icon bg-red-100 text-red-600';
+            } else {
+                titleEl.textContent = '{{ __('pos.allergy_warning') }}';
+                titleEl.className = 'text-xl font-bold text-red-600 mb-2';
+                iconEl.className = 'pos-allergy-alert-icon bg-red-100 text-red-600';
+            }
+
+            document.getElementById('allergyMessage').textContent = alert.message;
+            document.getElementById('allergyDetails').innerHTML = `
+                <div class="font-semibold mb-1">Product: ${product.name}</div>
+                <div class="text-xs opacity-70">${product.generic_name || ''}</div>
+            `;
+
+            document.getElementById('allergyModal-backdrop').classList.remove('hidden', 'modal-backdrop-hidden');
+            document.getElementById('allergyModal-panel').classList.remove('modal-panel-hidden');
         }
 
         function doAddToCart(product) {
