@@ -38,6 +38,7 @@ use App\Http\Controllers\MedicalCalculatorController;
 use App\Http\Controllers\DrugInteractionController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DocumentationController;
+use App\Http\Controllers\Api\ExternalDrugApiController;
 
 
 
@@ -96,6 +97,9 @@ Route::middleware(['auth', 'staff'])->group(function () {
 
     // AI Chat
     Route::post('/api/ai-chat', [\App\Http\Controllers\AiChatController::class, 'chat'])->name('ai.chat');
+
+    // External Drug Search
+    Route::get('/api/external/drug-search', [ExternalDrugApiController::class, 'search'])->name('external.drug-search');
 
     // Laws & Regulations
     Route::get('/regulations', [App\Http\Controllers\RegulationController::class, 'index'])->name('regulations.index');

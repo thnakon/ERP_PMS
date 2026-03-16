@@ -259,6 +259,16 @@ const ProductsPage = {
                 this.previewImage(e.target.files[0]);
             });
         }
+        // Search External Drug (FDA)
+        const fdaSearchInput = document.getElementById('external-drug-search');
+        if (fdaSearchInput) {
+            fdaSearchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.searchExternalDrug();
+                }
+            });
+        }
     },
 
     /**
@@ -445,6 +455,9 @@ const ProductsPage = {
     async saveProduct() {
         const form = document.getElementById('product-form');
         const formData = new FormData(form);
+        const loader = document.getElementById('pill-loading');
+
+        if (loader) loader.classList.add('active');
 
         try {
             let url = '/products';
@@ -458,39 +471,162 @@ const ProductsPage = {
                 method: 'POST',  // Always POST for FormData with file uploads
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
                 },
                 body: formData
             });
 
-            const loader = document.getElementById('pill-loading');
-
             if (response.ok) {
                 const result = await response.json();
-
-                if (this.currentProduct) {
-                    showToast('Product updated successfully', 'success');
-                } else {
-                    showToast('Product created successfully', 'success');
-                }
-
+                showToast(this.currentProduct ? 'Product updated successfully' : 'Product created successfully', 'success');
                 ModalSystem.close('product-modal');
-
-                // Reload the product list
-                setTimeout(() => {
-                    window.location.reload();
-                }, 500);
+                setTimeout(() => window.location.reload(), 500);
             } else {
                 if (loader) loader.classList.remove('active');
-                const error = await response.json();
-                showToast(error.message || 'Failed to save product', 'error');
+                const errorData = await response.json();
+
+                if (response.status === 422 && errorData.errors) {
+                    // Show the first validation error message
+                    const firstError = Object.values(errorData.errors)[0][0];
+                    showToast(firstError, 'error');
+                } else {
+                    showToast(errorData.message || 'Failed to save product', 'error');
+                }
             }
         } catch (error) {
-            const loader = document.getElementById('pill-loading');
             if (loader) loader.classList.remove('active');
             console.error('Save product error:', error);
             showToast('Failed to save product', 'error');
         }
+    },
+
+    /**
+     * Search drug data from external FDA database (Mock/API)
+     */
+    async searchExternalDrug() {
+        const query = document.getElementById('external-drug-search').value;
+        const resultsContainer = document.getElementById('external-search-results');
+        const btn = document.getElementById('fda-search-btn');
+        const spinner = document.getElementById('fda-btn-spinner');
+        const icon = document.getElementById('fda-btn-icon');
+        const btnText = document.getElementById('fda-btn-text');
+
+        if (!query || query.length < 2) {
+            showToast('กรุณาใส่ชื่อยาหรือเลขทะเบียนอย่างน้อย 2 ตัวอักษร', 'warning');
+            return;
+        }
+
+        // Show loading state
+        if (btn) btn.disabled = true;
+        if (spinner) spinner.classList.remove('hidden');
+        if (icon) icon.classList.add('hidden');
+        if (btnText) btnText.textContent = 'Searching...';
+
+        try {
+            const response = await fetch(`/api/external/drug-search?q=${encodeURIComponent(query)}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+
+            if (!Array.isArray(data) || data.length === 0) {
+                showToast('ไม่พบข้อมูลจาก FDA', 'info');
+                resultsContainer.classList.add('hidden');
+                return;
+            }
+
+            // Populate results list
+            const html = data.map(item => `
+                <div class="p-3.5 hover:bg-blue-50/80 cursor-pointer border-b border-gray-50 last:border-0 transition-all rounded-xl group/item"
+                     onclick="ProductsPage.applyExternalDrug(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="font-bold text-gray-900 group-hover/item:text-ios-blue transition-colors">${item.name}</span>
+                        <div class="flex gap-1.5">
+                            <span class="text-[9px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md uppercase font-bold tracking-wider">${item.source || 'Unknown'}</span>
+                            <span class="text-[9px] bg-blue-100/50 text-blue-600 px-2 py-0.5 rounded-md uppercase font-bold tracking-wider border border-blue-100/50">${item.fda_registration_no || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <div class="text-xs text-gray-500 font-medium">${item.name_th ? item.name_th + ' ' : ''}<span class="text-gray-400 font-normal">(${item.generic_name})</span></div>
+                        ${item.manufacturer ? `
+                            <div class="flex items-center gap-1.5 text-[10px] text-gray-400">
+                                <i class="ph-bold ph-factory text-blue-300"></i> 
+                                <span class="truncate">${item.manufacturer}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            resultsContainer.innerHTML = html;
+            resultsContainer.classList.remove('hidden');
+
+            // Close results when clicking outside
+            const closeHandler = (e) => {
+                if (!resultsContainer.contains(e.target) && e.target.id !== 'external-drug-search') {
+                    resultsContainer.classList.add('hidden');
+                    document.removeEventListener('click', closeHandler);
+                }
+            };
+            document.addEventListener('click', closeHandler);
+
+        } catch (error) {
+            console.error('External search error:', error);
+            showToast('การค้นหามีข้อผิดพลาด', 'error');
+        } finally {
+            // Restore button state
+            if (btn) btn.disabled = false;
+            if (spinner) spinner.classList.add('hidden');
+            if (icon) icon.classList.remove('hidden');
+            if (btnText) btnText.textContent = 'FDA Search';
+        }
+    },
+
+    /**
+     * Apply external drug data to the form
+     */
+    applyExternalDrug(item) {
+        const form = document.getElementById('product-form');
+        if (!form) return;
+
+        // Auto-fill fields
+        const mapping = {
+            'sku': item.sku,
+            'barcode': item.barcode,
+            'name': item.name,
+            'name_th': item.name_th,
+            'generic_name': item.generic_name,
+            'manufacturer': item.manufacturer,
+            'drug_class': item.drug_class,
+            'fda_registration_no': item.fda_registration_no,
+            'precautions': item.precautions,
+            'side_effects': item.side_effects,
+            'default_instructions': item.default_instructions
+        };
+
+        Object.keys(mapping).forEach(key => {
+            const input = form.querySelector(`[name="${key}"]`);
+            if (input) {
+                input.value = mapping[key] || '';
+            }
+        });
+
+        // Specific handling for drug_class select if it exists
+        const drugClassSelect = form.querySelector('[name="drug_class"]');
+        if (drugClassSelect) {
+            drugClassSelect.value = item.drug_class || '';
+        }
+
+        document.getElementById('external-search-results').classList.add('hidden');
+        showToast(`นำเข้าข้อมูล "${item.name}" สำเร็จ`, 'success');
     },
 
     /**

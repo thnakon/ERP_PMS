@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\OrderApiController;
 use App\Http\Controllers\Api\CustomerApiController;
 use App\Http\Controllers\Api\ProductLotApiController;
 use App\Http\Controllers\Api\GlobalSearchController;
+use App\Http\Controllers\Api\ExternalDrugApiController;
 use App\Http\Controllers\LineWebhookController;
 
 /*
@@ -22,6 +23,9 @@ Route::post('/webhook/line', [LineWebhookController::class, 'handle']);
 Route::middleware(['auth', 'staff'])->group(function () {
     // Global Search
     Route::get('/global-search', [GlobalSearchController::class, 'search']);
+
+    // External Drug Search
+    Route::get('/external/drug-search', [ExternalDrugApiController::class, 'search']);
 
     // Dashboard stats
     Route::get('/dashboard/stats', [DashboardApiController::class, 'stats']);

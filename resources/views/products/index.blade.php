@@ -307,6 +307,28 @@
                     <i class="ph ph-identification-card"></i>
                     <span>{{ __('basic_info') }}</span>
                 </div>
+                {{-- External Search Helper --}}
+                <div class="px-4 mb-4">
+                    <div class="relative group">
+                        <input type="text" id="external-drug-search"
+                            placeholder="{{ __('products.search_fda_hint') }}"
+                            class="w-full bg-blue-50/50 border border-blue-100/50 rounded-2xl py-3 pl-11 pr-28 focus:ring-4 focus:ring-ios-blue/10 focus:border-ios-blue/30 outline-none transition-all text-sm placeholder:text-blue-300">
+                        <i
+                            class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 text-lg"></i>
+                        <button type="button" id="fda-search-btn" onclick="ProductsPage.searchExternalDrug()"
+                            data-no-loading
+                            class="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-gradient-to-br from-ios-blue to-blue-600 hover:shadow-lg hover:shadow-blue-500/20 text-white text-[11px] font-bold rounded-xl transition-all shadow-sm active-scale flex items-center gap-2">
+                            <i class="ph-bold ph-lightning" id="fda-btn-icon"></i>
+                            <i class="ph ph-circle-notch animate-spin hidden" id="fda-btn-spinner"></i>
+                            <span id="fda-btn-text">FDA Search</span>
+                        </button>
+                    </div>
+                    <div id="external-search-results"
+                        class="hidden mt-2 p-1.5 bg-white/90 backdrop-blur-xl border border-blue-100 rounded-2xl shadow-2xl absolute z-[60] w-[calc(100%-2rem)] max-h-64 overflow-y-auto ring-1 ring-black/5 animate-in fade-in slide-in-from-top-2 duration-200">
+                        {{-- Results populated via JS --}}
+                    </div>
+                </div>
+
                 <div class="form-section-body">
                     <div class="form-row-2">
                         <div class="form-group">
@@ -458,6 +480,11 @@
                     <span>{{ __('clinical_info') }}</span>
                 </div>
                 <div class="form-section-body">
+                    <div class="form-group mb-4">
+                        <label class="form-label">{{ __('products.fda_registration_no') }}</label>
+                        <input type="text" name="fda_registration_no" class="form-input"
+                            placeholder="เช่น 1A 123/45">
+                    </div>
                     <label class="form-toggle form-toggle-prescription">
                         <input type="checkbox" name="requires_prescription" id="requires_prescription"
                             class="form-toggle-input">

@@ -138,10 +138,15 @@ class ProductController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
+        // Handle numeric fields that cannot be null in DB
+        $validated['cost_price'] = $validated['cost_price'] ?? 0;
+        $validated['stock_qty'] = $validated['stock_qty'] ?? 0;
+        $validated['min_stock'] = $validated['min_stock'] ?? 10;
+
         // Handle checkboxes
         $validated['vat_applicable'] = $request->has('vat_applicable');
         $validated['requires_prescription'] = $request->has('requires_prescription');
-        $validated['is_active'] = $request->has('is_active', true); // Default true for new items if not provided
+        $validated['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : true;
 
         // Handle image upload
         if ($request->hasFile('image')) {
@@ -215,14 +220,28 @@ class ProductController extends Controller
             'image' => 'nullable|image|max:2048'
         ]);
 
+        // Handle numeric fields that cannot be null in DB
+        $validated['cost_price'] = $validated['cost_price'] ?? 0;
+        $validated['stock_qty'] = $validated['stock_qty'] ?? 0;
+        $validated['min_stock'] = $validated['min_stock'] ?? 10;
+
+        // Handle checkboxes
         $validated['vat_applicable'] = $request->has('vat_applicable');
         $validated['requires_prescription'] = $request->has('requires_prescription');
-        $validated['is_active'] = $request->has('is_active');
+
+        // Only update is_active if it's present in the request or if we're on the full edit page
+        // (The quick-edit modal doesn't have an is_active toggle yet)
+        if ($request->has('is_active') || !$request->ajax()) {
+            $validated['is_active'] = $request->has('is_active');
+        }
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('products', 'public');
             $validated['image_path'] = $path;
         }
+
+        // Remove image from validated array (it's not a column)
+        unset($validated['image']);
 
         $product->update($validated);
 
