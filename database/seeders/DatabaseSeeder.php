@@ -8,7 +8,6 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
 
     /**
      * Seed the application's database.
@@ -75,6 +74,17 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('📌 Step 16: Creating Drug Interactions...');
         $this->call(DrugInteractionSeeder::class);
+
+        $this->command->info('📌 Step 17: Creating Prescriptions...');
+        $this->call(PrescriptionSeeder::class);
+
+        $this->command->info('📌 Step 18: Creating Promotions & Bundles...');
+        $this->call(PromotionSeeder::class);
+        $this->call(BundleSeeder::class);
+        $this->call(PromotionUsageSeeder::class);
+
+        $this->command->info('📌 Step 19: Creating Member Tiers...');
+        $this->call(MemberTierSeeder::class);
 
         $this->command->info('');
         $this->command->info('✅ Database seeding completed successfully!');

@@ -512,7 +512,7 @@ class PosController extends Controller
                         'channel' => 'email',
                         'recipient' => $customer->email,
                         'subject' => 'E-Receipt: Order #' . $order->order_number,
-                        'content_type' => 'receipt',
+                        'type' => 'receipt',
                         'status' => 'pending',
                     ]);
                 }
