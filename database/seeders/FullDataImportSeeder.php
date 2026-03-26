@@ -42,8 +42,16 @@ class FullDataImportSeeder extends Seeder
 
         $driver = Schema::getConnection()->getDriverName();
 
-        // Disable foreign key checks
-        Schema::disableForeignKeyConstraints();
+        // Wrap everything in a transaction for speed and atomicity
+        DB::beginTransaction();
+
+        try {
+            // Disable foreign key checks
+            if ($driver === 'pgsql') {
+                DB::statement("SET session_replication_role = 'replica';");
+            } else {
+                Schema::disableForeignKeyConstraints();
+            }
 
         foreach ($tables as $table) {
             $jsonPath = database_path("data/{$table}.json");
@@ -132,9 +140,24 @@ class FullDataImportSeeder extends Seeder
         }
 
         // Re-enable foreign key checks
-        Schema::enableForeignKeyConstraints();
+        if ($driver === 'pgsql') {
+            DB::statement("SET session_replication_role = 'origin';");
+        } else {
+            Schema::enableForeignKeyConstraints();
+        }
+
+        DB::commit();
 
         $this->command->info('');
         $this->command->info('🎉 Full data import completed! Your deployed version now matches local.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        if ($driver === 'pgsql') {
+            DB::statement("SET session_replication_role = 'origin';");
+        } else {
+            Schema::enableForeignKeyConstraints();
+        }
+        $this->command->error("❌ Import failed: " . $e->getMessage());
     }
+}
 }
