@@ -19,8 +19,8 @@ class FullDataImportSeeder extends Seeder
             'users',
             'categories',
             'suppliers',
+            'member_tiers',    // Member tiers MUST be before customers (FK)
             'customers',
-            'member_tiers',
             'products',
             'product_lots',
             'purchase_orders',
@@ -42,15 +42,17 @@ class FullDataImportSeeder extends Seeder
 
         $driver = Schema::getConnection()->getDriverName();
 
-        // Wrap everything in a transaction for speed and atomicity
+        // WRAP IN TRANSACTION for speed and atomicity
         DB::beginTransaction();
 
         try {
-            // Disable foreign key checks
-            if ($driver === 'pgsql') {
-                DB::statement("SET session_replication_role = 'replica';");
-            } else {
+            // Disable foreign key checks (MySQL only, for PG we rely on TABLE ORDER)
+            if ($driver === 'mysql') {
                 Schema::disableForeignKeyConstraints();
+            } elseif ($driver === 'pgsql') {
+                // We cannot use session_replication_role on Render (restricted)
+                // So we MUST rely on the $tables order being PERFECT parents-first.
+                $this->command->info("ℹ️ Using PostgreSQL Order-First Insertion (FK disabling restricted)");
             }
 
         foreach ($tables as $table) {
@@ -140,9 +142,7 @@ class FullDataImportSeeder extends Seeder
         }
 
         // Re-enable foreign key checks
-        if ($driver === 'pgsql') {
-            DB::statement("SET session_replication_role = 'origin';");
-        } else {
+        if ($driver === 'mysql') {
             Schema::enableForeignKeyConstraints();
         }
 
@@ -152,12 +152,11 @@ class FullDataImportSeeder extends Seeder
         $this->command->info('🎉 Full data import completed! Your deployed version now matches local.');
     } catch (\Exception $e) {
         DB::rollBack();
-        if ($driver === 'pgsql') {
-            DB::statement("SET session_replication_role = 'origin';");
-        } else {
+        if ($driver === 'mysql') {
             Schema::enableForeignKeyConstraints();
         }
         $this->command->error("❌ Import failed: " . $e->getMessage());
+        $this->command->error("Line: " . $e->getLine());
     }
 }
 }
