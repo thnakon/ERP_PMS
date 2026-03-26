@@ -279,8 +279,13 @@ class PosController extends Controller
             ];
         }
 
-        // General Pregnancy Warning in Precautions
-        if (str_contains($precautions, 'pregnant') || str_contains($precautions, 'pregnancy') || str_contains($precautions, 'ตั้งครรภ์') || str_contains($precautions, 'ครรภ์')) {
+        // General Pregnancy Warning in Precautions or by Name (e.g. NSAIDs)
+        $isPregnancyRisky = str_contains($precautions, 'pregnant') || 
+                            str_contains($precautions, 'pregnancy') || 
+                            str_contains($precautions, 'ตั้งครรภ์') || 
+                            str_contains($precautions, 'ครรภ์');
+
+        if ($isPregnancyRisky) {
             $alerts[] = [
                 'type' => 'pregnancy_general',
                 'title' => 'ข้อควรระวัง: สตรีมีครรภ์',
@@ -289,8 +294,17 @@ class PosController extends Controller
             ];
         }
 
-        // General G6PD Warning in Precautions
-        if (str_contains($precautions, 'g6pd')) {
+        // General G6PD Warning (Keywords or Precautions)
+        $g6pdTriggers = ['aspirin', 'ibuprofen', 'sulfonamide', 'dapsone', 'primaquine', 'nitrofurantoin'];
+        $isG6pDRisky = str_contains($precautions, 'g6pd');
+        foreach ($g6pdTriggers as $trigger) {
+            if (str_contains($drugName, $trigger)) {
+                $isG6pDRisky = true;
+                break;
+            }
+        }
+
+        if ($isG6pDRisky) {
             $alerts[] = [
                 'type' => 'g6pd_general',
                 'title' => 'ข้อควรระวัง: ภาวะ G6PD',
