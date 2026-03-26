@@ -57,6 +57,7 @@
 
     <div class="main-wrapper">
         <!-- Sidebar Navigation -->
+        <div id="sidebar-overlay" class="sidebar-overlay hidden" onclick="toggleSidebar()"></div>
         @include('components.sidebar')
 
         <!-- Main Content -->

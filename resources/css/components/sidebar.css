@@ -7,7 +7,7 @@
    ============================================ */
 .sidebar {
     @apply w-64 bg-white border-r border-gray-200;
-    @apply hidden md:flex flex-col h-full overflow-y-auto custom-scroll shrink-0;
+    @apply md:flex flex-col h-full overflow-y-auto custom-scroll shrink-0;
 }
 
 .sidebar-logo {

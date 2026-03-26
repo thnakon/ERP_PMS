@@ -4,6 +4,7 @@
 
 const SidebarSystem = {
     sidebar: null,
+    overlay: null,
     isOpen: false,
     initialized: false,
 
@@ -14,6 +15,7 @@ const SidebarSystem = {
         if (this.initialized) return;
 
         this.sidebar = document.getElementById('sidebar');
+        this.overlay = document.getElementById('sidebar-overlay');
         if (!this.sidebar) return;
 
         this.initSearch();
@@ -132,9 +134,11 @@ const SidebarSystem = {
     toggle() {
         if (!this.sidebar) this.init();
 
-        this.sidebar.classList.toggle('hidden');
-        this.sidebar.classList.toggle('sidebar-mobile-open');
+        console.log('🔄 Toggling sidebar. Current state:', this.isOpen);
+        this.sidebar.classList.toggle('open');
+        if (this.overlay) this.overlay.classList.toggle('hidden');
         this.isOpen = !this.isOpen;
+        console.log('🆕 New state:', this.isOpen, 'Classes:', this.sidebar.className);
     },
 
     /**
@@ -143,8 +147,9 @@ const SidebarSystem = {
     close() {
         if (!this.sidebar) return;
 
-        this.sidebar.classList.add('hidden');
-        this.sidebar.classList.remove('sidebar-mobile-open');
+        console.log('🔒 Closing sidebar');
+        this.sidebar.classList.remove('open');
+        if (this.overlay) this.overlay.classList.add('hidden');
         this.isOpen = false;
     },
 
@@ -154,8 +159,9 @@ const SidebarSystem = {
     open() {
         if (!this.sidebar) this.init();
 
-        this.sidebar.classList.remove('hidden');
-        this.sidebar.classList.add('sidebar-mobile-open');
+        console.log('🔓 Opening sidebar');
+        this.sidebar.classList.add('open');
+        if (this.overlay) this.overlay.classList.remove('hidden');
         this.isOpen = true;
     }
 };
