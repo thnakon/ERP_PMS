@@ -75,6 +75,16 @@ class ProductSeeder extends Seeder
             unset($productData['category']);
 
             $productData['category_id'] = $categoryId;
+            
+            // Set precautions for testing
+            if ($productData['sku'] === 'IBU400') {
+                $productData['precautions'] = 'Avoid in G6PD deficiency and 3rd trimester of pregnancy.';
+                $productData['precautions_th'] = 'ระวังการใช้ในผู้ป่วย G6PD และสตรีมีครรภ์ระยะสุดท้าย';
+            }
+            if ($productData['sku'] === 'PCM500') {
+                $productData['precautions_th'] = 'ระวังในผู้ป่วยโรคตับ';
+            }
+
             $productData['barcode'] = '885' . str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
             $productData['member_price'] = $productData['unit_price'] * 0.9;
             $productData['unit'] = 'tablet';

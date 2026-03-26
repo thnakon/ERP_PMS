@@ -144,7 +144,15 @@ class ThaiProductSeeder extends Seeder
             unset($productData['category']);
 
             $productData['category_id'] = $categoryId;
-            $productData['generic_name'] = $productData['name'];
+            
+            // Set real generic names for triggers
+            $productData['generic_name'] = $productData['generic_name'] ?? $productData['name'];
+            
+            // Add Pregnancy Precautions for testing
+            if (str_contains($productData['name'], 'Arcoxia') || str_contains($productData['name'], 'Celebrex') || str_contains($productData['name'], 'Ponstan')) {
+                $productData['precautions_th'] = 'ห้ามใช้ในสตรีมีครรภ์ (Pregnancy Contraindicated)';
+            }
+
             $productData['barcode'] = '885' . str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
             $productData['member_price'] = $productData['unit_price'] * 0.9;
             $productData['min_stock'] = rand(10, 50);

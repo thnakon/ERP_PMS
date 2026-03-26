@@ -274,6 +274,24 @@ class CustomerSeeder extends Seeder
                 'last_visit_at' => Carbon::now()->subDays(6),
                 'is_active' => true,
             ],
+            // G6PD Deficiency Test Case
+            [
+                'name' => 'วีระ จีซิกพีดี',
+                'nickname' => 'วี',
+                'phone' => '083-000-1111',
+                'birth_date' => Carbon::now()->subYears(30),
+                'gender' => 'male',
+                'drug_allergies' => [],
+                'chronic_diseases' => ['ภาวะพร่องเอนไซม์ G6PD (G6PD Deficiency)'],
+                'pregnancy_status' => 'none',
+                'medical_notes' => 'มีภาวะ G6PD deficiency ห้ามใช้ยากลุ่ม Aspirin, Ibuprofen, และกลุ่มซัลฟา',
+                'points_balance' => 100,
+                'member_tier' => 'regular',
+                'member_since' => Carbon::now()->subMonths(1),
+                'total_spent' => 1200,
+                'visit_count' => 2,
+                'is_active' => true,
+            ],
         ];
 
         foreach ($customers as $customer) {
