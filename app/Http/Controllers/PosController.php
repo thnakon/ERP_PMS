@@ -253,76 +253,105 @@ class PosController extends Controller
         $customerId = $request->get('customer_id');
         $productId = $request->get('product_id');
 
-        if (!$customerId || !$productId) {
+        if (!$productId) {
             return response()->json(['alerts' => []]);
         }
 
-        $customer = Customer::find($customerId);
         $product = Product::find($productId);
-
-        if (!$customer || !$product) {
+        if (!$product) {
             return response()->json(['alerts' => []]);
         }
 
+        $customer = $customerId ? Customer::find($customerId) : null;
         $alerts = [];
+        $precautions = strtolower($product->precautions . ' ' . $product->precautions_th);
+        $drugName = strtolower($product->name . ' ' . ($product->generic_name ?? ''));
 
-        // 1. Check Drug Allergies
-        $customerAllergies = is_array($customer->drug_allergies) ? $customer->drug_allergies : [];
-        foreach ($customerAllergies as $allergy) {
-            $allergyName = is_array($allergy) ? ($allergy['drug_name'] ?? '') : $allergy;
-            $drugLower = strtolower($product->name . ' ' . ($product->generic_name ?? ''));
-
-            if (str_contains($drugLower, strtolower($allergyName))) {
-                $alerts[] = [
-                    'type' => 'allergy',
-                    'title' => __('pos.allergy_warning'),
-                    'level' => 'danger',
-                    'message' => __('pos.allergy_alert_message', [
-                        'customer' => $customer->name,
-                        'allergy' => $allergyName,
-                        'product' => $product->name,
-                    ]),
-                ];
-            }
+        // 1. GENERAL PRODUCT WARNINGS (Always check)
+        
+        // Dangerous/Controlled Drug Class Warning
+        if (in_array($product->drug_class, ['ยาอันตราย', 'ยาควบคุมพิเศษ'])) {
+            $alerts[] = [
+                'type' => 'drug_class',
+                'title' => 'ยาอันตราย / ยาควบคุมพิเศษ',
+                'level' => 'warning',
+                'message' => "คำเตือน: ยาสำรับนี้เป็น '{$product->drug_class}' กรุณาตรวจสอบการใช้งานให้ถูกต้อง",
+            ];
         }
 
-        // 2. Check Pregnancy Contraindications
-        if ($customer->pregnancy_status === 'pregnant' || $customer->pregnancy_status === 'breastfeeding') {
-            $precautions = strtolower($product->precautions . ' ' . $product->precautions_th);
-            if (str_contains($precautions, 'pregnant') || str_contains($precautions, 'pregnancy') || str_contains($precautions, 'ตั้งครรภ์') || str_contains($precautions, 'ครรภ์')) {
-                $alerts[] = [
-                    'type' => 'pregnancy',
-                    'title' => 'Safety Alert: Pregnancy',
-                    'level' => 'warning',
-                    'message' => "Warning: Product '{$product->name}' is contraindicated or requires caution for {$customer->pregnancy_status} patients.",
-                ];
-            }
+        // General Pregnancy Warning in Precautions
+        if (str_contains($precautions, 'pregnant') || str_contains($precautions, 'pregnancy') || str_contains($precautions, 'ตั้งครรภ์') || str_contains($precautions, 'ครรภ์')) {
+            $alerts[] = [
+                'type' => 'pregnancy_general',
+                'title' => 'ข้อควรระวัง: สตรีมีครรภ์',
+                'level' => 'warning',
+                'message' => "คำเตือน: ยานี้มีระบุข้อควรระวังสำหรับสตรีมีครรภ์หรือให้นมบุตร กรุณาซักประวัติก่อนจ่าย",
+            ];
         }
 
-        // 3. Check G6PD / Chronic Conditions
-        $chronicDiseases = is_array($customer->chronic_diseases) ? $customer->chronic_diseases : [];
-        foreach ($chronicDiseases as $disease) {
-            if (stripos($disease, 'G6PD') !== false) {
-                $precautions = strtolower($product->precautions . ' ' . $product->precautions_th);
-                $drugName = strtolower($product->name . ' ' . ($product->generic_name ?? ''));
+        // General G6PD Warning in Precautions
+        if (str_contains($precautions, 'g6pd')) {
+            $alerts[] = [
+                'type' => 'g6pd_general',
+                'title' => 'ข้อควรระวัง: ภาวะ G6PD',
+                'level' => 'danger',
+                'message' => "คำเตือนสำคัญ: ยานี้มีระบุข้อสกัดกั้นหรือข้อควรระวังสำหรับผู้ป่วย G6PD",
+            ];
+        }
 
-                // Common G6PD triggers (simple check for demo)
-                $g6pdTriggers = ['aspirin', 'ibuprofen', 'sulfonamide', 'dapsone', 'primaquine', 'nitrofurantoin'];
-                $isTrigger = false;
-                foreach ($g6pdTriggers as $trigger) {
-                    if (str_contains($drugName, $trigger)) {
-                        $isTrigger = true;
-                        break;
-                    }
-                }
-
-                if ($isTrigger || str_contains($precautions, 'g6pd')) {
+        // 2. CUSTOMER-SPECIFIC CHECKS (Only if customer is selected)
+        if ($customer) {
+            // Check Drug Allergies
+            $customerAllergies = is_array($customer->drug_allergies) ? $customer->drug_allergies : [];
+            foreach ($customerAllergies as $allergy) {
+                $allergyName = is_array($allergy) ? ($allergy['drug_name'] ?? '') : $allergy;
+                if (str_contains($drugName, strtolower($allergyName))) {
                     $alerts[] = [
-                        'type' => 'g6pd',
-                        'title' => 'Safety Alert: G6PD Deficiency',
+                        'type' => 'allergy',
+                        'title' => __('pos.allergy_warning'),
                         'level' => 'danger',
-                        'message' => "Critical: Patient has G6PD deficiency. '{$product->name}' is known to trigger oxidative stress in these patients.",
+                        'message' => __('pos.allergy_alert_message', [
+                            'customer' => $customer->name,
+                            'allergy' => $allergyName,
+                            'product' => $product->name,
+                        ]),
                     ];
+                }
+            }
+
+            // Check Pregnancy Status (If not already alerted by general warning)
+            if (($customer->pregnancy_status === 'pregnant' || $customer->pregnancy_status === 'breastfeeding') && 
+                (str_contains($precautions, 'pregnant') || str_contains($precautions, 'pregnancy') || str_contains($precautions, 'ตั้งครรภ์') || str_contains($precautions, 'ครรภ์'))) {
+                // If the customer IS pregnant and the drug is problematic, we upgrade to a stronger message
+                $alerts[] = [
+                    'type' => 'pregnancy_critical',
+                    'title' => 'อันตราย: คนไข้กำลังตั้งครรภ์/ให้นมบุตร',
+                    'level' => 'danger',
+                    'message' => "ห้ามใช้หรือควรระวังอย่างยิ่ง: '{$product->name}' สำหรับคนไข้ {$customer->name} ที่กำลัง{$customer->pregnancy_status}",
+                ];
+            }
+
+            // Check G6PD Status
+            $chronicDiseases = is_array($customer->chronic_diseases) ? $customer->chronic_diseases : [];
+            foreach ($chronicDiseases as $disease) {
+                if (stripos($disease, 'G6PD') !== false) {
+                    $g6pdTriggers = ['aspirin', 'ibuprofen', 'sulfonamide', 'dapsone', 'primaquine', 'nitrofurantoin'];
+                    $isTrigger = false;
+                    foreach ($g6pdTriggers as $trigger) {
+                        if (str_contains($drugName, $trigger)) {
+                            $isTrigger = true;
+                            break;
+                        }
+                    }
+
+                    if ($isTrigger || str_contains($precautions, 'g6pd')) {
+                        $alerts[] = [
+                            'type' => 'g6pd_critical',
+                            'title' => 'อันตรายร้ายแรง: คนไข้มีภาวะ G6PD',
+                            'level' => 'danger',
+                            'message' => "ห้ามใช้เด็ดขาด: คนไข้ {$customer->name} มีภาวะพร่องเอนไซม์ G6PD ยา '{$product->name}' อาจทำให้เม็ดเลือดแดงแตกได้",
+                        ];
+                    }
                 }
             }
         }

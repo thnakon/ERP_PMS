@@ -1615,23 +1615,23 @@
                 return;
             }
 
-            // Check safety alerts if customer selected
-            if (selectedCustomer) {
-                try {
-                    const response = await fetch(
-                        `{{ route('pos.check-allergies') }}?customer_id=${selectedCustomer.id}&product_id=${product.id}`
-                        );
-                    const data = await response.json();
+            // ALWAYS Check safety alerts
+            try {
+                const customerId = selectedCustomer ? selectedCustomer.id : '';
+                const response = await fetch(
+                    `{{ route('pos.check-allergies') }}?customer_id=${customerId}&product_id=${product.id}`
+                );
+                const data = await response.json();
 
-                    if (data.alerts && data.alerts.length > 0) {
-                        const alert = data.alerts[0]; // Take first alert for now
-                        pendingAllergyProduct = product;
-                        showSafetyAlert(alert, product);
-                        return;
-                    }
-                } catch (error) {
-                    console.error('Safety check failed:', error);
+                if (data.alerts && data.alerts.length > 0) {
+                    // Show all alerts or just the most important one
+                    const alert = data.alerts[0]; 
+                    pendingAllergyProduct = product;
+                    showSafetyAlert(alert, product);
+                    return;
                 }
+            } catch (error) {
+                console.error('Safety check failed:', error);
             }
 
             doAddToCart(product);
@@ -1641,19 +1641,17 @@
             const titleEl = document.querySelector('#allergyModal-panel .text-xl');
             const iconEl = document.querySelector('.pos-allergy-alert-icon');
 
-            // Set title and colors based on type
-            if (alert.type === 'pregnancy') {
-                titleEl.textContent = 'Safety Alert: Pregnancy';
+            // Set content and styles based on alert level and type
+            titleEl.textContent = alert.title;
+            
+            if (alert.level === 'warning') {
                 titleEl.className = 'text-xl font-bold text-amber-600 mb-2';
                 iconEl.className = 'pos-allergy-alert-icon bg-amber-100 text-amber-600';
-            } else if (alert.type === 'g6pd') {
-                titleEl.textContent = 'Safety Alert: G6PD Deficiency';
+                iconEl.innerHTML = '<i class="ph-bold ph-warning"></i>';
+            } else { // danger or default
                 titleEl.className = 'text-xl font-bold text-red-600 mb-2';
                 iconEl.className = 'pos-allergy-alert-icon bg-red-100 text-red-600';
-            } else {
-                titleEl.textContent = '{{ __('pos.allergy_warning') }}';
-                titleEl.className = 'text-xl font-bold text-red-600 mb-2';
-                iconEl.className = 'pos-allergy-alert-icon bg-red-100 text-red-600';
+                iconEl.innerHTML = '<i class="ph-bold ph-warning-circle"></i>';
             }
 
             document.getElementById('allergyMessage').textContent = alert.message;
