@@ -176,7 +176,7 @@
                 }
 
                 timeout = setTimeout(async () => {
-                    const res = await fetch(`{{ route('drug-interactions.suggest') }}?term=${val}`);
+                    const res = await fetch(`/drug-interactions/suggest?term=${val}`);
                     const suggestions = await res.json();
 
                     if (suggestions.length > 0) {
@@ -215,7 +215,7 @@
                 return;
             }
 
-            const res = await fetch(`{{ route('drug-interactions.search') }}?drug_a=${drugA}&drug_b=${drugB}`);
+            const res = await fetch(`/drug-interactions/search?drug_a=${encodeURIComponent(drugA)}&drug_b=${encodeURIComponent(drugB)}`);
             const data = await res.json();
 
             const resultsContainer = document.getElementById('results-container');
